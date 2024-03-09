@@ -2,7 +2,15 @@ const { app, BrowserWindow } = require('electron');
 const url = require('url');
 const path = require('path');
 
-//estas con las catracterisicas de la ventana (alto y ancho)
+//codigo para mirar en tiempo real los cambios realizados
+if(process.env.NODE_ENV !== 'production'){
+    require('electron-reload')(__dirname,{
+
+    })
+}
+
+
+//estas con las caracterisicas de la ventana (alto y ancho)
 const createWindow = () => {
     const win = new BrowserWindow({
         width: 1000,
@@ -18,7 +26,7 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
     createWindow()
-//aca cuando
+
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
