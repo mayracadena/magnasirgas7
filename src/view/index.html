@@ -7,6 +7,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
   <!-- se utiliza framework de boostrap para los estilos -->
   <link rel="stylesheet" href="../scss/custom.css">
+  <link rel="stylesheet" href="../../node_modules/bootstrap-icons/font/bootstrap-icons.css">
 
 
   <title>Bienvenido</title>
@@ -21,10 +22,11 @@
       <div class="col-auto col-md-4 col-xl-2">
         <nav
           class="navbar bg-primary fixed-top col-auto col-md-4 col-xl-2 px-sm-2 px-0  min-vh-100 align-items-sm-start">
-          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3" data-bs-theme="bg-primary">
+          <ul class="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto " data-bs-theme="bg-primary">
             <li class="nav-item  dropdown">
-              <a class="nav-link dropdown-toggle fw-bold text-white" href="#" role="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
+              <a class="nav-link dropdown-toggle fw-bold text-white py-3 px-2" href="#" role="button" data-bs-toggle="dropdown"
+                aria-current="page">
+                <i class="fs-5 bi bi-geo-alt-fill"></i>
                 Conversión y Transformación
               </a>
 
@@ -54,7 +56,7 @@
                 Nivelación GPS
               </a>
 
-              <ul class="dropdown-menu dropdown-menu-primary">
+              <ul class="dropdown-menu dropdown-menu-dark">
                 <li><a class="dropdown-item" href="#">Punto individual</a></li>
                 <li><a class="dropdown-item" href="#">Perfil</a></li>
               </ul>
@@ -76,7 +78,7 @@
                 aria-expanded="false">
                 Cálculo Velocidades
               </a>
-              <ul class="dropdown-menu dropdown-menu-primary">
+              <ul class="dropdown-menu dropdown-menu-dark">
                 <li><a class="dropdown-item" href="#">Punto Individual</a></li>
                 <li><a class="dropdown-item" href="#">Archivo</a></li>
 
@@ -87,7 +89,7 @@
                 aria-expanded="false">
                 Cambio de Época
               </a>
-              <ul class="dropdown-menu dropdown-menu-primary">
+              <ul class="dropdown-menu dropdown-menu-dark">
                 <li><a class="dropdown-item" href="#">Punto Individual</a></li>
                 <li><a class="dropdown-item" href="#">Archivo</a></li>
 
@@ -98,9 +100,19 @@
                 aria-expanded="false">
                 Transformación de marco <br> internacional de referencia terrestre
               </a>
-              <ul class="dropdown-menu dropdown-menu-primary">
-                <li><a class="dropdown-item" href="#">1990 - 2014</a></li>
-                <li><a class="dropdown-item" href="#">otros</a></li>
+              <ul class="dropdown-menu dropdown-menu-dark">
+                <li><a class="dropdown-item" href="ITRF.html">DEL ITRF1990 AL ITRF2014</a></li>
+                <li><a class="dropdown-item" href="#">DEL ITRF1991 AL ITRF2014</a></li>
+                <li><a class="dropdown-item" href="#">DEL ITRF1992 AL ITRF2014</a></li>
+                <li><a class="dropdown-item" href="#">DEL ITRF1993 AL ITRF2014</a></li>
+                <li><a class="dropdown-item" href="#">DEL ITRF1994 AL ITRF2014</a></li>
+                <li><a class="dropdown-item" href="#">DEL ITRF1996 AL ITRF2014</a></li>
+                <li><a class="dropdown-item" href="#">DEL ITRF1997 AL ITRF2014</a></li>
+                <li><a class="dropdown-item" href="#">DEL ITRF2000 AL ITRF2014</a></li>
+                <li><a class="dropdown-item" href="#">DEL ITRF2005 AL ITRF2014</a></li>
+                <li><a class="dropdown-item" href="#">DEL ITRF2008 AL ITRF2014</a></li>
+                <li><a class="dropdown-item" href="#">DEL ITRF2020 AL ITRF2014</a></li>
+                <li><a class="dropdown-item" href="#">DEL ITRF2014 AL ITRF2020</a></li>
 
               </ul>
             </li>
