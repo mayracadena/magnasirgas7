@@ -6,7 +6,7 @@
   <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
   <!-- se utiliza framework de boostrap para los estilos -->
-  <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../scss/custom.css">
 
 
   <title>Bienvenido</title>
@@ -19,91 +19,93 @@
 
 
       <div class="col-auto col-md-4 col-xl-2">
-        <nav class="navbar navbar-dark bg-primary fixed-top col-auto col-md-4 col-xl-2 px-sm-2 px-0 bg-dark min-vh-100 align-items-sm-start">
+        <nav
+          class="navbar bg-primary fixed-top col-auto col-md-4 col-xl-2 px-sm-2 px-0  min-vh-100 align-items-sm-start">
           <ul class="navbar-nav justify-content-end flex-grow-1 pe-3" data-bs-theme="bg-primary">
             <li class="nav-item  dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+              <a class="nav-link dropdown-toggle fw-bold text-white" href="#" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
                 Conversión y Transformación
               </a>
 
-              <ul class="dropdown-menu dropdown-menu-dark">
-                <li><a class="dropdown-item" href="#">Punto individual</a></li>
+              <ul class="dropdown-menu ">
+                <li><a class="dropdown-item " href="#">Punto individual</a></li>
                 <li><a class="dropdown-item" href="#">Archivo</a></li>
                 <li><a class="dropdown-item" href="#">Crear origen cartesiano</a></li>
                 <li><a class="dropdown-item" href="#">Editar o Eliminar Origen Cartesiano</a></li>
               </ul>
+
             </li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+              <a class="nav-link dropdown-toggle  fw-bold text-white" href="#" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
                 Ondulación Geoidal
               </a>
 
-              <ul class="dropdown-menu dropdown-menu-dark">
+              <ul class="dropdown-menu dropdown-menu-primary">
                 <li><a class="dropdown-item" href="#">Punto individual</a></li>
                 <li><a class="dropdown-item" href="#">Archivo</a></li>
               </ul>
 
             </li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+              <a class="nav-link dropdown-toggle  fw-bold text-white" href="#" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
                 Nivelación GPS
               </a>
 
-              <ul class="dropdown-menu dropdown-menu-dark">
+              <ul class="dropdown-menu dropdown-menu-primary">
                 <li><a class="dropdown-item" href="#">Punto individual</a></li>
                 <li><a class="dropdown-item" href="#">Perfil</a></li>
               </ul>
 
             </li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+              <a class="nav-link dropdown-toggle  fw-bold text-white" href="#" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
                 Cálculos Elipsoidales
               </a>
-              <ul class="dropdown-menu dropdown-menu-dark">
+              <ul class="dropdown-menu dropdown-menu-primary">
                 <li><a class="dropdown-item" href="#">Cálculo Problema Geodésico Inverso</a></li>
                 <li><a class="dropdown-item" href="#">Cálculo Problema Geodésico Directo</a></li>
 
               </ul>
             </li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+              <a class="nav-link dropdown-toggle  fw-bold text-white" href="#" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
                 Cálculo Velocidades
               </a>
-              <ul class="dropdown-menu dropdown-menu-dark">
+              <ul class="dropdown-menu dropdown-menu-primary">
                 <li><a class="dropdown-item" href="#">Punto Individual</a></li>
                 <li><a class="dropdown-item" href="#">Archivo</a></li>
 
               </ul>
             </li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+              <a class="nav-link dropdown-toggle  fw-bold text-white" href="#" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
                 Cambio de Época
               </a>
-              <ul class="dropdown-menu dropdown-menu-dark">
+              <ul class="dropdown-menu dropdown-menu-primary">
                 <li><a class="dropdown-item" href="#">Punto Individual</a></li>
                 <li><a class="dropdown-item" href="#">Archivo</a></li>
 
               </ul>
             </li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+              <a class="nav-link dropdown-toggle  fw-bold text-white" href="#" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
                 Transformación de marco <br> internacional de referencia terrestre
               </a>
-              <ul class="dropdown-menu dropdown-menu-dark">
+              <ul class="dropdown-menu dropdown-menu-primary">
                 <li><a class="dropdown-item" href="#">1990 - 2014</a></li>
                 <li><a class="dropdown-item" href="#">otros</a></li>
 
               </ul>
             </li>
             <li class="nav-item">
-              <a class="nav-link ">
+              <a class="nav-link  fw-bold text-white">
                 Configuración
               </a>
 
@@ -113,6 +115,9 @@
 
       <div class="col-auto col-md-8 col-xl-10">
         <h1>Bienvenidos a la versión beta de Magna sirgas</h1>
+
+
+
       </div>
 
     </div>
