@@ -1,17 +1,42 @@
-<%- include('./partials/cabecero.ejs', {"titulo": "Bienvenido"}); %>
+<%- include('./partials/cabecero.ejs', {"titulo": "Bienvenido" }); %>
 
 
 
   <%- include('./partials/menu.ejs'); %>
 
-      
-
-      <div class="col-auto col-md-8 col-xl-10">
-        <h1>Bienvenidos a la versión beta de Magna sirgas</h1>
 
 
+
+
+    <div class="col-auto col-md-8 col-xl-8">
+      <h1>Bienvenidos a la versión beta de Magna sirgas</h1>
+      <div class="row">
+        <div class="card col-md-4 btn">
+          <img src="../img/conversion_coordenas.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text">
+              Conversión y Transformación de coordenadas
+            </p>
+          </div>
+        </div>
+        <div class="card col-md-4 btn">
+          <img src="../img/ondulacion_geoidal.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text">
+              Ondulación geoidal
+            </p>
+          </div>
+        </div>
+        <div class="card col-md-4 btn">
+          <img src="../img/nivelacion_gps.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text">
+              Nivelación GPS
+            </p>
+          </div>
+        </div>
 
       </div>
+    </div>
 
-  <%- include('./partials/pie.ejs'); %>
-    
+    <%- include('./partials/pie.ejs'); %>
