@@ -1,47 +1,74 @@
 <%- include('./partials/cabecero.ejs', {"titulo": "ITRF" }); %>
 
-    <body class="fondo">
-        <div class="container-fluid">
-            <div class="row align-items-start">
-                <%- include('./partials/menu.ejs'); %>
-                    <div class="col-auto col-md-8 col-xl-10">
-                        <div class="mb-3">
-                            <label for="formFileSm" class="form-label">Small file input example</label>
-                            <input class="form-control form-control-sm" id="formFileSm" type="file">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#staticBackdrop">
-                                Formato de las coordenadas geocentricas
-                            </button>
-                        </div>
+<%- include('./partials/menu.ejs'); %>
 
-                        <!-- Modal -->
-                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-                            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <!-- Contenido del modal -->
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary">Understood</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<link rel="stylesheet" href="C:\Users\miram\Documents\magna_pro_code\magnasirgas7\src\scss\ITRF.css">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <img src="C:\Users\miram\Documents\magna_pro_code\magnasirgas7\src\img\ITRF_IMAGEN.JPG" class="card-img-top" alt="Imagen">
+                <div class="card-body">
+                    <h5 class="card-title">Título de la Tarjeta</h5>
+                    <p class="card-text">Texto de ejemplo para la tarjeta.</p>
+                    <a href="#" class="btn btn-primary">Ver más</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resto de tu código -->
+</div>
+
+<%- include('./partials/pie.ejs'); %>
+<div class="col-auto col-md-8 col-xl-10">
+    <div class="mb-3">
+        <label for="formFileSm" class="form-label">Transformacion del marco de referencia terrestre </label>
+        <input class="form-control form-control-sm" id="formFileSm" type="file">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop">
+            Formato de las coordenadas geocentricas
+        </button>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="mb-3">
+                    <label for="formFileSm" class="form-label">Transformacion del marco de referencia terrestre ITRF90 AL ITRF2014</label>
+                    <input class="form-control form-control-sm" id="formFileSm" type="file">
+                    <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop">
+                        Formato de las coordenadas geocentricas
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- Bootstrap Bundle with Popper -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" crossorigin="anonymous"></script>
-    </body>
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Contenido del modal -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Understood</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    </html>
+<%- include('./partials/pie.ejs'); %>
+
+
+<%- include('./partials/pie.ejs'); %>
