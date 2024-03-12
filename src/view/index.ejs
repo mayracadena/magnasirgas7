@@ -1,33 +1,88 @@
-<%- include('./partials/cabecero.ejs', {"titulo": "Bienvenido"}); %>
+<%- include('./partials/cabecero.ejs', {"titulo": "Bienvenido" }); %>
+ <%- include('./partials/menu.ejs'); %>
 
+<<<<<<< HEAD
 <body data-bs-theme="light">
   <div class="container-fluid">
     <!-- navegador de opciones -->
     <div class="row align-items-start">
       
+=======
+>>>>>>> 26d7cc5c046e190b626afe6ac2688349480ef582
 
-  <%- include('./partials/menu.ejs'); %>
 
-      
 
-      <div class="col-auto col-md-8 col-xl-10">
-        <h1>Bienvenidos a la versión beta de Magna sirgas</h1>
 
+    <div class="col-auto col-md-8 col-xl-8">
+      <h1>Bienvenidos a la versión beta de Magna sirgas</h1>
+      <div class="row">
+        <div class="card col-md-4 btn">
+          <img src="../img/conversion_coordenas3.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text">
+              Conversión y Transformación de coordenadas
+            </p>
+          </div>
+        </div>
+        <div class="card col-md-4 btn">
+          <img src="../img/ondulacion_geoidal.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text">
+              Ondulación geoidal
+            </p>
+          </div>
+        </div>
+        <div class="card col-md-4 btn">
+          <img src="../img/nivelacion_gps.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text">
+              Nivelación GPS
+            </p>
+          </div>
+        </div>
+        <div class="card col-md-4 btn">
+          <img src="../img/paisaje_ghibli.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text">
+              Cálculos Elipsoidales
+            </p>
+          </div>
+        </div>
+        <div class="card col-md-4 btn">
+          <img src="../img/paisaje_ghibli2.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text">
+              Cálculo Velocidades
+            </p>
+          </div>
+        </div>
+        <div class="card col-md-4 btn">
+          <img src="../img/paisaje_ghibli2.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text">
+              Cambio de Época
+            </p>
+          </div>
+        </div>
+        <div class="card col-md-4 btn">
+          <img src="../img/conversion_coordenas2.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text">
+              Transformación ITRF
+            </p>
+          </div>
+        </div>
+        <div class="card col-md-4 btn">
+          <img src="../img/paisaje_ghibli2.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text">
+              Cálculo Velocidades
+            </p>
+          </div>
+        </div>
 
 
       </div>
-
     </div>
 
-
-
-
-
-  </div>
-  <script src="../../node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
-  <!-- <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script> -->
-
-
-</body>
-
-</html>
+    <%- include('./partials/pie.ejs'); %>
