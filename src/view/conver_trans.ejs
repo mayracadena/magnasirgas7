@@ -19,7 +19,7 @@
                     <label for="floatingInputValue">Nombre del punto</label>
 
                 </div>
-                
+
                 <div class="form-floating mb-1 ">
                     <select class="form-select " id="sr_partida" aria-label="Floating label select example">
                         <option value="1">Plana Cartesiana</option>
@@ -31,7 +31,37 @@
                     </select>
                     <label for="floatingSelect">Tipo de coordenada de partida</label>
                 </div>
-                <div >
+                <!--formulario para poner las coordenadas elipsoidales-->
+                <div id="d_elipsoidal">
+                    <div class="row">
+                        <div class="col">
+                            <label for="latitud" class="form-label ">Latitud:</label>
+                        </div>
+                        <div class="col">
+                            <input class="form-control form-control-sm " type="number" placeholder="GG" id="e_lat_gg">
+                        </div>
+                        <div class="col">
+                            <input class="form-control form-control-sm " type="number" placeholder="MM" id="e_lat_mm">
+                        </div>
+                        <div class="col-md-4">
+                            <input class="form-control form-control-sm " type="number" placeholder="SS.DDDD" id="e_lat_ss">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="longitud" class="form-label ">Longitud:</label>
+                        </div>
+                        <div class="col">
+                            <input class="form-control form-control-sm " type="number" placeholder="GG" id="e_lon_gg">
+                        </div>
+                        <div class="col">
+                            <input class="form-control form-control-sm " type="number" placeholder="MM" id="e_lon_mm">
+                        </div>
+                        <div class="col">
+                            <input class="form-control form-control-sm " type="number" placeholder="SS.DDDD" id="e_lon_ss">
+                        </div>
+                    </div>
+
 
                 </div>
 
