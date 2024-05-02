@@ -12,6 +12,7 @@ if(process.env.NODE_ENV !== 'production'){
 }
 
 
+
 //Initialize the ejs parser
 ejse.data({"titulo": "Bienvenido"});
 
@@ -30,7 +31,6 @@ const createWindow = () => {
     slashes: true
     
 }))}
-
 
 
 
