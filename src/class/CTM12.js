@@ -1,7 +1,7 @@
 //PARAMETROS ORIGEN CTM12
 //resolución 471 del 2020   IGAC
 
-export class CTM12 {
+class CTM12 {
     constructor(){
         //latitud de origen
         this._phi0 = 4;
