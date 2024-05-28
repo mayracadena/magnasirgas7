@@ -1,5 +1,6 @@
 <%- include('./partials/cabecero.ejs', {"titulo": "ITRF" }); %>
 <%- include('./partials/menu.ejs'); %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,71 +9,74 @@
 <title>Transformación ITRF</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script><style>
+<style>
     body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    overflow: hidden;
-    position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        overflow: hidden;
+        position: relative;
+        background: linear-gradient(135deg, #000000, #001f3f);
+        color: #ffffff;
     }
     #particles-js {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
     }
     .main-content {
-    width: 100%;
-    max-width: 600px;
-    padding: 20px;
-    z-index: 1;
-    }
-    .card {
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+        padding: 20px;
+        z-index: 1;
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.3);
     }
     .card-header {
-    background-color: #001f3f;
-    color: #fff;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    text-align: center;
+        background-color: #001f3f;
+        color: #00ffff;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        text-align: center;
     }
     .btn-primary {
-    background-color: #001f3f;
-    border: none;
-    transition: background-color 0.3s;
+        background-color: #001f3f;
+        border: none;
+        transition: background-color 0.3s;
     }
     .btn-primary:hover {
-    background-color: #0056b3;
+        background-color: #0056b3;
     }
     .form-label {
-    font-weight: bold;
+        font-weight: bold;
     }
     .input-group .btn {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
     }
     .input-group input {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
     }
     .mb-3 {
-    margin-bottom: 1rem;
+        margin-bottom: 1rem;
     }
     .mt-4 {
-    margin-top: 1.5rem;
+        margin-top: 1.5rem;
     }
     .offcanvas-start {
-    width: 300px;
+        width: 300px;
     }
     .spinner-border {
-    display: none;
-    margin: auto;
+        display: none;
+        margin: auto;
     }
 </style>
 </head>
@@ -80,143 +84,161 @@
 <div id="particles-js"></div>
 <div class="main-content">
     <div class="card shadow">
-    <div class="card-header">
-        <h2>Transformación Del Marco Internacional De Referencia Terrestre ITRF</h2>
+        <div class="card-header">
+            <h2>Transformación Del Marco Internacional De Referencia Terrestre ITRF</h2>
+        </div>
+        <div class="card-body">
+            <button type="button" class="btn btn-info mb-3" data-bs-toggle="offcanvas" data-bs-target="#infoOffcanvas" aria-controls="infoOffcanvas">
+                <i class="bi bi-info-circle"></i> ¿Desea saber más sobre el ITRF?
+            </button>
+            <form id="itrfForm">
+                <div class="mb-3">
+                    <label for="itrfStart" class="form-label"><i class="bi bi-geo-alt"></i> ITRF de Partida</label>
+                    <select class="form-select" id="itrfStart" required>
+                        <option value="" selected disabled>Seleccione ITRF de partida</option>
+                        <option value="ITRF1990">ITRF1990</option>
+                        <option value="ITRF1991">ITRF1991</option>
+                        <option value="ITRF1992">ITRF1992</option>
+                        <option value="ITRF1993">ITRF1993</option>
+                        <option value="ITRF1994">ITRF1994</option>
+                        <option value="ITRF1996">ITRF1996</option>
+                        <option value="ITRF1997">ITRF1997</option>
+                        <option value="ITRF2000">ITRF2000</option>
+                        <option value="ITRF2005">ITRF2005</option>
+                        <option value="ITRF2008">ITRF2008</option>
+                        <option value="ITRF2014">ITRF2014</option>
+                        <option value="ITRF2020">ITRF2020</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="itrfEnd" class="form-label"><i class="bi bi-geo"></i> ITRF de Destino</label>
+                    <select class="form-select" id="itrfEnd" required>
+                        <option value="" selected disabled>Seleccione ITRF de destino</option>
+                        <option value="ITRF2014">ITRF2014</option>
+                        <option value="ITRF2020">ITRF2020</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="fileInput" class="form-label">Cargar Archivo</label>
+                    <div class="input-group">
+                        <input class="form-control" type="file" id="fileInput" accept=".csv" required>
+                        <button class="btn btn-outline-secondary" type="button" id="fileButton"><i class="bi bi-upload"></i> Subir</button>
+                    </div>
+                </div>
+                <div class="text-center mb-3">
+                    <button type="button" class="btn btn-secondary" id="viewDataBtn" disabled><i class="bi bi-eye"></i> Visualizar Datos</button>
+                    <span id="statusIndicator" class="indicator"></span>
+                </div>
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary" id="processBtn"><i class="bi bi-play-circle"></i> Procesar Archivo</button>
+                </div>
+                <div class="text-center mt-3">
+                    <button type="button" class="btn btn-success" id="downloadBtn" disabled><i class="bi bi-download"></i> Descargar CSV</button>
+                </div>
+                <div class="spinner-border text-primary mt-3" role="status" id="loadingSpinner">
+                    <span class="visually-hidden">Procesando...</span>
+                </div>
+            </form>
+            <div id="result" class="mt-4"></div>
+        </div>
     </div>
-    <div class="card-body">
-        <button type="button" class="btn btn-info mb-3" data-bs-toggle="offcanvas" data-bs-target="#infoOffcanvas" aria-controls="infoOffcanvas">
-        <i class="bi bi-info-circle"></i> ¿Desea saber mas sobre  el ITRF?
-        </button>
-        <form id="itrfForm">
-          <div class="mb-3">
-            <label for="itrfStart" class="form-label"><i class="bi bi-geo-alt"></i> ITRF de Partida</label>
-            <select class="form-select" id="itrfStart" required>
-              <option value="" selected disabled>Seleccione ITRF de partida</option>
-              <option value="itrf88">ITRF1988</option>
-              <option value="itrf89">ITRF1989</option>
-              <option value="itrf90">ITRF1990</option>
-              <option value="itrf91">ITRF1991</option>
-              <option value="itrf92">ITRF1992</option>
-              <option value="itrf93">ITRF1993</option>
-              <option value="itrf94">ITRF1994</option>
-              <option value="itrf96">ITRF1996</option>
-              <option value="itrf97">ITRF1997</option>
-              <option value="itrf2000">ITRF2000</option>
-              <option value="itrf2005">ITRF2005</option>
-              <option value="itrf2008">ITRF2008</option>
-              <option value="itrf2014">ITRF2014</option>
-              <option value="itrf2020">ITRF2020</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="itrfEnd" class="form-label"><i class="bi bi-geo"></i> ITRF de Destino</label>
-            <select class="form-select" id="itrfEnd" required>
-              <option value="" selected disabled>Seleccione ITRF de destino</option>
-              <option value="itrf88">ITRF1988</option>
-              <option value="itrf89">ITRF1989</option>
-              <option value="itrf90">ITRF1990</option>
-              <option value="itrf91">ITRF1991</option>
-              <option value="itrf92">ITRF1992</option>
-              <option value="itrf93">ITRF1993</option>
-              <option value="itrf94">ITRF1994</option>
-              <option value="itrf96">ITRF1996</option>
-              <option value="itrf97">ITRF1997</option>
-              <option value="itrf2000">ITRF2000</option>
-              <option value="itrf2005">ITRF2005</option>
-              <option value="itrf2008">ITRF2008</option>
-              <option value="itrf2014">ITRF2014</option>
-              <option value="itrf2020">ITRF2020</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="fileInput" class="form-label">Cargar Archivo</label>
-            <div class="input-group">
-              <input class="form-control" type="file" id="fileInput" accept=".txt" required>
-              <button class="btn btn-outline-secondary" type="button" id="fileButton"><i class="bi bi-upload"></i> Subir</button>
-            </div>
-          </div>
-          <div class="text-center">
-            <button type="button" class="btn btn-primary" id="processBtn"><i class="bi bi-play-circle"></i> Procesar Archivo</button>
-          </div>
-          <div class="spinner-border text-primary mt-3" role="status" id="loadingSpinner">
-            <span class="visually-hidden">Procesando...</span>
-          </div>
-        </form>
-        <div id="result" class="mt-4"></div>
-      </div>
-    </div>
-  </div>
+</div>
 
-  <!-- Offcanvas de Información -->
-  <div class="offcanvas offcanvas-start" tabindex="-1" id="infoOffcanvas" aria-labelledby="infoOffcanvasLabel">
+<!-- Offcanvas de Información -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="infoOffcanvas" aria-labelledby="infoOffcanvasLabel">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="infoOffcanvasLabel">Información sobre el ITRF</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <h5 class="offcanvas-title" id="infoOffcanvasLabel">Información sobre el ITRF</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-      <h5>¿Qué es el ITRF?</h5>
-      <p>El Marco Internacional de Referencia Terrestre (ITRF) es un sistema de referencia geodésico global que proporciona un marco de coordenadas tridimensional para toda la Tierra. Es utilizado para la navegación, el mapeo y la investigación geofísica.</p>
-      <h5>¿Para qué sirve el ITRF?</h5>
-      <p>El ITRF es esencial para varias aplicaciones, incluyendo:</p>
-      <ul>
-        <li>Geodesia y cartografía</li>
-        <li>Monitoreo de movimientos tectónicos</li>
-        <li>Navegación por satélite</li>
-        <li>Estudios científicos y de investigación</li>
-      </ul>
-      <h5>Importancia del ITRF</h5>
-      <p>El ITRF proporciona una base precisa y estable para medir y representar la posición de puntos en la Tierra. Esto es crucial para la geociencia, la gestión de desastres naturales, la infraestructura global de navegación por satélite (GNSS) y muchas otras aplicaciones críticas.</p>
+        <h5>¿Qué es el ITRF?</h5>
+        <p>El Marco Internacional De Referencia Terrestre (ITRF) es un sistema de referencia geodésico global que proporciona un marco de coordenadas tridimensional para toda la Tierra. Es utilizado para la navegación, el mapeo y la investigación geofísica.</p>
+        <h5>¿Para qué sirve el ITRF?</h5>
+        <p>El ITRF es esencial para varias aplicaciones, incluyendo:</p>
+        <ul>
+            <li>Geodesia y cartografía</li>
+            <li>Monitoreo de movimientos tectónicos</li>
+            <li>Navegación por satélite</li>
+            <li>Estudios científicos y de investigación</li>
+        </ul>
+        <h5>Importancia del ITRF</h5>
+        <p>El ITRF proporciona una base precisa y estable para medir y representar la posición de puntos en la Tierra. Esto es crucial para la geociencia, la gestión de desastres naturales, la infraestructura global de navegación por satélite (GNSS) y muchas otras aplicaciones críticas.</p>
     </div>
-  </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    particlesJS.load('particles-js', 'particles.json', function() {
-      console.log('particles.js loaded - callback');
+<!-- Modal para mostrar datos -->
+<div class="modal fade" id="dataModal" tabindex="-1" aria-labelledby="dataModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="dataModalLabel">Datos del Archivo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped" id="dataTable">
+                    <thead>
+                        <tr id="tableHead"></tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+<script>
+    particlesJS('particles-js', {
+        particles: {
+            number: { value: 100 },
+            color: { value: '#00ff00' },
+            shape: {
+                type: 'circle',
+                stroke: { width: 0, color: '#000000' },
+                polygon: { nb_sides: 5 },
+            },
+            opacity: { value: 0.5 },
+            size: { value: 3 },
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: '#00ff00',
+                opacity: 0.4,
+                width: 1
+            },
+            move: {
+                enable: true,
+                speed: 3,
+                direction: 'none',
+                random: false,
+                straight: false,
+                out_mode: 'out',
+                bounce: false,
+            }
+        },
+        interactivity: {
+            detect_on: 'canvas',
+            events: {
+                onhover: { enable: true, mode: 'repulse' },
+                onclick: { enable: true, mode: 'push' },
+                resize: true
+            },
+            modes: {
+                grab: { distance: 400, line_linked: { opacity: 1 } },
+                bubble: { distance: 400, size: 40, duration: 2, opacity: 8 },
+                repulse: { distance: 200 },
+                push: { particles_nb: 4 },
+                remove: { particles_nb: 2 }
+            }
+        },
+        retina_detect: true
     });
+</script>
 
-    document.getElementById('processBtn').addEventListener('click', function() {
-      const itrfStart = document.getElementById('itrfStart').value;
-      const itrfEnd = document.getElementById('itrfEnd').value;
-      const fileInput = document.getElementById('fileInput').files[0];
-
-      if (!itrfStart || !itrfEnd || !fileInput) {
-        alert('Por favor complete todos los campos.');
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append('file', fileInput);
-      formData.append('itrfStart', itrfStart);
-      formData.append('itrfEnd', itrfEnd);
-
-      const loadingSpinner = document.getElementById('loadingSpinner');
-      loadingSpinner.style.display = 'block';
-
-      fetch('/process-file', {
-        method: 'POST',
-        body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-        loadingSpinner.style.display = 'none';
-        const resultDiv = document.getElementById('result');
-        resultDiv.innerHTML = `<div class="alert alert-success" role="alert">Archivo procesado correctamente.</div><pre>${JSON.stringify(data, null, 2)}</pre>`;
-      })
-      .catch(error => {
-        loadingSpinner.style.display = 'none';
-        alert('Error al procesar el archivo.');
-        console.error('Error al procesar el archivo:', error);
-      });
-    });
-  </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="controller/itrf.js"></script>
 </body>
 </html>
-
-
-
 <%- include('./partials/pie.ejs'); %>
 
-
-
+<%- include('./partials/pie.ejs'); %>
