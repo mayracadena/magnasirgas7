@@ -1,0 +1,351 @@
+<%- include('./partials/cabecero.ejs', {"titulo": "ITRF" }); %>
+<%- include('./partials/menu.ejs'); %>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cálculo Ondulación Punto Individual</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #000000, #001f3f);
+            color: #ffffff;
+        }
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        .main-content {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .card-header {
+            background-color: #001f3f;
+            color: #1303f0;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            text-align: center;
+        }
+        .btn-primary {
+            background-color: #001f3f;
+            border: none;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .form-label {
+            font-weight: bold;
+        }
+        .input-group .btn {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        .input-group input {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .mb-3 {
+            margin-bottom: 1rem;
+        }
+        .mt-4 {
+            margin-top: 1.5rem;
+        }
+        .offcanvas-start {
+            width: 300px;
+        }
+        .spinner-border {
+            display: none;
+            margin: auto;
+        }
+        .panel {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+<div id="particles-js"></div>
+<div class="main-content">
+    <div class="card shadow">
+        <div class="card-header">
+            <h2>Cálculo Ondulación Punto Individual</h2>
+        </div>
+        <div class="card-body">
+            <form id="ondulacionForm">
+                <div class="panel">
+                    <h2>Sistema de Referencia</h2>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sistema-referencia" id="magna-sirgas" value="MAGNA-SIRGAS" checked>
+                            <label class="form-check-label" for="magna-sirgas">MAGNA-SIRGAS</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sistema-referencia" id="datum-bogota" value="Datum Bogotá">
+                            <label class="form-check-label" for="datum-bogota">Datum Bogotá</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <h2>Tipo de Coordenada</h2>
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="elipsoidal-tab" data-bs-toggle="tab" data-bs-target="#elipsoidal" type="button" role="tab" aria-controls="elipsoidal" aria-selected="true">Elipsoidal</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="origen-nacional-tab" data-bs-toggle="tab" data-bs-target="#origen-nacional" type="button" role="tab" aria-controls="origen-nacional" aria-selected="false">Origen Nacional</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="geocentrica-tab" data-bs-toggle="tab" data-bs-target="#geocentrica" type="button" role="tab" aria-controls="geocentrica" aria-selected="false">Geocéntrica</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="plana-cartesiana-tab" data-bs-toggle="tab" data-bs-target="#plana-cartesiana" type="button" role="tab" aria-controls="plana-cartesiana" aria-selected="false">Plana Cartesiana</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="utm-tab" data-bs-toggle="tab" data-bs-target="#utm" type="button" role="tab" aria-controls="utm" aria-selected="false">UTM</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="gauss-kruger-tab" data-bs-toggle="tab" data-bs-target="#gauss-kruger" type="button" role="tab" aria-controls="gauss-kruger" aria-selected="false">Gauss Krüger</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="elipsoidal" role="tabpanel" aria-labelledby="elipsoidal-tab">
+                            <div class="form-group">
+                                <label for="latitud">Latitud:</label>
+                                <div class="form-row">
+                                    <div class="col">
+                                        <input type="text" class="form-control" placeholder="GG" id="latitud-grados">
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control" placeholder="MM" id="latitud-minutos">
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control" placeholder="SS.DDDDD" id="latitud-segundos">
+                                    </div>
+                                    <div class="col">
+                                        <select class="form-control" id="latitud-hemisferio">
+                                            <option value="N">N</option>
+                                            <option value="S">S</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="longitud">Longitud:</label>
+                                <div class="form-row">
+                                    <div class="col">
+                                        <input type="text" class="form-control" placeholder="GG" id="longitud-grados">
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control" placeholder="MM" id="longitud-minutos">
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control" placeholder="SS.DDDDD" id="longitud-segundos">
+                                    </div>
+                                    <div class="col">
+                                        <select class="form-control" id="longitud-hemisferio">
+                                            <option value="E">E</option>
+                                            <option value="W">W</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="coordenadas-decimales">
+                                <label class="form-check-label" for="coordenadas-decimales">Coordenadas Decimales</label>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="origen-nacional" role="tabpanel" aria-labelledby="origen-nacional-tab">
+                            <div class="form-group">
+                                <label for="norte">Norte (m):</label>
+                                <input type="text" class="form-control" id="norte">
+                            </div>
+                            <div class="form-group">
+                                <label for="este">Este (m):</label>
+                                <input type="text" class="form-control" id="este">
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="geocentrica" role="tabpanel" aria-labelledby="geocentrica-tab">
+                            <div class="form-group">
+                                <label for="x">X (m):</label>
+                                <input type="text" class="form-control" id="x">
+                            </div>
+                            <div class="form-group">
+                                <label for="y">Y (m):</label>
+                                <input type="text" class="form-control" id="y">
+                            </div>
+                            <div class="form-group">
+                                <label for="z">Z (m):</label>
+                                <input type="text" class="form-control" id="z">
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="plana-cartesiana" role="tabpanel" aria-labelledby="plana-cartesiana-tab">
+                            <div class="form-group">
+                                <label for="norte-pc">Norte (m):</label>
+                                <input type="text" class="form-control" id="norte-pc">
+                            </div>
+                            <div class="form-group">
+                                <label for="este-pc">Este (m):</label>
+                                <input type="text" class="form-control" id="este-pc">
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="utm" role="tabpanel" aria-labelledby="utm-tab">
+                            <div class="form-group">
+                                <label for="huso">Huso:</label>
+                                <input type="text" class="form-control" id="huso">
+                            </div>
+                            <div class="form-group">
+                                <label for="hemisferio">Hemisferio:</label>
+                                <select class="form-control" id="hemisferio">
+                                    <option value="N">N</option>
+                                    <option value="S">S</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="norte-utm">Norte (m):</label>
+                                <input type="text" class="form-control" id="norte-utm">
+                            </div>
+                            <div class="form-group">
+                                <label for="este-utm">Este (m):</label>
+                                <input type="text" class="form-control" id="este-utm">
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="gauss-kruger" role="tabpanel" aria-labelledby="gauss-kruger-tab">
+                            <div class="form-group">
+                                <label for="norte-gk">Norte (m):</label>
+                                <input type="text" class="form-control" id="norte-gk">
+                            </div>
+                            <div class="form-group">
+                                <label for="este-gk">Este (m):</label>
+                                <input type="text" class="form-control" id="este-gk">
+                            </div>
+                            <div class="form-group">
+                                <label for="origen-gauss">Origen Gauss:</label>
+                                <select class="form-control" id="origen-gauss">
+                                    <option value="Central">Central</option>
+                                    <option value="Este">Este</option>
+                                    <option value="Este-este">Este-este</option>
+                                    <option value="Insular">Insular</option>
+                                    <option value="Oeste">Oeste</option>
+                                    <option value="Oeste-oeste">Oeste-oeste</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <h2>Origen Cartesiano</h2>
+                    <div class="form-group">
+                        <label for="departamento">Departamento:</label>
+                        <select class="form-control" id="departamento">
+                            <option value="amazonas">Amazonas</option>
+                            <!-- Agregar más opciones según sea necesario -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="municipio">Municipio:</label>
+                        <select class="form-control" id="municipio">
+                            <option value="seleccion-municipio">--SELECCIONE MUNICIPIO--</option>
+                            <!-- Agregar más opciones según sea necesario -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="origenes-cartesianos">Orígenes Cartesianos Disponibles:</label>
+                        <select class="form-control" id="origenes-cartesianos">
+                            <!-- Opciones dinámicas según el departamento y municipio seleccionados -->
+                        </select>
+                    </div>
+                    <button class="btn btn-info">Más información</button>
+                </div>
+                <div class="panel">
+                    <h2>Ondulación Geoidal (m)</h2>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="ondulacion-geoidal">
+                    </div>
+                </div>
+                <div class="buttons text-center">
+                    <button id="calcular" class="btn btn-primary"><i class="bi bi-play-circle"></i> Calcular</button>
+                    <button id="limpiar" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Limpiar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+<script>
+    particlesJS('particles-js', {
+        particles: {
+            number: { value: 100 },
+            color: { value: '#00ff00' },
+            shape: {
+                type: 'circle',
+                stroke: { width: 0, color: '#000000' },
+                polygon: { nb_sides: 5 },
+            },
+            opacity: { value: 0.5 },
+            size: { value: 3 },
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: '#00ff00',
+                opacity: 0.4,
+                width: 1
+            },
+            move: {
+                enable: true,
+                speed: 3,
+                direction: 'none',
+                random: false,
+                straight: false,
+                out_mode: 'out',
+                bounce: false,
+            }
+        },
+        interactivity: {
+            detect_on: 'canvas',
+            events: {
+                onhover: { enable: true, mode: 'repulse' },
+                onclick: { enable: true, mode: 'push' },
+                resize: true
+            },
+            modes: {
+                grab: { distance: 400, line_linked: { opacity: 1 } },
+                bubble: { distance: 400, size: 40, duration: 2, opacity: 8 },
+                repulse: { distance: 200 },
+                push: { particles_nb: 4 },
+                remove: { particles_nb: 2 }
+            }
+        },
+        retina_detect: true
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="controller/ondulacion.js"></script>
+</body>
+</html>
+<%- include('./partials/pie.ejs'); %>
