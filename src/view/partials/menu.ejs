@@ -1,105 +1,108 @@
-<div class="col-auto col-md-4 col-xl-3">
-  <nav class="navbar bg-primary fixed-top col-auto col-md-4 col-xl-3 px-sm-3 px-0  min-vh-100 align-items-sm-start">
-    <ul class="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto " data-bs-theme="bg-primary">
-      <li class="nav-item ">
-        <a class="nav-link fw-bold text-white" href="index.ejs" title="Inicio">
-          <i class="bi bi-house-door-fill"></i>
+
+<div id="wrapper">
+
+  <!-- Sidebar -->
+  <div id="sidebar-wrapper">
+      <ul class="sidebar-nav">
+        <li class="nav-item ">
+          <a class="nav-link fw-bold text-white" href="index.ejs" title="Inicio">
+            <i class="bi bi-house-door-fill"></i>
+            Inicio
+          </a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link text-white fs-6" href="conver_trans.ejs" role="button" title="Conversión y Transformación">
+            <i class=" bi bi-geo-alt-fill"></i>
+            Conversión y Transformación
+          </a>
+  <!-- 
+          <ul class="dropdown-menu ">
+            <li><a class="dropdown-item " href="conver_trans.ejs">Punto individual</a></li>
+            <li><a class="dropdown-item" href="#">Archivo</a></li>
+            <li><a class="dropdown-item" href="#">Crear origen cartesiano</a></li>
+            <li><a class="dropdown-item" href="#">Editar o Eliminar Origen Cartesiano</a></li>
+          </ul>
+  -->
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link text-white" href="#" title="Ondulación Geoidal">
+            <i class="bi bi-water"></i>
+            Ondulación Geoidal
+          </a>
+  <!--
+  
+  
+          <ul class="dropdown-menu dropdown-menu-primary">
+            <li><a class="dropdown-item" href="#">Punto individual</a></li>
+            <li><a class="dropdown-item" href="#">Archivo</a></li>
+          </ul>
+  -->
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-map"></i>
+            Nivelación GPS
+          </a>
+  
+          <ul class="dropdown-menu dropdown-menu-dark">
+            <li><a class="dropdown-item" href="#">Punto individual</a></li>
+            <li><a class="dropdown-item" href="#">Perfil</a></li>
+          </ul>
+  
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link text-white" href="#" role="button"
+            aria-expanded="false">
+          <i class="bi bi-calculator"></i>
+            Cálculos Elipsoidales
+          </a>
           
-        </a>
-      </li>
-      <li class="nav-item ">
-        <a class="nav-link text-white fs-6" href="conver_trans.ejs" role="button" title="Conversión y Transformación">
-          <i class=" bi bi-geo-alt-fill"></i>
-          Conversión y Transformación
-        </a>
-<!-- 
-        <ul class="dropdown-menu ">
-          <li><a class="dropdown-item " href="conver_trans.ejs">Punto individual</a></li>
-          <li><a class="dropdown-item" href="#">Archivo</a></li>
-          <li><a class="dropdown-item" href="#">Crear origen cartesiano</a></li>
-          <li><a class="dropdown-item" href="#">Editar o Eliminar Origen Cartesiano</a></li>
-        </ul>
--->
-      </li>
-      <li class="nav-item ">
-        <a class="nav-link text-white" href="#" title="Ondulación Geoidal">
-          <i class="bi bi-water"></i>
-          Ondulación Geoidal
-        </a>
-<!--
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle  text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-globe"></i>
+            Cálculo Velocidades
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark">
+            <li><a class="dropdown-item" href="#">Punto Individual</a></li>
+            <li><a class="dropdown-item" href="velocidades.ejs">Archivo</a></li>
+  
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle  text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-geo-fill"></i>
+            Cambio de Época
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark">
+            <li><a class="dropdown-item" href="#">Punto Individual</a></li>
+            <li><a class="dropdown-item" href="#">Archivo</a></li>
+  
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle  text-white" href="#" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <i class="bi bi-globe-americas"></i>
+            Transformación Del ITRF
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark">
+            <li><a class="dropdown-item" href="ITRF.ejs">Conjunto de puntos</a></li>
+            <li><a class="dropdown-item" href="ITRF.ejs">Punto Individual</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white">
+            <i class="bi bi-gear-fill"></i>
+            Configuración
+          </a>
+  
+        </li>
+        
+      </ul>
+    </div>   
+    
+    
+      <button class="btn btn-default" id="menu" ><span class="bi bi-list"></span></button> 
 
-
-        <ul class="dropdown-menu dropdown-menu-primary">
-          <li><a class="dropdown-item" href="#">Punto individual</a></li>
-          <li><a class="dropdown-item" href="#">Archivo</a></li>
-        </ul>
--->
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="bi bi-map"></i>
-          Nivelación GPS
-        </a>
-
-        <ul class="dropdown-menu dropdown-menu-dark">
-          <li><a class="dropdown-item" href="#">Punto individual</a></li>
-          <li><a class="dropdown-item" href="#">Perfil</a></li>
-        </ul>
-
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle  text-white" href="#" role="button" data-bs-toggle="dropdown"
-          aria-expanded="false">
-        <i class="bi bi-calculator"></i>
-          Cálculos Elipsoidales
-        </a>
-        <ul class="dropdown-menu dropdown-menu-primary">
-          <li><a class="dropdown-item" href="#">Cálculo Problema Geodésico Inverso</a></li>
-          <li><a class="dropdown-item" href="#">Cálculo Problema Geodésico Directo</a></li>
-
-        </ul>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle  text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="bi bi-globe"></i>
-          Cálculo Velocidades
-        </a>
-        <ul class="dropdown-menu dropdown-menu-dark">
-          <li><a class="dropdown-item" href="#">Punto Individual</a></li>
-          <li><a class="dropdown-item" href="velocidades.ejs">Archivo</a></li>
-
-        </ul>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle  text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="bi bi-geo-fill"></i>
-          Cambio de Época
-        </a>
-        <ul class="dropdown-menu dropdown-menu-dark">
-          <li><a class="dropdown-item" href="#">Punto Individual</a></li>
-          <li><a class="dropdown-item" href="#">Archivo</a></li>
-
-        </ul>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle  text-white" href="#" role="button" data-bs-toggle="dropdown"
-          aria-expanded="false">
-          <i class="bi bi-globe-americas"></i>
-          Transformación Del ITRF
-        </a>
-        <ul class="dropdown-menu dropdown-menu-dark">
-          <li><a class="dropdown-item" href="ITRF.ejs">Conjunto de puntos</a></li>
-          <li><a class="dropdown-item" href="ITRF.ejs">Punto Individual</a></li>
-        </ul>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white">
-          <i class="bi bi-gear-fill"></i>
-          Configuración
-        </a>
-
-      </li>
-  </nav>
-</div>
-
-<div class="col-auto col-md-8 col-xl-9" >
+  

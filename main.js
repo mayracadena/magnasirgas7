@@ -14,7 +14,7 @@ ejse.data({ "titulo": "Bienvenido" });
 // Función para crear la ventana
 const createWindow = () => {
     const win = new BrowserWindow({
-        width: 1000,
+        width: 1200,
         height: 800,
         webPreferences: {
             nodeIntegration: true,
