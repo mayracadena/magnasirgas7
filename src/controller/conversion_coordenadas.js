@@ -8,18 +8,21 @@ const ctm = new CTM12();
 //la documentación de esta transformación esta en base a este estudio
 //https://www.accessengineeringlibrary.com/content/book/9780071761123/back-matter/appendix6#/apxFeq33
 //y en base al excel proporcionado por 
-function ctm12_elipsoidales(x, y) {
+function ctm12_to_elipsoidales(x, y) {
   //primeros parametros de la ecuacion M0
   var m0, m1, m2, m3, m4;
 
   //primera excentricidad
   let e = grs.e2;
+  //seegunda excentricidad
+  let es2 = grs.es2;
   //coordenadas punto de origen CMT12
   let phi = ctm.phi0 * (Math.PI / 180);
   //radio a
   let a = grs.a;
   let m = 0;
   let n0 = ctm.N0;
+  let e0 = ctm.E0;
   let k0 = ctm.k;
   //rectificación de la latitud
   let u = 0;
@@ -65,8 +68,63 @@ function ctm12_elipsoidales(x, y) {
 
   //latitud de punto de huella total
   lat_pun_hue = u+lph1+lph2+lph3+lph4;
-  console.log(lat_pun_hue);
   
+  
+//terminos adicionales
+var t1 = Math.pow(Math.tan(lat_pun_hue),2);
+var c1 = es2*(Math.pow(Math.cos(lat_pun_hue),2));
+
+//radio medio de curvatura
+//R1=(a*(1-e^2))/((1-(e^2*((SENO(lat_pun_hue))^2)))^(3/2))
+var R1 = (a*(1-e))/(Math.pow((1-(e*(Math.pow((Math.sin(lat_pun_hue)),2)))),1.5));
+
+//radio de curvatura principal
+//N1=a/(RAIZ(1-(e^2*((SENO(lat_pun_hue))^2))))
+var N1 = a/(Math.sqrt((1-(e*(Math.pow(Math.sin(lat_pun_hue),2))))));
+
+//parametro adicional
+//D=(x-e0)/(n1*k)
+var D = (x-e0)/(N1*k0);
+
+//proceso para hallar latitud y longitud elipsoidales finales
+
+//partes cortas de la ecuacion para hallar la latitud
+var lat1 = (N1*Math.tan(lat_pun_hue))/R1;
+var lat2 = Math.pow(D,2)/2;
+//=(5+(3*t1)+(10*c1)-(4*(c1^2))-(9*es2))*((d^4)/24)
+var lat3 = (5+(3*t1)+(10*c1)-(4*Math.pow(c1,2))-(9*es2))*(Math.pow(D,4)/24);
+//=(61+(90*t1)+(298*c1)+(45*(t1^2))-(252*es2)-(3*(c1^2)))*((D^6)/720)
+var lat4 = (61+(90*t1)+(298*c1)+(45*Math.pow(t1,2))-(252*es2)-(3*Math.pow(c1,2)))*(Math.pow(D,6)/720);
+
+var latitud = lat_pun_hue-(lat1*(lat2-lat3+lat4));
+var dms_lat =radians_to_degrees(latitud);
+
+//partes de la ecuacion para hallar la longitud
+
+
+console.log(latitud);
+console.log(dms_lat.grados);
+console.log(dms_lat.minutos);
+console.log(dms_lat.segundos);
+
 }
 
-ctm12_elipsoidales(5293373.2162, 1802673.2289);
+function radians_to_degrees(rad){
+  // Convertir radianes a grados
+  var grados = rad * (180 / Math.PI);
+
+  // Calcular los minutos y segundos
+  var grados_enteros = Math.floor(grados);
+  var minutos_totales = (grados - grados_enteros) * 60;
+  var minutos = Math.floor(minutos_totales);
+  var segundos = Number((minutos_totales - minutos) * 60).toFixed(5);
+
+  return {
+      grados: grados_enteros,
+      minutos: minutos,
+      segundos: segundos
+  };
+}
+
+
+ctm12_to_elipsoidales(5293373.2162, 1802673.2289);
