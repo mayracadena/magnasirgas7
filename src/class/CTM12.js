@@ -6,7 +6,7 @@ class CTM12 {
         //latitud de origen
         this._phi0 = 4;
         //longitud de origen
-        this._landa0 = 73;
+        this._landa0 = -73;
         //norte cero
         this._N0 = 2000000;
         //este cero

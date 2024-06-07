@@ -100,8 +100,22 @@ var latitud = lat_pun_hue-(lat1*(lat2-lat3+lat4));
 var dms_lat =radians_to_degrees(latitud);
 
 //partes de la ecuacion para hallar la longitud
+var long_degrees = ctm.landa0*(Math.PI/180);
+//1/cos(lat)
+var lon1 = 1/Math.cos(lat_pun_hue);
+//=(1+(2*t1)+c1)*((D^3)/6)
+var lon2 = (1+(2*t1)+c1)*(Math.pow(D,3)/6);
+//=(5-(2*c1)+(28*t1)-(3*(c1^2))+(8*es2)+(24*(t1^2)))*((D^5)/120)
+var lon3 = (5-(2*c1)+(28*t1)-(3*(Math.pow(c1,2)))+(8*es2)+(24*(Math.pow(t1,2))))*((Math.pow(D,5))/120)
 
+var longitud = long_degrees+lon1*(D-lon2+lon3);
+var dms_long = radians_to_degrees(longitud);
+console.log(longitud);
+console.log(dms_long.grados);
+console.log(dms_long.minutos);
+console.log(dms_long.segundos);
 
+console.log("__________________________________");
 console.log(latitud);
 console.log(dms_lat.grados);
 console.log(dms_lat.minutos);
@@ -110,6 +124,10 @@ console.log(dms_lat.segundos);
 }
 
 function radians_to_degrees(rad){
+  if(rad < 0){
+    rad = rad*-1;
+  }
+
   // Convertir radianes a grados
   var grados = rad * (180 / Math.PI);
 
