@@ -19,7 +19,8 @@ const createWindow = () => {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false // Necesario para usar Node.js en el renderer
-        }
+        },
+        icon: './src/img/logo.ico'
     });
 
     // Cargar la ventana inicial y le indicamos en qué ruta inicia

@@ -229,10 +229,6 @@ if(a21 > 360){
 
 
 
- console.log('azimut 1: ',a12);
- console.log('azimut 2: ',a21);
- console.log('distancia: ',s);
-
  return{
   a12: a12,
   a21: a21,
@@ -241,4 +237,4 @@ if(a21 > 360){
 
 }
 
-problema_inverso_Vicenty(0, -73, 5, -73.5);
+//problema_inverso_Vicenty(0, -73, 5, -73.5);

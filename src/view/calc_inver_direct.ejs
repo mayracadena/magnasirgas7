@@ -1,6 +1,179 @@
 <%- include('./partials/cabecero.ejs', {"titulo": "Cálculos elipsoidales" }); %>
     <%- include('./partials/menu.ejs'); %>
 
+        <div class="card shadow">
+            <div class="card-header">
+                <h2>Cálculo Problema geodésico</h2>
+            </div>
+            <div class="card-body">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+                        value="option1">
+                    <label class="form-check-label" for="inlineRadio1">Directo</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
+                        value="option2">
+                    <label class="form-check-label" for="inlineRadio2">Inverso</label>
+                </div>
+
+            </div>
+        </div>
 
 
-    <%- include('./partials/pie.ejs'); %>
+        <br>
+        <div class="card shadow" id="panel_directo">
+            <div class="card-header">
+                <h2>Problema geodésico Directo</h2>
+            </div>
+            <div class="card-body">
+
+                <div class="input-group">
+                    <span class="input-group-text col-md-2">Latitud: </span>
+                    <input type="number" class="form-control " placeholder="GG">
+                    <input type="number" class="form-control" placeholder="MM">
+                    <input type="number" class="form-control" placeholder="SS.SSSS">
+                    <select class="input-group-text col-md-1">
+                        <option selected value="N">N</option>
+                        <option value="S">S</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-group-text col-md-2">Longitud: </span>
+                    <input type="number" class="form-control" placeholder="GG" min="0" max="360">
+                    <input type="number" class="form-control" placeholder="MM">
+                    <input type="number" class="form-control" placeholder="SS.SSSS">
+                    <select class="input-group-text col-md-1">
+                        <option selected value="W">W</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text col-md-2">Distancia (m): </span>
+                    <input type="number" aria-label="First name" class="form-control" placeholder="distancia en metros">
+
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text col-md-2">Azimut 1-2: </span>
+                    <input type="number" aria-label="First name" class="form-control" placeholder="GG">
+                    <input type="number" aria-label="Last name" class="form-control" placeholder="MM">
+                    <input type="number" aria-label="Last name" class="form-control" placeholder="SS.SSSS">
+
+                </div>
+
+                <br>
+
+                <div class="card-header">
+                    <h2>Resultados</h2>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-group-text col-md-2">Latitud 2: </span>
+                    <input type="number" aria-label="First name" class="form-control" placeholder="GG">
+                    <input type="number" aria-label="Last name" class="form-control" placeholder="MM">
+                    <input type="number" aria-label="Last name" class="form-control" placeholder="SS.SSSS">
+                    <select class="input-group-text col-md-1">
+                        <option selected value="N">N</option>
+                        <option value="S">S</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text col-md-2">Longitud 2: </span>
+                    <input type="number" aria-label="First name" class="form-control" placeholder="GG">
+                    <input type="number" aria-label="Last name" class="form-control" placeholder="MM">
+                    <input type="number" aria-label="Last name" class="form-control" placeholder="SS.SSSS">
+                    <select class="input-group-text col-md-1">
+                        <option selected value="W">W</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text col-md-2">Azimut 2-1: </span>
+                    <input type="number" aria-label="First name" class="form-control" placeholder="GG">
+                    <input type="number" aria-label="Last name" class="form-control" placeholder="MM">
+                    <input type="number" aria-label="Last name" class="form-control" placeholder="SS.SSSS">
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Panel inverso -->
+
+
+        <div class="card shadow" id="panel_directo">
+            <div class="card-header">
+                <h2>Problema geodésico Inverso</h2>
+            </div>
+            <div class="card-body">
+                <h5>Coordenadas del punto 1</h5>
+                <div class="input-group">
+                    <span class="input-group-text col-md-2">Latitud 1: </span>
+                    <input type="number" class="form-control " placeholder="GG">
+                    <input type="number" class="form-control" placeholder="MM">
+                    <input type="number" class="form-control" placeholder="SS.SSSS">
+                    <select class="input-group-text col-md-1">
+                        <option selected value="N">N</option>
+                        <option value="S">S</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-group-text col-md-2">Longitud 1: </span>
+                    <input type="number" class="form-control" placeholder="GG" min="0" max="360">
+                    <input type="number" class="form-control" placeholder="MM">
+                    <input type="number" class="form-control" placeholder="SS.SSSS">
+                    <select class="input-group-text col-md-1">
+                        <option selected value="W">W</option>
+                    </select>
+                </div>
+                <br>
+                <h5>Coordenadas del punto 2</h5>
+                <div class="input-group">
+                    <span class="input-group-text col-md-2">Latitud 2: </span>
+                    <input type="number" aria-label="First name" class="form-control" placeholder="GG">
+                    <input type="number" aria-label="Last name" class="form-control" placeholder="MM">
+                    <input type="number" aria-label="Last name" class="form-control" placeholder="SS.SSSS">
+                    <select class="input-group-text col-md-1">
+                        <option selected value="N">N</option>
+                        <option value="S">S</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text col-md-2">Longitud 2: </span>
+                    <input type="number" aria-label="First name" class="form-control" placeholder="GG">
+                    <input type="number" aria-label="Last name" class="form-control" placeholder="MM">
+                    <input type="number" aria-label="Last name" class="form-control" placeholder="SS.SSSS">
+                    <select class="input-group-text col-md-1">
+                        <option selected value="W">W</option>
+                    </select>
+                </div>
+
+                <br>
+
+                <div class="card-header">
+                    <h2>Resultados</h2>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text col-md-2">Distancia (m): </span>
+                    <input type="number" aria-label="First name" class="form-control" placeholder="distancia en metros">
+
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text col-md-2">Azimut 1-2: </span>
+                    <input type="number" aria-label="First name" class="form-control" placeholder="GG">
+                    <input type="number" aria-label="Last name" class="form-control" placeholder="MM">
+                    <input type="number" aria-label="Last name" class="form-control" placeholder="SS.SSSS">
+
+                </div>
+
+                <div class="input-group">
+                    <span class="input-group-text col-md-2">Azimut 2-1: </span>
+                    <input type="number" aria-label="First name" class="form-control" placeholder="GG">
+                    <input type="number" aria-label="Last name" class="form-control" placeholder="MM">
+                    <input type="number" aria-label="Last name" class="form-control" placeholder="SS.SSSS">
+
+                </div>
+            </div>
+        </div>
+
+        <%- include('./partials/pie.ejs'); %>
