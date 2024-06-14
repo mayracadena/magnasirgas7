@@ -85,6 +85,9 @@
             border-radius: 5px;
             background-color: #f9f9f9;
         }
+        .decimal-field {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -135,7 +138,7 @@
                         <div class="tab-pane fade show active" id="elipsoidal" role="tabpanel" aria-labelledby="elipsoidal-tab">
                             <div class="form-group">
                                 <label for="latitud">Latitud:</label>
-                                <div class="form-row">
+                                <div class="form-row dms-field">
                                     <div class="col">
                                         <input type="text" class="form-control" placeholder="GG" id="latitud-grados">
                                     </div>
@@ -152,10 +155,15 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="form-row decimal-field">
+                                    <div class="col">
+                                        <input type="text" class="form-control" placeholder="Latitud (decimal)" id="latitud-decimal">
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="longitud">Longitud:</label>
-                                <div class="form-row">
+                                <div class="form-row dms-field">
                                     <div class="col">
                                         <input type="text" class="form-control" placeholder="GG" id="longitud-grados">
                                     </div>
@@ -170,6 +178,11 @@
                                             <option value="E">E</option>
                                             <option value="W">W</option>
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="form-row decimal-field">
+                                    <div class="col">
+                                        <input type="text" class="form-control" placeholder="Longitud (decimal)" id="longitud-decimal">
                                     </div>
                                 </div>
                             </div>
@@ -294,7 +307,7 @@
         </div>
     </div>
 </div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/simple-kriging/0.3.0/simple-kriging.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
 <script>
     particlesJS('particles-js', {
