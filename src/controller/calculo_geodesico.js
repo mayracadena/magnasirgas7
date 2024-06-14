@@ -133,9 +133,9 @@ function problema_directo_Vicenty(phi1, lambda1, a12, s) {
 
 }
 
-problema_directo_Vicenty(4, -73, 15, 100);
+//problema_directo_Vicenty(4, -73, 15, 100);
 
-function problema_inverso_Vicenty(phi1, phi2, lambda1, lambda2) {
+function problema_inverso_Vicenty(phi1, lambda1, phi2, lambda2) {
   //se convierten los datos de entrada de decimales a radianes para poder trabajar este procedimiento
   phi1 = phi1 * (Math.PI / 180);
   phi2 = phi2 * (Math.PI / 180);
@@ -145,8 +145,8 @@ function problema_inverso_Vicenty(phi1, phi2, lambda1, lambda2) {
   //diferencial lambda
   var l = lambda2 - lambda1;
   //latitud reducida de phi1 y phi2
-  var U1 = (1 - grs.f) * Math.tan(phi1);
-  var U2 = (1 - grs.f) * Math.tan(phi2);
+  var U1 = Math.atan((1 - grs.f) * Math.tan(phi1));
+  var U2 = Math.atan((1 - grs.f) * Math.tan(phi2));
   //primera aproximación
   var lambda = l;
   //se debe iterar la ecuacion con la ecuacion de sen^2(sigma), hasta que el cambio en lambda sea insignificante
@@ -161,6 +161,7 @@ function problema_inverso_Vicenty(phi1, phi2, lambda1, lambda2) {
     //sen^2(sigma)= (cos(U1)*sen(lambda))^2+(cos(U1)*sen(U2)-sen(U1)*cos(U2)*cos(lambda))^2
 
     seno_sigma = Math.sqrt(Math.pow(Math.cos(U2) * Math.sin(lambda), 2) + (Math.pow((Math.cos(U1) * Math.sin(U2)) - (Math.sin(U1) * Math.cos(U2) * Math.cos(lambda)), 2)));
+    
     coseno_sigma = (Math.sin(U1) * Math.sin(U2)) + (Math.cos(U1) * Math.cos(U2) * Math.cos(lambda));
     //se realiza una condicional si en caso de ser este cero se retorne los resultados
     if (seno_sigma == 0) {
@@ -173,23 +174,71 @@ function problema_inverso_Vicenty(phi1, phi2, lambda1, lambda2) {
     sigma = Math.atan2(seno_sigma, coseno_sigma);
     alfa = Math.asin((Math.cos(U1) * Math.cos(U2) * Math.sin(lambda) / seno_sigma));
     //validando si 1-sen^2(alfa) es cero
-    if ((1 - (Math.pow(Math.cos(U1) * Math.cos(U2) * Math.sin(lambda) / seno_sigma, 2))) == 0) {
+  var conseno_alfa = 1- Math.pow(Math.sin(alfa), 2);
+
+    if (conseno_alfa== 0) {
       sigmaM = 0;
     } else {
       //sigmaM = 2sigmaM
       //cos(2sigmaM)=(cos(sigma)-2*sen(U1)*sen(U2)/cos^2(alfa))
-      sigmaM = Math.acos((Math.cos(sigma) - (2 * Math.sin(U1) * Math.sin(U2))) / Math.pow(Math.cos(alfa), 2));
+      sigmaM = Math.acos(coseno_sigma-2* Math.sin(U1) * Math.sin(U2) /Math.pow(Math.cos(alfa),2));
+      //   cos2SigmaM = cosSigma - 2.0D * Math.sin(U1) * Math.sin(U2) / cosSqAlpha;
     }
-    
+
     C = (grs.f / 16) * Math.pow(Math.cos(alfa), 2) * (4 + (grs.f * (4 - 3 * Math.pow(Math.cos(alfa), 2))));
     lambdaP = lambda;
-    lambda = l - (1 - C) * grs.f * Math.sin(alfa) * (sigma + C * Math.sin(sigma) * (Math.cos(sigmaM) + C * Math.cos(sigma) * (-1 + 2 * Math.pow(Math.cos(sigmaM), 2))));
+    lambda = l + (1 - C) * grs.f * Math.sin(alfa) * (sigma + C * Math.sin(sigma) * (Math.cos(sigmaM) + C * Math.cos(sigma) * (-1 + 2 * Math.pow(Math.cos(sigmaM), 2))));
 
   } while (Math.abs(lambda - lambdaP) > limit && --interLimit > 0);
   //u^2 = cos^2(alfa)*(a^2-b^2)/b
   var u2 = (Math.pow(Math.cos(alfa), 2) * ((Math.pow(grs.a, 2) - Math.pow(grs.b, 2))) / Math.pow(grs.b, 2));
 
+  //calculo de las constantes necesarias en el calculo problema geodesico inverso
 
+  var A = 1+ (u2/256)*(64+u2*(-12+5*u2));
+  var B = (u2/512)*(128+u2*(-64+37*u2));
+
+  //calculo del delta sigma
+  //deltasigma = B*sen(sigma)*(cos(2sigmaM)+1/4*B*cos(sigma)*(-1+2cos^2(2sigmaM)));
+
+  //formula en el libro
+ // var deltaSigma = B*seno_sigma*(Math.cos(sigmaM)+(B/4)*coseno_sigma*(-1+2*Math.pow(Math.cos(sigmaM),2)));
+
+ //formula antiguo magna pro
+ var deltaSigma = B * seno_sigma * (Math.cos(sigmaM) + B / 4 * (coseno_sigma * (-1 + 2* Math.pow(Math.cos(sigmaM), 2)) - B / 6* Math.cos(sigmaM)* (-3 + 4* Math.pow(seno_sigma, 2)) * (-3 + 4* Math.pow(Math.cos(sigmaM), 2))));
+
+ //calculo distancia
+var s = grs.b*A*(sigma-deltaSigma);
+
+ a12 = Math.atan2(Math.cos(U2)*Math.sin(lambda),(Math.cos(U1)*Math.sin(U2)-Math.sin(U1)*Math.cos(U2)*Math.cos(lambda)));
+ a21 = Math.atan2(Math.cos(U1)*Math.sin(lambda),(-Math.sin(U1)*Math.cos(U2)+Math.cos(U1)*Math.sin(U2)*Math.cos(lambda)));
+
+ a12 = a12*(180 / Math.PI);
+ a21 = a21*(180 / Math.PI);
+
+if(a12 < 0){
+  a12 = a12+360;
+}
+if(a21 < 0){
+  a21 = a21+360;
+}
+a21 = a21 + 180;
+if(a21 > 360){
+  a21 = a21 -360;
+}
+
+
+
+ console.log('azimut 1: ',a12);
+ console.log('azimut 2: ',a21);
+ console.log('distancia: ',s);
+
+ return{
+  a12: a12,
+  a21: a21,
+  s: s
+ }
 
 }
 
+problema_inverso_Vicenty(0, -73, 5, -73.5);
