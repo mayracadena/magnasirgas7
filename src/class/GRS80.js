@@ -16,7 +16,7 @@ class GRS80 {
 
     get f(){
         //el aplanamiento f=(a-b)/a
-        const f = (this._a-this.b)/this._a;
+        const f = (this._a-this._b)/this._a;
         return f;
     }
     get e2(){
@@ -29,7 +29,9 @@ class GRS80 {
         const es2 = (this.e2)/(1-this.e2);
         return es2;
     }
-
+    get c(){
+        const c = (Math.pow(this._a,2) / this._b)
+    }
     
 
 }
