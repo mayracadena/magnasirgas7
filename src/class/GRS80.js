@@ -30,7 +30,8 @@ class GRS80 {
         return es2;
     }
     get c(){
-        const c = (Math.pow(this._a,2) / this._b)
+        const c = (Math.pow(this._a,2) / this._b);
+        return c;
     }
     
 
