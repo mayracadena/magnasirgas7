@@ -36,7 +36,7 @@
                             <span class="input-group-text col-md-2">Latitud: </span>
                             <input type="number" class="form-control " placeholder="GG" id="lat_gg_d" min="0" max="360" required>
                             <input type="number" class="form-control" placeholder="MM" id="lat_mm_d" min="0" max="60" required>
-                            <input type="number" class="form-control" placeholder="SS.SSSS" id="lat_ss_d" required>
+                            <input type="number" class="form-control" placeholder="SS.SSSS" id="lat_ss_d" required min="0.00000" step="0.000001">
                             <select class="input-group-text col-md-1" id="hemisferio">
                                 <option selected value="N">N</option>
                                 <option value="S">S</option>
@@ -47,7 +47,7 @@
                             <span class="input-group-text col-md-2">Longitud: </span>
                             <input type="number" class="form-control" placeholder="GG" id="long_gg_d" min="0" max="360"  required>
                             <input type="number" class="form-control" placeholder="MM" id="long_mm_d" min="0" max="60"  required>
-                            <input type="number" class="form-control" placeholder="SS.SSSS" id="long_ss_d" required>
+                            <input type="number" class="form-control" placeholder="SS.SSSS" id="long_ss_d" required step="0.00001">
                             <select class="input-group-text col-md-1">
                                 <option selected value="W">W</option>
                             </select>
@@ -55,18 +55,20 @@
                         <div class="input-group">
                             <span class="input-group-text col-md-2">Distancia (m): </span>
                             <input type="number" aria-label="First name" class="form-control"
-                                placeholder="distancia en metros" id="dist_d" required>
+                                placeholder="distancia en metros" id="dist_d" required step="0.000001">
 
                         </div>
                         <div class="input-group">
                             <span class="input-group-text col-md-2">Azimut 1-2: </span>
                             <input type="number" aria-label="First name" class="form-control" id="az_gg_d" placeholder="GG" min="0" max="360"  required>
                             <input type="number" aria-label="Last name" class="form-control" id="az_mm_d" placeholder="MM" min="0" max="60"  required>
-                            <input type="number" aria-label="Last name" class="form-control" id="az_ss_d" placeholder="SS.SSSS"  required>
+                            <input type="number" aria-label="Last name" class="form-control" id="az_ss_d" placeholder="SS.SSSS"  required step="0.000001">
 
                         </div>
                         <br>
                         <input type="submit" class="btn btn-info" value="Calcular">
+                        <button class="btn btn-dark" id="btn_limpiar_d">Limpiar</button>
+
 
                     </form>
                     <br><br>
@@ -117,13 +119,15 @@
                     <h2>Problema geodésico Inverso</h2>
                 </div>
                 <div class="card-body">
+                    <!--acá inicia el formulario del problema geodesico inverso-->
+                    <form id="cal_inverso">
                     <h5>Coordenadas del punto 1</h5>
                     <div class="input-group">
-                        <span class="input-group-text col-md-2">Latitud 1: </span>
-                        <input type="number" class="form-control " placeholder="GG" min="0" max="360">
-                        <input type="number" class="form-control" placeholder="MM" min="0" max="60">
-                        <input type="number" class="form-control" placeholder="SS.SSSS">
-                        <select class="input-group-text col-md-1">
+                        <span class="input-group-text col-md-2" >Latitud 1: </span>
+                        <input id="lat1_gg_i" type="number" class="form-control " placeholder="GG" min="0" max="360" required>
+                        <input id="lat1_mm_i" type="number" class="form-control" placeholder="MM" min="0" max="60" required>
+                        <input id="lat1_ss_i" type="number" class="form-control" placeholder="SS.SSSS" step="0.000001" required>
+                        <select class="input-group-text col-md-1" id="hemisferio1_i">
                             <option selected value="N">N</option>
                             <option value="S">S</option>
                         </select>
@@ -131,9 +135,9 @@
 
                     <div class="input-group">
                         <span class="input-group-text col-md-2">Longitud 1: </span>
-                        <input type="number" class="form-control" placeholder="GG" min="0" max="360">
-                        <input type="number" class="form-control" placeholder="MM" min="0" max="60">
-                        <input type="number" class="form-control" placeholder="SS.SSSS">
+                        <input id="long1_gg_i" type="number" class="form-control" placeholder="GG" min="0" max="360" required>
+                        <input id="long1_mm_i" type="number" class="form-control" placeholder="MM" min="0" max="60" required>
+                        <input id="long1_ss_i" type="number" class="form-control" placeholder="SS.SSSS"  required step="0.000001">
                         <select class="input-group-text col-md-1">
                             <option selected value="W">W</option>
                         </select>
@@ -142,21 +146,19 @@
                     <h5>Coordenadas del punto 2</h5>
                     <div class="input-group">
                         <span class="input-group-text col-md-2">Latitud 2: </span>
-                        <input type="number" aria-label="First name" class="form-control" placeholder="GG" min="0"
-                            max="360">
-                        <input type="number" aria-label="Last name" class="form-control" placeholder="MM" min="0"
-                            max="60">
-                        <input type="number" aria-label="Last name" class="form-control" placeholder="SS.SSSS">
-                        <select class="input-group-text col-md-1">
+                        <input id="lat2_gg_i" type="number" aria-label="First name" class="form-control" placeholder="GG" min="0" max="360" required>
+                        <input id="lat2_mm_i"type="number" aria-label="Last name" class="form-control" placeholder="MM" min="0" max="60" required>
+                        <input id="lat2_ss_i" type="number" aria-label="Last name" class="form-control" placeholder="SS.SSSS"  required step="0.000001">
+                        <select class="input-group-text col-md-1" id="hemisferio2_i">
                             <option selected value="N">N</option>
                             <option value="S">S</option>
                         </select>
                     </div>
                     <div class="input-group">
                         <span class="input-group-text col-md-2">Longitud 2: </span>
-                        <input type="number" aria-label="First name" class="form-control" placeholder="GG">
-                        <input type="number" aria-label="Last name" class="form-control" placeholder="MM">
-                        <input type="number" aria-label="Last name" class="form-control" placeholder="SS.SSSS">
+                        <input id="long2_gg_i" type="number" aria-label="First name" class="form-control" placeholder="GG" min="0" max="360" required>
+                        <input id="long2_mm_i" type="number" aria-label="Last name" class="form-control" placeholder="MM" min="0" max="60" required>
+                        <input id="long2_ss_i" type="number" aria-label="Last name" class="form-control" placeholder="SS.SSSS" required step="0.000001">
                         <select class="input-group-text col-md-1">
                             <option selected value="W">W</option>
                         </select>
@@ -165,30 +167,31 @@
 
                     <br>
                     <input type="submit" class="btn btn-info" value="Calcular">
+                    <button class="btn btn-dark" id="btn_limpiar_i">Limpiar</button>
                     <br><br>
-
+                </form>
                     <div class="card-header">
                         <h2>Resultados</h2>
                     </div>
                     <div class="input-group">
                         <span class="input-group-text col-md-2">Distancia (m): </span>
-                        <input type="number" aria-label="First name" class="form-control"
+                        <input id="res_s_i" type="number" aria-label="First name" class="form-control"
                             placeholder="distancia en metros">
 
                     </div>
                     <div class="input-group">
                         <span class="input-group-text col-md-2">Azimut 1-2: </span>
-                        <input type="number" aria-label="First name" class="form-control" placeholder="GG">
-                        <input type="number" aria-label="Last name" class="form-control" placeholder="MM">
-                        <input type="number" aria-label="Last name" class="form-control" placeholder="SS.SSSS">
+                        <input id="res_az12_gg_i" type="number" aria-label="First name" class="form-control" placeholder="GG">
+                        <input id="res_az12_mm_i" type="number" aria-label="Last name" class="form-control" placeholder="MM">
+                        <input id="res_az12_ss_i" type="number" aria-label="Last name" class="form-control" placeholder="SS.SSSS">
 
                     </div>
 
                     <div class="input-group">
                         <span class="input-group-text col-md-2">Azimut 2-1: </span>
-                        <input type="number" aria-label="First name" class="form-control" placeholder="GG">
-                        <input type="number" aria-label="Last name" class="form-control" placeholder="MM">
-                        <input type="number" aria-label="Last name" class="form-control" placeholder="SS.SSSS">
+                        <input id="res_az21_gg_i" type="number" aria-label="First name" class="form-control" placeholder="GG">
+                        <input id="res_az21_mm_i" type="number" aria-label="Last name" class="form-control" placeholder="MM">
+                        <input id="res_az21_ss_i" type="number" aria-label="Last name" class="form-control" placeholder="SS.SSSS">
 
                     </div>
                 </div>

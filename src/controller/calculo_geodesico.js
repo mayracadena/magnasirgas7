@@ -100,6 +100,7 @@ function problema_directo_Vicenty(phi1, lambda1, a12, s) {
 
   //aca esta la ecuacion completa del diferencial
   var L = lambda - ((1 - C) * grs.f * Math.sin(alfa) * (sigma + C * (Math.sin(sigma) * (L1 * L2))));
+  //cambie el signo a negativo 
   var lambda2 = lambda1 + L;
 
   //calculo para hallar el azimut de 2 a 1
