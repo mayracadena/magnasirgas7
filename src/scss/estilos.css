@@ -4,6 +4,7 @@
 }
 .fondopantalla {
     background:#ffffff; 
-    background:#ebd403; 
-
+   }
+.oculto{
+    display: none;
 }

@@ -1,84 +1,8 @@
 <%- include('./partials/cabecero.ejs', {"titulo": "Conversión y transformación" }); %>
     <%- include('./partials/menu.ejs'); %>
 
-        <div class="row">
-            <!--inicio de la primera división-->
-            <div class="card col-md-6 text-bg-warning">
-                <br>
-                <div class="form-floating mb-1 ">
-                    <select class="form-select " id="sr_partida" aria-label="Floating label select example">
-                        <option value="1">MAGNA SIRGAS</option>
-                        <option value="2">Datum Bogotá</option>
-                    </select>
-                    <label for="floatingSelect">Sistema de referencia de partida</label>
-                </div>
-
-                <div class="form-floating mb-1">
-                    <input type="text" class="form-control " id="floatingInputValue" placeholder="Nombre del punto"
-                        value="Punto 1">
-                    <label for="floatingInputValue">Nombre del punto</label>
-
-                </div>
-
-                <div class="form-floating mb-1 ">
-                    <select class="form-select " id="sr_partida" aria-label="Floating label select example">
-                        <option value="1">Plana Cartesiana</option>
-                        <option value="2">UTM</option>
-                        <option value="2">Gauss Krüger</option>
-                        <option value="2">Elipsoidal</option>
-                        <option value="2">Origen Nacional</option>
-                        <option value="2">Geocéntrica</option>
-                    </select>
-                    <label for="floatingSelect">Tipo de coordenada de partida</label>
-                </div>
-                <!--formulario para poner las coordenadas elipsoidales-->
-                <div id="d_elipsoidal">
-                    <div class="row">
-                        <div class="col">
-                            <label for="latitud" class="form-label ">Latitud:</label>
-                        </div>
-                        <div class="col">
-                            <input class="form-control form-control-sm " type="number" placeholder="GG" id="e_lat_gg">
-                        </div>
-                        <div class="col">
-                            <input class="form-control form-control-sm " type="number" placeholder="MM" id="e_lat_mm">
-                        </div>
-                        <div class="col-md-4">
-                            <input class="form-control form-control-sm " type="number" placeholder="SS.DDDD" id="e_lat_ss">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <label for="longitud" class="form-label ">Longitud:</label>
-                        </div>
-                        <div class="col">
-                            <input class="form-control form-control-sm " type="number" placeholder="GG" id="e_lon_gg">
-                        </div>
-                        <div class="col">
-                            <input class="form-control form-control-sm " type="number" placeholder="MM" id="e_lon_mm">
-                        </div>
-                        <div class="col">
-                            <input class="form-control form-control-sm " type="number" placeholder="SS.DDDD" id="e_lon_ss">
-                        </div>
-                    </div>
-
-
-                </div>
-
-            </div>
-            <!--acá inicia la otra división-->
-            <div class="card col-md-6 text-bg-success">
-                <br>
-                <div class="form-floating">
-                    <select class="form-select" id="sr_destino" aria-label="Floating label select example">
-                        <option value="1">MAGNA SIRGAS</option>
-                        <option value="2">Datum Bogotá</option>
-                    </select>
-                    <label for="floatingSelect">Sistema de referencia destino</label>
-                </div>
-            </div>
-        </div>
-
+        
+           
 
 
 
