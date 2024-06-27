@@ -121,10 +121,10 @@ function problema_directo_Vicenty(phi1, lambda1, a12, s) {
 
 
 
-  console.log('latitud: ', phi2);
+  /*console.log('latitud: ', phi2);
   console.log('longitud: ', lambda2);
   console.log('azimut 21: ', a21);
-
+*/
   return {
     phi2: phi2,
     lambda2: lambda2,
@@ -238,3 +238,6 @@ if(a21 > 360){
 }
 
 //problema_inverso_Vicenty(0, -73, 5, -73.5);
+
+//exportamos los modulos para ser usados en otros js
+module.exports = {problema_directo_Vicenty, problema_inverso_Vicenty};
