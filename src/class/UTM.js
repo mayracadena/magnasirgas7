@@ -1,23 +1,23 @@
 class UTM {
   constructor() {
-    this.k = 0.996;
-    this.falso_norte = 0;
-    this.falso_este = 500000;
-    this.zona = 18;
+    this._k = 0.9996;
+    this._falso_norte = 0;
+    this._falso_este = 500000;
+    
   }
 
   get k() {
-    return this.k;
+    return this._k;
   }
   get zona() {
     //insertar aca formula para hallar la zona
   }
   get falso_norte() {
-    return this.falso_norte;
+    return this._falso_norte;
   }
 
   get falso_este() {
-    return this.falso_este;
+    return this._falso_este;
   }
 }
 

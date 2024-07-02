@@ -1,9 +1,13 @@
 class GRS80 {
     constructor(){
         //semieje mayor
+       
         this._a = 6378137;
         //semieje menor
-        this._b = 6356752.31414;
+       // this._b = 6356752.31414;
+        this._f=1/298.257222101;
+       
+        
     }
 
     get a(){
@@ -11,17 +15,18 @@ class GRS80 {
     }
 
     get b(){
-        return this._b;
+        const b = this._a*(1-this._f);
+        return b;
     }
 
     get f(){
         //el aplanamiento f=(a-b)/a
-        const f = (this._a-this._b)/this._a;
-        return f;
+       // const f = (this._a-this._b)/this._a;
+        return this._f;
     }
     get e2(){
         //primera excentricidad e^2 = 2f-(f^2)
-        const e2 = (2*this.f)-(this.f**2);
+        const e2 = (2*this._f)-(this._f**2);
         return e2;
     }
     get es2(){
@@ -30,7 +35,7 @@ class GRS80 {
         return es2;
     }
     get c(){
-        const c = (Math.pow(this._a,2) / this._b);
+        const c = (Math.pow(this._a,2) / this.b);
         return c;
     }
     
