@@ -16,12 +16,12 @@ function cabecero() {
       const contenido = data.split("\n")[0];
       const primera_linea = contenido.split(" ");
 
-      var minLatitud = primera_linea[0];
-      var maxLatitud = primera_linea[1];
-      var minLongitud = primera_linea[2];
-      var maxLongitud = primera_linea[3];
-      var incrementoLat = primera_linea[4];
-      var incrementoLon = primera_linea[5];
+      var minLatitud = parseFloat(primera_linea[0]);
+      var maxLatitud = parseFloat(primera_linea[1]);
+      var minLongitud = parseFloat(primera_linea[2]);
+      var maxLongitud = parseFloat(primera_linea[3]);
+      var incrementoLat = parseFloat(primera_linea[4]);
+      var incrementoLon = parseFloat(primera_linea[5]);
 
       var datos = new cuadrante_ondulacion(
         minLatitud,
@@ -36,14 +36,11 @@ function cabecero() {
   });
 }
 
-function cuadrante(latitud, longitud) {
+function ondulacion_geoidal(latitud, longitud) {
   cabecero()
     .then((datos) => {
-        console.log('datos min lat: ',datos.minLatitud)
-        console.log('datos max lon: ',datos.maxLongitud)
-        console.log('datos min lon: ',datos.minLongitud)
-        console.log('datos inc lon: ',datos.incrementoLon)
-     
+       
+      
       //se valida que no se encuentre las coordenadas fuera del rango de la grilla
       if (latitud < (datos.minLatitud + datos.incrementoLat) || latitud > (datos.maxLatitud - datos.incrementoLat)) {
         console.log("latitud fuera del rango");
@@ -54,17 +51,16 @@ function cuadrante(latitud, longitud) {
         return null;
       }
         
-      console.log('datos min lat2: ',datos.minLatitud)
-      console.log('datos max lon2: ',datos.maxLongitud)
+     
       //se toma la parte entera para encontrar la posicion dentro del documento
       var i = parseInt((datos.maxLatitud - latitud) / datos.incrementoLat);
       var j = parseInt((longitud - datos.minLongitud) / datos.incrementoLon);
-      console.log('datos incremento longitud',datos.incrementoLon)
+      
 
-      var lat = datos.maxLatitud - i * datos.incrementoLat;
-      var lon = datos.minLongitud + j * datos.incrementoLon;
-      console.log('la latitud: ', lat, " esta en la posicion: ", i, " la longitud: ", lon, " esta en la posicion: ", j);
-
+      var lat = parseFloat(datos.maxLatitud - i * datos.incrementoLat);
+      var lon = parseFloat(datos.minLongitud + j * datos.incrementoLon);
+      
+      
       // se debe buscar la posicion de los cuadrilateros
       return new Promise((resolve, reject) => {
         fs.readFile(archivo, "utf8", (err, data) => {
@@ -72,21 +68,24 @@ function cuadrante(latitud, longitud) {
             console.error(err);
             return;
           }
+          //aca buscamos la posición en el archivo se pone i+1 para evitar tomar la primera columna que son las constantes
           const contenido = data.split("\n")[i+1];
           const primera_linea = contenido.split(" ");
           const contenido2 = data.split("\n")[i + 2];
           const segunda_linea = contenido2.split(" ");
-          datos.norteOeste = primera_linea[j];
-          datos.norteEste = primera_linea[j + 1];
-          datos.surOeste = segunda_linea[j];
-          datos.surEste = segunda_linea[j + 1];
+
+          //se asignan al objeto de 
+          datos.norteOeste = parseFloat(primera_linea[j]);
+          datos.norteEste = parseFloat(primera_linea[j + 1]);
+          datos.surOeste = parseFloat(segunda_linea[j]);
+          datos.surEste = parseFloat(segunda_linea[j + 1]);
 
           //console.log(datos.norteOeste, datos.norteEste);
           //console.log(datos.surOeste, datos.surEste);
-          //console.log(datos);
-          interpolacion_bilineal(datos, lat, lon)
+         
+          var ondulacion = interpolacion_bilineal(datos, lat, lon, latitud, longitud)
 
-          return datos;
+          return ondulacion;
 
         });
       });
@@ -96,26 +95,20 @@ function cuadrante(latitud, longitud) {
     });
 }
 
-function interpolacion_bilineal(datos, latitud, longitud){
+function interpolacion_bilineal(datos, maxLatitud, minLongitud, latitud, longitud){
     //v = (y-y1)/(y2-y1)
    
-    var v = (datos.maxLatitud-latitud)/datos.incrementoLat;
-    console.log('latitud maxima: ',datos.maxLatitud);
-    console.log('latitud: ',latitud);
-    console.log('latitud incremento: ',datos.maxLatitud);
+    var v = parseFloat((maxLatitud-latitud)/datos.incrementoLat);
     //u = (x-x1)/(x2-x1)
-    var u = (longitud-datos.minLongitud)/datos.incrementoLon;
+    var u = parseFloat((longitud-minLongitud)/datos.incrementoLon);
     //formula interpolacion lineal (Q11, Q12, Q21, Q22) son las esquinas de los cuadrilateros
     //Q = (1-u)(1-v)Q11 + u(1-v)(Q21) + uvQ22 + (1-u)vQ12
     var q = ((1-u)*(1-v)*datos.norteOeste) + (v*(1-u)*datos.surOeste) + (u*v*datos.surEste) + ((1-v)*u*datos.norteEste);
     console.log('El valor de la ondulacion es: ',q)
-    console.log('Q11', datos.norteOeste)
-    console.log('Q12', datos.norteEste)
-    console.log('Q21', datos.surOeste)
-    console.log('Q22', datos.surEste)
-    console.log('t', v)
-    console.log('v', u)
+    console.log('El valor de la ondulacion es: ',q.toFixed(1))
+    
+    return q
 
 }
 
-cuadrante(4, -79.9);
+ondulacion_geoidal(4, -79.9);
