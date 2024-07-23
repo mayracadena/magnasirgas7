@@ -1,11 +1,11 @@
 class GRS80 {
-    constructor(){
+    constructor(a, f){
         //semieje mayor
        
-        this._a = 6378137;
+        this._a = a;
         //semieje menor
        // this._b = 6356752.31414;
-        this._f=1/298.257222101;
+        this._f=1/f;
        
         
     }
