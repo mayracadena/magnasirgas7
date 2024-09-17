@@ -6,6 +6,11 @@ const path = require("path");
 const geocol2004 = "../data/Geocol2004.txt";
 const archivo = path.join(__dirname, geocol2004);
 
+
+//para sacar los valores de ondulación utilizamos la grilla de 2' x 2'  de geocol2004
+// para interpolar los puntos dentro de las grillas utilizamos el metodo de interpolación bilineal
+//este es el método que tiene la versión magna pro 5.1 
+
 function cabecero() {
   return new Promise((resolve, reject) => {
     fs.readFile(archivo, "utf8", (err, data) => {
@@ -74,7 +79,7 @@ function ondulacion_geoidal(latitud, longitud) {
           const contenido2 = data.split("\n")[i + 2];
           const segunda_linea = contenido2.split(" ");
 
-          //se asignan al objeto de 
+          //se asignan al objeto de datos (que es el objeto de ondulación)
           datos.norteOeste = parseFloat(primera_linea[j]);
           datos.norteEste = parseFloat(primera_linea[j + 1]);
           datos.surOeste = parseFloat(segunda_linea[j]);
@@ -82,7 +87,8 @@ function ondulacion_geoidal(latitud, longitud) {
 
           //console.log(datos.norteOeste, datos.norteEste);
           //console.log(datos.surOeste, datos.surEste);
-         
+
+         //se debe mandar la latitud maxima pero dentro de la grilla, la longitud maxima y el valor del punto a calcular
           var ondulacion = interpolacion_bilineal(datos, lat, lon, latitud, longitud)
 
           return ondulacion;
@@ -103,12 +109,12 @@ function interpolacion_bilineal(datos, maxLatitud, minLongitud, latitud, longitu
     var u = parseFloat((longitud-minLongitud)/datos.incrementoLon);
     //formula interpolacion lineal (Q11, Q12, Q21, Q22) son las esquinas de los cuadrilateros
     //Q = (1-u)(1-v)Q11 + u(1-v)(Q21) + uvQ22 + (1-u)vQ12
-    var q = ((1-u)*(1-v)*datos.norteOeste) + (v*(1-u)*datos.surOeste) + (u*v*datos.surEste) + ((1-v)*u*datos.norteEste);
+    var q = ((1-u)*(1-v)*datos.norteOeste) + (u*(1-v)*datos.surOeste) + (u*v*datos.surEste) + ((1-u)*v*datos.norteEste);
     console.log('El valor de la ondulacion es: ',q)
-    console.log('El valor de la ondulacion es: ',q.toFixed(1))
+    console.log('El valor de la ondulacion es: ',q.toFixed(2))
     
     return q
 
 }
 
-ondulacion_geoidal(4, -79.9);
+ondulacion_geoidal(4, -73);

@@ -1,6 +1,9 @@
+//aca llamamos las clases para poder trabajar con ellas de manera global
+
 const elipsoide_referencia = require("../class/elipsoide_referencia");
 const CTM12 = require("../class/CTM12");
 const UTM = require("../class/UTM");
+const planas_cartesianas = require("../class/planas_cartesianas");
 const fs = require('fs');
 
 //llamar al json de elipsoides donde tenemos los parametros a y f
@@ -95,5 +98,5 @@ console.log(grs.f);
 
 
 function planas_cartesianas_a_curvilienas(){
-
+    
 }
