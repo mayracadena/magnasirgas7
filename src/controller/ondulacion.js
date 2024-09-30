@@ -105,10 +105,10 @@ function interpolacion_bilineal(datos, maxLatitud, minLongitud, latitud, longitu
     //Q = (1-u)(1-v)Q11 + u(1-v)(Q21) + uvQ22 + (1-u)vQ12
     var q = ((1-u)*(1-v)*datos.norteOeste) + (v*(1-u)*datos.surOeste) + (u*v*datos.surEste) + ((1-v)*u*datos.norteEste);
     console.log('El valor de la ondulacion es: ',q)
-    console.log('El valor de la ondulacion es: ',q.toFixed(1))
+    console.log('El valor de la ondulacion es: ',q.toFixed(2))
     
     return q
 
 }
 
-ondulacion_geoidal(4, -79.9);
+ondulacion_geoidal(6.040497435, -72.285360800);
