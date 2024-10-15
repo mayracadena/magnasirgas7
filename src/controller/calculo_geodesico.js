@@ -1,5 +1,17 @@
-const GRS80 = require("../class/GRS80");
-const grs = new GRS80();
+const elipsoide_referencia = require("../class/elipsoide_referencia");
+const fs = require('fs');
+
+//llamar al json de elipsoides donde tenemos los parametros a y f
+const ruta_elipsoide = "../data/elipsoides.json";
+//leer el archivo
+const contenido = fs.readFileSync(ruta_elipsoide, 'utf8');
+
+const jsonElipsoide = JSON.parse(contenido);
+//para este caso usamos solamente el elipsoide de referencia GRS80
+const grs80 = jsonElipsoide.GRS80;
+const grs = new elipsoide_referencia(grs80.a, grs80.f);
+
+
 
 //Problema geodesico directo de Vincenty
 //este es el algoritmo mas utilizado debidoa  su precisión

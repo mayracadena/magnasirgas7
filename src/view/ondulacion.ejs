@@ -95,7 +95,7 @@
 <div class="main-content">
     <div class="card shadow">
         <div class="card-header">
-            <h2>Cálculo Ondulación Punto Individual</h2>
+            <h4>Cálculo Ondulación Punto Individual</h4>
         </div>
         <div class="card-body">
             <form id="ondulacionForm">
@@ -113,7 +113,7 @@
                     </div>
                 </div>
                 <div class="panel">
-                    <h2>Tipo de Coordenada</h2>
+                    <h4>Tipo de Coordenada</h4>
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="elipsoidal-tab" data-bs-toggle="tab" data-bs-target="#elipsoidal" type="button" role="tab" aria-controls="elipsoidal" aria-selected="true">Elipsoidal</button>
@@ -269,8 +269,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel">
-                    <h2>Origen Cartesiano</h2>
+                <div class="panel" id="panel-origen-cartesiano" style="display: none;">
+                    <h4>Origen Cartesiano</h4>
                     <div class="form-group">
                         <label for="departamento">Departamento:</label>
                         <select class="form-control" id="departamento">
@@ -291,10 +291,9 @@
                             <!-- Opciones dinámicas según el departamento y municipio seleccionados -->
                         </select>
                     </div>
-                    <button class="btn btn-info">Más información</button>
-                </div>
+                    
                 <div class="panel">
-                    <h2>Ondulación Geoidal (m)</h2>
+                    <h4>Ondulación Geoidal (m)</h4>
                     <div class="form-group">
                         <input type="text" class="form-control" id="ondulacion-geoidal">
                     </div>
@@ -355,6 +354,7 @@
         },
         retina_detect: true
     });
+    
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

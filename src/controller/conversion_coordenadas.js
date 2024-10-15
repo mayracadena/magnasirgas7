@@ -1,17 +1,37 @@
-const GRS80 = require("../class/GRS80");
+//aca llamamos las clases para poder trabajar con ellas de manera global
+
+const elipsoide_referencia = require("../class/elipsoide_referencia");
 const CTM12 = require("../class/CTM12");
-const UTM = require("../class/UTM")
+const UTM = require("../class/UTM");
+const planas_cartesianas = require("../class/planas_cartesianas");
+const fs = require('fs');
+
+//llamar al json de elipsoides donde tenemos los parametros a y f
+ruta_elipsoide = "../data/elipsoides.json";
+//leer el archivo
+const contenido = fs.readFileSync(ruta_elipsoide, 'utf8');
+
+const jsonElipsoide = JSON.parse(contenido);
+const grs80 = jsonElipsoide.GRS80;
+const hayford = jsonElipsoide.HAYFORD;
+
+
 //vamos a definir las variables a utilizar:
-const grs = new GRS80();
+const grs = new elipsoide_referencia(grs80.a, grs80.f);
+const hyfrd = new elipsoide_referencia(hayford.a, hayford.f);
 const ctm = new CTM12();
 const utm = new UTM();
 
 //coordenadas planas UTM a curvilineas
 
 
-//el siguiente desarrollo es basado a la recopilación de las formulas del ingeniero Siervo William León Callejas
+//El siguiente desarrollo es basado a la recopilación de las formulas del ingeniero Siervo William León Callejas
+//Programado por:
+//Mayra Yesenia Cadena Blanco - Ingeniera Catastral y Geodesta - Tecnologa en Análisis y Desarrollo de Sistemas de Información
+//Michael Steveen Ramirez Bohorquez - Ingeniero Catastral y Geodesta
 
-function utm_to_curvilineas(norte, este, huso){
+
+function utm_a_curvilineas(norte, este, huso){
 
 //primero se determina una latitud preliminar
 var phi = norte/(((grs.a+grs.b)/2)*utm.k);
@@ -71,5 +91,12 @@ console.log(grs.f);
 
 }
 
-//utm_to_curvilineas(442397.820,722056.383,18);
-//utm_to_curvilineas(553423.981,167286.202,19);
+//utm_a_curvilineas(442397.820,722056.383,18);
+//utm_a_curvilineas(553423.981,167286.202,19);
+
+
+
+
+function planas_cartesianas_a_curvilienas(){
+    
+}

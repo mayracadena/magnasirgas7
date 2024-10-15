@@ -227,6 +227,15 @@
                         </div>
                         <div class="tab-pane fade" id="utm" role="tabpanel" aria-labelledby="utm-tab">
                             <div class="form-group">
+                                <label for="norte-utm">Norte (m):</label>
+                                <input type="text" class="form-control" id="norte-utm">
+                            </div>
+                            <div class="form-group">
+                                <label for="este-utm">Este (m):</label>
+                                <input type="text" class="form-control" id="este-utm">
+                            </div>
+                            
+                            <div class="form-group">
                                 <label for="huso">Huso:</label>
                                 <input type="text" class="form-control" id="huso">
                             </div>
@@ -237,14 +246,7 @@
                                     <option value="S">S</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label for="norte-utm">Norte (m):</label>
-                                <input type="text" class="form-control" id="norte-utm">
-                            </div>
-                            <div class="form-group">
-                                <label for="este-utm">Este (m):</label>
-                                <input type="text" class="form-control" id="este-utm">
-                            </div>
+                          
                         </div>
                         <div class="tab-pane fade" id="gauss-kruger" role="tabpanel" aria-labelledby="gauss-kruger-tab">
                             <div class="form-group">
@@ -307,56 +309,6 @@
         </div>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/simple-kriging/0.3.0/simple-kriging.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
-<script>
-    particlesJS('particles-js', {
-        particles: {
-            number: { value: 100 },
-            color: { value: '#00ff00' },
-            shape: {
-                type: 'circle',
-                stroke: { width: 0, color: '#000000' },
-                polygon: { nb_sides: 5 },
-            },
-            opacity: { value: 0.5 },
-            size: { value: 3 },
-            line_linked: {
-                enable: true,
-                distance: 150,
-                color: '#00ff00',
-                opacity: 0.4,
-                width: 1
-            },
-            move: {
-                enable: true,
-                speed: 3,
-                direction: 'none',
-                random: false,
-                straight: false,
-                out_mode: 'out',
-                bounce: false,
-            }
-        },
-        interactivity: {
-            detect_on: 'canvas',
-            events: {
-                onhover: { enable: true, mode: 'repulse' },
-                onclick: { enable: true, mode: 'push' },
-                resize: true
-            },
-            modes: {
-                grab: { distance: 400, line_linked: { opacity: 1 } },
-                bubble: { distance: 400, size: 40, duration: 2, opacity: 8 },
-                repulse: { distance: 200 },
-                push: { particles_nb: 4 },
-                remove: { particles_nb: 2 }
-            }
-        },
-        retina_detect: true
-    });
-</script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="controller/ondulacion.js"></script>
 </body>

@@ -53,54 +53,120 @@ document.getElementById('calcular').addEventListener('click', function(event) {
         return;
     }
 
-    // Obtener la ondulación geoidal desde el archivo JSON
-    fetch('grids/ondulacion.json')
-        .then(response => response.json())
-        .then(data => {
-            try {
-                let undulation = findWeightedAverageUndulation(data, lat, lon);
-                if (undulation !== null) {
-                    document.getElementById('ondulacion-geoidal').value = undulation.toFixed(3);
-                } else {
-                    document.getElementById('ondulacion-geoidal').value = 'Ondulación no encontrada.';
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('ondulacion-geoidal').value = 'Error al calcular la ondulación.';
-            }
+    // Calcular la ondulación geoidal utilizando la lógica del primer código
+    ondulacion_geoidal(lat, lon)
+        .then((result) => {
+            document.getElementById('ondulacion-geoidal').value = result.toFixed(3); // Mostrar el resultado en el campo correspondiente
         })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('ondulacion-geoidal').value = 'Error al cargar los datos geoidales.';
+        .catch((err) => {
+            console.error('Error en el cálculo:', err);
+            document.getElementById('ondulacion-geoidal').value = 'Error al calcular la ondulación.';
         });
 });
 
-function findWeightedAverageUndulation(geoidData, lat, lon) {
-    const nearestPoints = [];
-    const maxDistance = 0.1; // Máxima distancia para considerar puntos cercanos en grados (~11 km)
+function ondulacion_geoidal(latitud, longitud) {
+    return new Promise((resolve, reject) => {
+        cabecero()
+            .then((datos) => {
+                // Validar si las coordenadas están dentro del rango de la grilla
+                if (latitud < datos.minLatitud || latitud > datos.maxLatitud) {
+                    alert("Latitud fuera del rango permitido");
+                    return reject("Latitud fuera del rango");
+                }
+                if (longitud < datos.minLongitud || longitud > datos.maxLongitud) {
+                    alert("Longitud fuera del rango permitido");
+                    return reject("Longitud fuera del rango");
+                }
 
-    for (let point of geoidData) {
-        let distance = Math.sqrt(Math.pow(lat - point.lat, 2) + Math.pow(lon - point.lon, 2));
-        if (distance <= maxDistance) {
-            nearestPoints.push({ point, distance });
-        }
-    }
+                // Obtener índices en la grilla
+                var i = parseInt((datos.maxLatitud - latitud) / datos.incrementoLat);
+                var j = parseInt((longitud - datos.minLongitud) / datos.incrementoLon);
 
-    if (nearestPoints.length === 0) {
-        return null;
-    }
+                var lat = datos.maxLatitud - i * datos.incrementoLat;
+                var lon = datos.minLongitud + j * datos.incrementoLon;
 
-    let weightedSum = 0;
-    let totalWeight = 0;
+                const contenido = datos.data.split("\n")[i + 1].split(" ");
+                const contenido2 = datos.data.split("\n")[i + 2].split(" ");
+                    
+                datos.norteOeste = parseFloat(contenido[j]);
+                datos.norteEste = parseFloat(contenido[j + 1]);
+                datos.surOeste = parseFloat(contenido2[j]);
+                datos.surEste = parseFloat(contenido2[j + 1]);
 
-    for (let { point, distance } of nearestPoints) {
-        let weight = 1 / distance; // Peso inversamente proporcional a la distancia
-        weightedSum += weight * point.alt;
-        totalWeight += weight;
-    }
-
-    return weightedSum / totalWeight;
+                const resultado = interpolacion_bilineal(datos, lat, lon, latitud, longitud);
+                resolve(resultado);
+            })
+            .catch(reject);
+    });
 }
 
-// Inicializar campos
-toggleCoordinateInput(document.getElementById('coordenadas-decimales').checked);
+function interpolacion_bilineal(datos, maxLatitud, minLongitud, latitud, longitud) {
+    var v = parseFloat((maxLatitud - latitud) / datos.incrementoLat);
+    var u = parseFloat((longitud - minLongitud) / datos.incrementoLon);
+
+    // Fórmula de interpolación bilineal
+    var q = ((1 - u) * (1 - v) * datos.norteOeste) +
+            (u * (1 - v) * datos.surOeste) +
+            (u * v * datos.surEste) +
+            ((1 - u) * v * datos.norteEste);
+
+    return q;
+}
+
+function cabecero() {
+    return new Promise((resolve, reject) => {
+        // Aquí hacemos la solicitud al archivo de ondulación geoidal directamente
+        fetch('grids/Geocol2004.txt')  // Actualiza esta ruta con la dirección correcta del archivo
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error al cargar el archivo: ${response.statusText}`);
+                }
+                return response.text();
+            })
+            .then(data => {
+                if (!data) {
+                    console.error("El archivo no contiene datos o no se pudo leer correctamente.");
+                    reject("Archivo vacío o no leído.");
+                    return;
+                }
+
+                console.log("Contenido del archivo recibido: ", data); // Para verificar que se recibe el contenido
+                const contenido = data.split("\n");
+                
+                if (contenido.length === 0 || !contenido[0]) {
+                    console.error("Error: El archivo no contiene la información esperada.");
+                    reject("El archivo no contiene datos válidos.");
+                    return;
+                }
+                
+                const primera_linea = contenido[0].split(" ");
+                if (primera_linea.length < 6) {
+                    console.error("Error: La primera línea no contiene suficientes datos.");
+                    reject("Datos de cabecera incompletos.");
+                    return;
+                }
+
+                var minLatitud = parseFloat(primera_linea[0]);
+                var maxLatitud = parseFloat(primera_linea[1]);
+                var minLongitud = parseFloat(primera_linea[2]);
+                var maxLongitud = parseFloat(primera_linea[3]);
+                var incrementoLat = parseFloat(primera_linea[4]);
+                var incrementoLon = parseFloat(primera_linea[5]);
+
+                var datos = {
+                    minLatitud,
+                    maxLatitud,
+                    minLongitud,
+                    maxLongitud,
+                    incrementoLat,
+                    incrementoLon,
+                    data
+                };
+                resolve(datos);
+            })
+            .catch(err => {
+                console.error("Error al leer el archivo de ondulación geoidal:", err);
+                reject(err);
+            });
+    });
+}
