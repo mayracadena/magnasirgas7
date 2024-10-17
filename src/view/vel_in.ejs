@@ -45,28 +45,23 @@
         </div>
 
         <div class="card">
-            <div class="card-header">Archivo Entrada</div>
+            <div class="card-header">Punto Individual</div>
             <div class="card-body">
                 <div class="mb-3">
-                    <label for="coordinateFile" class="form-label">Abrir Archivo</label>
-                    <input type="file" class="form-control" id="coordinateFile">
+                    <label for="idField" class="form-label">ID del Punto</label>
+                    <input type="text" class="form-control" id="idField" placeholder="ID del punto">
                 </div>
                 <div class="mb-3">
-                    <label for="fileType" class="form-label">Tipo de Archivo</label>
-                    <select class="form-select" id="fileType">
-                        <option value="csv">CSV</option>
-                        <option value="xls">XLS</option>
-                        <option value="xlsx">XLSX</option>
-                    </select>
+                    <label for="latitudeField" class="form-label">Latitud</label>
+                    <input type="text" class="form-control" id="latitudeField" placeholder="Latitud">
                 </div>
                 <div class="mb-3">
-                    <label for="separatorColumn" class="form-label">Configuración Archivo</label>
-                    <input type="text" class="form-control" id="separatorColumn" placeholder="Separador Columna">
-                    <input type="text" class="form-control mt-2" id="separatorDecimal" placeholder="Separador Decimal">
+                    <label for="longitudeField" class="form-label">Longitud</label>
+                    <input type="text" class="form-control" id="longitudeField" placeholder="Longitud">
                 </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="headerCheck">
-                    <label class="form-check-label" for="headerCheck">Archivo con encabezado</label>
+                <div class="mb-3">
+                    <label for="heightField" class="form-label">Altura (opcional)</label>
+                    <input type="text" class="form-control" id="heightField" placeholder="Altura (opcional)">
                 </div>
             </div>
         </div>
@@ -92,12 +87,6 @@
                         <input class="form-check-input" type="radio" name="coordinateType" id="utm" value="UTM">
                         <label class="form-check-label" for="utm">UTM</label>
                     </div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Opciones Archivo</label>
-                    <input type="text" class="form-control" id="idField" placeholder="ID">
-                    <input type="text" class="form-control mt-2" id="latitudeField" placeholder="Latitud">
-                    <input type="text" class="form-control mt-2" id="longitudeField" placeholder="Longitud">
                 </div>
             </div>
         </div>
