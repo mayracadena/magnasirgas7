@@ -117,4 +117,7 @@ function interpolacion_bilineal(datos, maxLatitud, minLongitud, latitud, longitu
 
 }
 
+
+ondulacion_geoidal(6.040497435, -72.285360800);
 ondulacion_geoidal(4, -73);
+

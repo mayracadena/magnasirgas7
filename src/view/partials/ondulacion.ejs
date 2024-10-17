@@ -95,7 +95,7 @@
 <div class="main-content">
     <div class="card shadow">
         <div class="card-header">
-            <h4>Cálculo Ondulación Punto Individual</h4>
+            <h2>Cálculo Ondulación Punto Individual</h2>
         </div>
         <div class="card-body">
             <form id="ondulacionForm">
@@ -113,7 +113,7 @@
                     </div>
                 </div>
                 <div class="panel">
-                    <h4>Tipo de Coordenada</h4>
+                    <h2>Tipo de Coordenada</h2>
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="elipsoidal-tab" data-bs-toggle="tab" data-bs-target="#elipsoidal" type="button" role="tab" aria-controls="elipsoidal" aria-selected="true">Elipsoidal</button>
@@ -227,6 +227,15 @@
                         </div>
                         <div class="tab-pane fade" id="utm" role="tabpanel" aria-labelledby="utm-tab">
                             <div class="form-group">
+                                <label for="norte-utm">Norte (m):</label>
+                                <input type="text" class="form-control" id="norte-utm">
+                            </div>
+                            <div class="form-group">
+                                <label for="este-utm">Este (m):</label>
+                                <input type="text" class="form-control" id="este-utm">
+                            </div>
+                            
+                            <div class="form-group">
                                 <label for="huso">Huso:</label>
                                 <input type="text" class="form-control" id="huso">
                             </div>
@@ -237,14 +246,7 @@
                                     <option value="S">S</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label for="norte-utm">Norte (m):</label>
-                                <input type="text" class="form-control" id="norte-utm">
-                            </div>
-                            <div class="form-group">
-                                <label for="este-utm">Este (m):</label>
-                                <input type="text" class="form-control" id="este-utm">
-                            </div>
+                          
                         </div>
                         <div class="tab-pane fade" id="gauss-kruger" role="tabpanel" aria-labelledby="gauss-kruger-tab">
                             <div class="form-group">
@@ -269,8 +271,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel" id="panel-origen-cartesiano" style="display: none;">
-                    <h4>Origen Cartesiano</h4>
+                <div class="panel">
+                    <h2>Origen Cartesiano</h2>
                     <div class="form-group">
                         <label for="departamento">Departamento:</label>
                         <select class="form-control" id="departamento">
@@ -291,9 +293,10 @@
                             <!-- Opciones dinámicas según el departamento y municipio seleccionados -->
                         </select>
                     </div>
-                    
+                    <button class="btn btn-info">Más información</button>
+                </div>
                 <div class="panel">
-                    <h4>Ondulación Geoidal (m)</h4>
+                    <h2>Ondulación Geoidal (m)</h2>
                     <div class="form-group">
                         <input type="text" class="form-control" id="ondulacion-geoidal">
                     </div>
@@ -306,57 +309,6 @@
         </div>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/simple-kriging/0.3.0/simple-kriging.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
-<script>
-    particlesJS('particles-js', {
-        particles: {
-            number: { value: 100 },
-            color: { value: '#00ff00' },
-            shape: {
-                type: 'circle',
-                stroke: { width: 0, color: '#000000' },
-                polygon: { nb_sides: 5 },
-            },
-            opacity: { value: 0.5 },
-            size: { value: 3 },
-            line_linked: {
-                enable: true,
-                distance: 150,
-                color: '#00ff00',
-                opacity: 0.4,
-                width: 1
-            },
-            move: {
-                enable: true,
-                speed: 3,
-                direction: 'none',
-                random: false,
-                straight: false,
-                out_mode: 'out',
-                bounce: false,
-            }
-        },
-        interactivity: {
-            detect_on: 'canvas',
-            events: {
-                onhover: { enable: true, mode: 'repulse' },
-                onclick: { enable: true, mode: 'push' },
-                resize: true
-            },
-            modes: {
-                grab: { distance: 400, line_linked: { opacity: 1 } },
-                bubble: { distance: 400, size: 40, duration: 2, opacity: 8 },
-                repulse: { distance: 200 },
-                push: { particles_nb: 4 },
-                remove: { particles_nb: 2 }
-            }
-        },
-        retina_detect: true
-    });
-    
-</script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="controller/ondulacion.js"></script>
 </body>

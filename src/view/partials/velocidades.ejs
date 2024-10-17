@@ -1,0 +1,120 @@
+<%- include('./partials/cabecero.ejs', {"titulo": "ITRF" }); %>
+<%- include('./partials/menu.ejs'); %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Velocidades</title>
+    <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .form-label, .form-check-label {
+            font-weight: bold;
+        }
+        #alert-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Calculadora de Velocidades</h1>
+        <div id="alert-container"></div>
+        <div class="card">
+            <div class="card-header">Sistema de Referencia</div>
+            <div class="card-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="referenceSystem" id="magnaSirgas" value="MAGNA-SIRGAS" checked>
+                    <label class="form-check-label" for="magnaSirgas">MAGNA-SIRGAS</label>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">Archivo Entrada</div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="coordinateFile" class="form-label">Abrir Archivo</label>
+                    <input type="file" class="form-control" id="coordinateFile">
+                </div>
+                <div class="mb-3">
+                    <label for="fileType" class="form-label">Tipo de Archivo</label>
+                    <select class="form-select" id="fileType">
+                        <option value="csv">CSV</option>
+                        <option value="xls">XLS</option>
+                        <option value="xlsx">XLSX</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="separatorColumn" class="form-label">Configuración Archivo</label>
+                    <input type="text" class="form-control" id="separatorColumn" placeholder="Separador Columna">
+                    <input type="text" class="form-control mt-2" id="separatorDecimal" placeholder="Separador Decimal">
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="headerCheck">
+                    <label class="form-check-label" for="headerCheck">Archivo con encabezado</label>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">Configuración Coordenada de Partida</div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Tipo Coordenada</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="coordinateType" id="ellipsoidal" value="Ellipsoidales" checked>
+                        <label class="form-check-label" for="ellipsoidal">Elipsoidales</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="coordinateType" id="nationalOrigin" value="Origen Nacional">
+                        <label class="form-check-label" for="nationalOrigin">Origen Nacional</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="coordinateType" id="geocentric" value="Geocéntricas">
+                        <label class="form-check-label" for="geocentric">Geocéntricas</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="coordinateType" id="utm" value="UTM">
+                        <label class="form-check-label" for="utm">UTM</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Opciones Archivo</label>
+                    <input type="text" class="form-control" id="idField" placeholder="ID">
+                    <input type="text" class="form-control mt-2" id="latitudeField" placeholder="Latitud">
+                    <input type="text" class="form-control mt-2" id="longitudeField" placeholder="Longitud">
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">Modelo Velocidades</div>
+            <div class="card-body">
+                <select class="form-select" id="vemosSelect">
+                    <option value="VEMOS 2009">VEMOS 2009</option>
+                    <option value="VEMOS 2015">VEMOS 2015</option>
+                    <option value="VEMOS 2017">VEMOS 2017</option>
+                </select>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-block" id="calculateButton">Calcular</button>
+        <div class="mt-3" id="output"></div>
+    </div>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="renderer.js"></script>
+</body>
+</html>
+
+
+<%- include('./partials/pie.ejs'); %>
