@@ -4,7 +4,9 @@ const elipsoide_referencia = require("../class/elipsoide_referencia");
 const CTM12 = require("../class/CTM12");
 const UTM = require("../class/UTM");
 const planas_cartesianas = require("../class/planas_cartesianas");
+const curvilienas = require("../class/curvilineas");
 const fs = require('fs');
+const conexion = require('../db/conexion');
 
 //llamar al json de elipsoides donde tenemos los parametros a y f
 ruta_elipsoide = "../data/elipsoides.json";
@@ -97,6 +99,6 @@ console.log(grs.f);
 
 
 
-function planas_cartesianas_a_curvilienas(){
+function planas_cartesianas_a_curvilienas(curvilienas, origencoordenadas){
     
 }
