@@ -99,6 +99,6 @@ console.log(grs.f);
 
 
 
-function planas_cartesianas_a_curvilienas(curvilienas, origencoordenadas){
-    
+function planas_cartesianas_a_curvilienas(planas_cartesianas, origencoordenadas){
+    //var conetion = 
 }
