@@ -1,99 +1,134 @@
-class planas_cartesianas {
-    constructor(municipio, departamento, latitud, longitud, year, fNorte, fEste, planoProyeccion, descripcion, oficial) {
-        this._municipio = municipio;
-        this._departamento = departamento;
+class PlanasCartesianas {
+    constructor(id, fk_sistema, detalle, anio, fk_corregimiento, fk_municipio, latitud, longitud, fnorte, feste, plano_proyeccion, descripcion, oficial) {
+        this._id = id;
+        this._fk_sistema = fk_sistema;
+        this._detalle = detalle;
+        this._anio = anio;
+        this._fk_corregimiento = fk_corregimiento;
+        this._fk_municipio = fk_municipio;
         this._latitud = latitud;
         this._longitud = longitud;
-        this._year = year;
-        this._fNorte = fNorte;
-        this._fEste = fEste;
-        this._planoProyeccion = planoProyeccion;
+        this._fnorte = fnorte;
+        this._feste = feste;
+        this._plano_proyeccion = plano_proyeccion;
         this._descripcion = descripcion;
         this._oficial = oficial;
     }
 
-    // Getters
-    get municipio() {
-        return this._municipio;
+    // Getter y Setter para id
+    get id() {
+        return this._id;
     }
 
-    get departamento() {
-        return this._departamento;
+    set id(value) {
+        this._id = value;
     }
 
+    // Getter y Setter para fk_sistema
+    get fk_sistema() {
+        return this._fk_sistema;
+    }
+
+    set fk_sistema(value) {
+        this._fk_sistema = value;
+    }
+
+    // Getter y Setter para detalle
+    get detalle() {
+        return this._detalle;
+    }
+
+    set detalle(value) {
+        this._detalle = value;
+    }
+
+    // Getter y Setter para anio
+    get anio() {
+        return this._anio;
+    }
+
+    set anio(value) {
+        this._anio = value;
+    }
+
+    // Getter y Setter para fk_corregimiento
+    get fk_corregimiento() {
+        return this._fk_corregimiento;
+    }
+
+    set fk_corregimiento(value) {
+        this._fk_corregimiento = value;
+    }
+
+    // Getter y Setter para fk_municipio
+    get fk_municipio() {
+        return this._fk_municipio;
+    }
+
+    set fk_municipio(value) {
+        this._fk_municipio = value;
+    }
+
+    // Getter y Setter para latitud
     get latitud() {
         return this._latitud;
-    }
-
-    get longitud() {
-        return this._longitud;
-    }
-
-    get year() {
-        return this._year;
-    }
-
-    get fNorte() {
-        return this._fNorte;
-    }
-
-    get fEste() {
-        return this._fEste;
-    }
-
-    get planoProyeccion() {
-        return this._planoProyeccion;
-    }
-
-    get descripcion() {
-        return this._descripcion;
-    }
-
-    get oficial() {
-        return this._oficial;
-    }
-
-    // Setters
-    set municipio(value) {
-        this._municipio = value;
-    }
-
-    set departamento(value) {
-        this._departamento = value;
     }
 
     set latitud(value) {
         this._latitud = value;
     }
 
+    // Getter y Setter para longitud
+    get longitud() {
+        return this._longitud;
+    }
+
     set longitud(value) {
         this._longitud = value;
     }
 
-    set year(value) {
-        this._year = value;
+    // Getter y Setter para fnorte
+    get fnorte() {
+        return this._fnorte;
     }
 
-    set fNorte(value) {
-        this._fNorte = value;
+    set fnorte(value) {
+        this._fnorte = value;
     }
 
-    set fEste(value) {
-        this._fEste = value;
+    // Getter y Setter para feste
+    get feste() {
+        return this._feste;
     }
 
-    set planoProyeccion(value) {
-        this._planoProyeccion = value;
+    set feste(value) {
+        this._feste = value;
+    }
+
+    // Getter y Setter para plano_proyeccion
+    get plano_proyeccion() {
+        return this._plano_proyeccion;
+    }
+
+    set plano_proyeccion(value) {
+        this._plano_proyeccion = value;
+    }
+
+    // Getter y Setter para descripcion
+    get descripcion() {
+        return this._descripcion;
     }
 
     set descripcion(value) {
         this._descripcion = value;
     }
 
+    // Getter y Setter para oficial
+    get oficial() {
+        return this._oficial;
+    }
+
     set oficial(value) {
         this._oficial = value;
     }
 }
-
-//esto se realiza para usar esta clase en otros metodos
-module.exports = planas_cartesianas;
