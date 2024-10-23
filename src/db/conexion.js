@@ -3,19 +3,21 @@ const path = require('path');
 
 class conexion {
     constructor() {
-        this.dbFilePath = path.resolve('cord_planas_cartesianas_igac.b3'); // Resolución de la ruta para evitar errores de ruta relativos
+        this.dbFilePath = path.resolve('../db/cord_planas_cartesianas_igac.db3'); // Resolución de la ruta para evitar errores de ruta relativos
         this.db = null;
     }
 
     // Método para abrir la conexión
     async open() {
         return new Promise((resolve, reject) => {
+           
             this.db = new sqlite3.Database(this.dbFilePath, sqlite3.OPEN_READWRITE, (err) => {
                 if (err) {
                     console.error("Error al abrir la base de datos:", err.message);
+                    
                     reject(err);
                 } else {
-                    console.log("Conectado a la base de datos:", this.dbFilePath);
+                    console.log("Conectado a la base de datos:");
                     resolve(this.db);
                 }
             });

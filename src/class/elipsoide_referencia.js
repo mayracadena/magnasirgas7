@@ -1,4 +1,4 @@
-class GRS80 {
+class elipsoide_referencia {
     constructor(a, f){
         //semieje mayor
        
@@ -43,4 +43,4 @@ class GRS80 {
 }
 
 //esto se realiza para usar esta clase en otros metodos
-module.exports = GRS80;
+module.exports = elipsoide_referencia;

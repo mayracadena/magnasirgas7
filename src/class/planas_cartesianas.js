@@ -1,4 +1,4 @@
-class PlanasCartesianas {
+class planas_cartesianas {
     constructor(id, fk_sistema, detalle, anio, fk_corregimiento, fk_municipio, latitud, longitud, fnorte, feste, plano_proyeccion, descripcion, oficial) {
         this._id = id;
         this._fk_sistema = fk_sistema;
@@ -132,3 +132,5 @@ class PlanasCartesianas {
         this._oficial = value;
     }
 }
+
+module.exports = planas_cartesianas;

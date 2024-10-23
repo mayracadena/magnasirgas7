@@ -1,15 +1,24 @@
 const elipsoide_referencia = require("../class/elipsoide_referencia");
 const fs = require('fs');
+const conexion = require('../db/conexion');
 
-//llamar al json de elipsoides donde tenemos los parametros a y f
-const ruta_elipsoide = "../data/elipsoides.json";
-//leer el archivo
-const contenido = fs.readFileSync(ruta_elipsoide, 'utf8');
+//funcion que llama el elipoide de referencia GRS80 de la base de datos
+async function elipoide() {
+  var con = new conexion();
+  try {
+      await con.open();  
 
-const jsonElipsoide = JSON.parse(contenido);
-//para este caso usamos solamente el elipsoide de referencia GRS80
-const grs80 = jsonElipsoide.GRS80;
-const grs = new elipsoide_referencia(grs80.a, grs80.f);
+      var elipsoide_grs80 = "select semieje_mayor, achatamiento from elipsoide where nombre = ?";
+      var elip = await con.getOne(elipsoide_grs80, ['GRS80']);  
+      const grs = new elipsoide_referencia(elip.semieje_mayor, elip.achatamiento);
+      
+      return grs;
+  } catch (error) {
+      console.error("Ocurrió un error:", error);
+  } finally {
+      await con.close();  
+  }
+}
 
 
 
@@ -17,7 +26,9 @@ const grs = new elipsoide_referencia(grs80.a, grs80.f);
 //este es el algoritmo mas utilizado debidoa  su precisión
 //tomado del siguiente link: https://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf
 
-function problema_directo_Vicenty(phi1, lambda1, a12, s) {
+async function problema_directo_Vicenty(phi1, lambda1, a12, s) {
+  //llamar el elipsoide de referencia
+  var grs = await elipoide();
   //se convierten los datos de entrada de decimales a radianes para poder trabajar este procedimiento
   phi1 = phi1 * (Math.PI / 180);
   lambda1 = lambda1 * (Math.PI / 180);
@@ -148,7 +159,10 @@ function problema_directo_Vicenty(phi1, lambda1, a12, s) {
 
 //problema_directo_Vicenty(4, -73, 15, 100);
 
-function problema_inverso_Vicenty(phi1, lambda1, phi2, lambda2) {
+async function problema_inverso_Vicenty(phi1, lambda1, phi2, lambda2) {
+  //llamar el elipsoide de referencia
+  var grs = await elipoide().then();
+  console.log(grs.a)
   //se convierten los datos de entrada de decimales a radianes para poder trabajar este procedimiento
   phi1 = phi1 * (Math.PI / 180);
   phi2 = phi2 * (Math.PI / 180);
@@ -174,7 +188,7 @@ function problema_inverso_Vicenty(phi1, lambda1, phi2, lambda2) {
     //sen^2(sigma)= (cos(U1)*sen(lambda))^2+(cos(U1)*sen(U2)-sen(U1)*cos(U2)*cos(lambda))^2
 
     seno_sigma = Math.sqrt(Math.pow(Math.cos(U2) * Math.sin(lambda), 2) + (Math.pow((Math.cos(U1) * Math.sin(U2)) - (Math.sin(U1) * Math.cos(U2) * Math.cos(lambda)), 2)));
-    
+
     coseno_sigma = (Math.sin(U1) * Math.sin(U2)) + (Math.cos(U1) * Math.cos(U2) * Math.cos(lambda));
     //se realiza una condicional si en caso de ser este cero se retorne los resultados
     if (seno_sigma == 0) {
@@ -187,14 +201,14 @@ function problema_inverso_Vicenty(phi1, lambda1, phi2, lambda2) {
     sigma = Math.atan2(seno_sigma, coseno_sigma);
     alfa = Math.asin((Math.cos(U1) * Math.cos(U2) * Math.sin(lambda) / seno_sigma));
     //validando si 1-sen^2(alfa) es cero
-  var conseno_alfa = 1- Math.pow(Math.sin(alfa), 2);
+    var conseno_alfa = 1 - Math.pow(Math.sin(alfa), 2);
 
-    if (conseno_alfa== 0) {
+    if (conseno_alfa == 0) {
       sigmaM = 0;
     } else {
       //sigmaM = 2sigmaM
       //cos(2sigmaM)=(cos(sigma)-2*sen(U1)*sen(U2)/cos^2(alfa))
-      sigmaM = Math.acos(coseno_sigma-2* Math.sin(U1) * Math.sin(U2) /Math.pow(Math.cos(alfa),2));
+      sigmaM = Math.acos(coseno_sigma - 2 * Math.sin(U1) * Math.sin(U2) / Math.pow(Math.cos(alfa), 2));
       //   cos2SigmaM = cosSigma - 2.0D * Math.sin(U1) * Math.sin(U2) / cosSqAlpha;
     }
 
@@ -208,49 +222,49 @@ function problema_inverso_Vicenty(phi1, lambda1, phi2, lambda2) {
 
   //calculo de las constantes necesarias en el calculo problema geodesico inverso
 
-  var A = 1+ (u2/256)*(64+u2*(-12+5*u2));
-  var B = (u2/512)*(128+u2*(-64+37*u2));
+  var A = 1 + (u2 / 256) * (64 + u2 * (-12 + 5 * u2));
+  var B = (u2 / 512) * (128 + u2 * (-64 + 37 * u2));
 
   //calculo del delta sigma
   //deltasigma = B*sen(sigma)*(cos(2sigmaM)+1/4*B*cos(sigma)*(-1+2cos^2(2sigmaM)));
 
   //formula en el libro
- // var deltaSigma = B*seno_sigma*(Math.cos(sigmaM)+(B/4)*coseno_sigma*(-1+2*Math.pow(Math.cos(sigmaM),2)));
+  // var deltaSigma = B*seno_sigma*(Math.cos(sigmaM)+(B/4)*coseno_sigma*(-1+2*Math.pow(Math.cos(sigmaM),2)));
 
- //formula antiguo magna pro
- var deltaSigma = B * seno_sigma * (Math.cos(sigmaM) + B / 4 * (coseno_sigma * (-1 + 2* Math.pow(Math.cos(sigmaM), 2)) - B / 6* Math.cos(sigmaM)* (-3 + 4* Math.pow(seno_sigma, 2)) * (-3 + 4* Math.pow(Math.cos(sigmaM), 2))));
+  //formula antiguo magna pro
+  var deltaSigma = B * seno_sigma * (Math.cos(sigmaM) + B / 4 * (coseno_sigma * (-1 + 2 * Math.pow(Math.cos(sigmaM), 2)) - B / 6 * Math.cos(sigmaM) * (-3 + 4 * Math.pow(seno_sigma, 2)) * (-3 + 4 * Math.pow(Math.cos(sigmaM), 2))));
 
- //calculo distancia
-var s = grs.b*A*(sigma-deltaSigma);
+  //calculo distancia
+  var s = grs.b * A * (sigma - deltaSigma);
 
- a12 = Math.atan2(Math.cos(U2)*Math.sin(lambda),(Math.cos(U1)*Math.sin(U2)-Math.sin(U1)*Math.cos(U2)*Math.cos(lambda)));
- a21 = Math.atan2(Math.cos(U1)*Math.sin(lambda),(-Math.sin(U1)*Math.cos(U2)+Math.cos(U1)*Math.sin(U2)*Math.cos(lambda)));
+  a12 = Math.atan2(Math.cos(U2) * Math.sin(lambda), (Math.cos(U1) * Math.sin(U2) - Math.sin(U1) * Math.cos(U2) * Math.cos(lambda)));
+  a21 = Math.atan2(Math.cos(U1) * Math.sin(lambda), (-Math.sin(U1) * Math.cos(U2) + Math.cos(U1) * Math.sin(U2) * Math.cos(lambda)));
 
- a12 = a12*(180 / Math.PI);
- a21 = a21*(180 / Math.PI);
+  a12 = a12 * (180 / Math.PI);
+  a21 = a21 * (180 / Math.PI);
 
-if(a12 < 0){
-  a12 = a12+360;
+  if (a12 < 0) {
+    a12 = a12 + 360;
+  }
+  if (a21 < 0) {
+    a21 = a21 + 360;
+  }
+  a21 = a21 + 180;
+  if (a21 > 360) {
+    a21 = a21 - 360;
+  }
+
+  console.log(a12, "\n", a21, "\n", s);
+
+  return {
+    a12: a12,
+    a21: a21,
+    s: s
+  }
+
 }
-if(a21 < 0){
-  a21 = a21+360;
-}
-a21 = a21 + 180;
-if(a21 > 360){
-  a21 = a21 -360;
-}
 
-
-
- return{
-  a12: a12,
-  a21: a21,
-  s: s
- }
-
-}
-
-//problema_inverso_Vicenty(0, -73, 5, -73.5);
+problema_inverso_Vicenty(0, -73, 5, -73.5);
 
 //exportamos los modulos para ser usados en otros js
-module.exports = {problema_directo_Vicenty, problema_inverso_Vicenty};
+module.exports = { problema_directo_Vicenty, problema_inverso_Vicenty };

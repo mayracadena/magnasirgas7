@@ -1,8 +1,8 @@
-class curvilineas{
+class coord_curvilineas{
     constructor(phi, lambda, h){
         this._phi = phi;
         this._lambda = lambda;
-        this._h = h
+        this._h = h;
     }
 
 
@@ -38,4 +38,4 @@ class curvilineas{
 }
 
 //esto se realiza para usar esta clase en otros metodos
-module.exports = curvilineas;
+module.exports = coord_curvilineas;
