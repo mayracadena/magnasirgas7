@@ -1,9 +1,479 @@
-<%- include('./partials/cabecero.ejs', {"titulo": "Conversión y transformación" }); %>
-    <%- include('./partials/menu.ejs'); %>
+<%- include('./partials/cabecero.ejs', {"titulo": "ITRF" }); %>
+<%- include('./partials/menu.ejs'); %>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interfaz de Cálculo Geodésico</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding: 20px;
+    }
+    .nav-tabs .nav-link {
+      background-color: #e9ecef;
+      color: #495057;
+    }
+    .nav-tabs .nav-link.active {
+      background-color: #fff;
+      color: #000;
+    }
+    .form-control {
+      margin-bottom: 10px;
+    }
+    .tab-pane {
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
 
-        
-           
+<!-- Fila para Sistema de Referencia de Partida y Llegada -->
+<div class="container-fluid">
+<div class="row mt-3">
+    <!-- Columna para Sistema de Referencia de Partida -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          Sistema de Referencia de Partida
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <!-- Opciones de Sistema de Referencia de Partida -->
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sistemaPartida" id="magnaSIRGASPartida" checked>
+              <label class="form-check-label" for="magnaSIRGASPartida">MAGNA-SIRGAS</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sistemaPartida" id="datumBogotaPartida">
+              <label class="form-check-label" for="datumBogotaPartida">Datum Bogotá</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Columna para Sistema de Referencia de Llegada -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          Sistema de Referencia de Llegada
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <!-- Opciones de Sistema de Referencia de Llegada -->
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sistemaLlegada" id="magnaSIRGASLlegada" checked>
+              <label class="form-check-label" for="magnaSIRGASLlegada">MAGNA-SIRGAS</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sistemaLlegada" id="datumBogotaLlegada">
+              <label class="form-check-label" for="datumBogotaLlegada">Datum Bogotá</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p></p>
 
+  
+  <p></p>    
+  <div class="container-fluid">
+    <!-- Fila para Tipo de Coordenada de Partida y Destino -->
+    <div class="row mt-3">
+      <!-- Columna para Tipo de Coordenada de Partida -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            Tipo de Coordenada de Partida
+          </div>
+          <div class="card-body">
+            <!-- Navegación de pestañas -->
+            <ul class="nav nav-tabs" id="myTabPartida" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="elipsoidal-tab-partida" data-bs-toggle="tab" data-bs-target="#elipsoidal-partida" type="button" role="tab" aria-controls="elipsoidal-partida" aria-selected="true">Elipsoidal Sexagesimal</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="elipsoidal-decimal-tab-partida" data-bs-toggle="tab" data-bs-target="#elipsoidal-decimal-partida" type="button" role="tab" aria-controls="elipsoidal-decimal-partida" aria-selected="false">Elipsoidal Decimal</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="origen-nacional-tab-partida" data-bs-toggle="tab" data-bs-target="#origen-nacional-partida" type="button" role="tab" aria-controls="origen-nacional-partida" aria-selected="false">Origen Nacional</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="geocentrica-tab-partida" data-bs-toggle="tab" data-bs-target="#geocentrica-partida" type="button" role="tab" aria-controls="geocentrica-partida" aria-selected="false">Geocéntrica</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="plana-cartesiana-tab-partida" data-bs-toggle="tab" data-bs-target="#plana-cartesiana-partida" type="button" role="tab" aria-controls="plana-cartesiana-partida" aria-selected="false">Plana Cartesiana</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="utm-tab-partida" data-bs-toggle="tab" data-bs-target="#utm-partida" type="button" role="tab" aria-controls="utm-partida" aria-selected="false">UTM</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="gauss-kruger-tab-partida" data-bs-toggle="tab" data-bs-target="#gauss-kruger-partida" type="button" role="tab" aria-controls="gauss-kruger-partida" aria-selected="false">Gauss Krüger</button>
+              </li>
+            </ul>
+            <!-- Contenido de las pestañas -->
+            <div class="tab-content" id="myTabContentPartida">
+              <!-- Elipsoidal Sexagesimal -->
+              <div class="tab-pane fade show active" id="elipsoidal-partida" role="tabpanel" aria-labelledby="elipsoidal-tab-partida">
+                <div class="form-group mt-3">
+                  <label for="latitud-partida">Latitud:</label>
+                  <div class="row">
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" placeholder="GG" id="latitud-grados-partida">
+                    </div>
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" placeholder="MM" id="latitud-minutos-partida">
+                    </div>
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" placeholder="SS.DDDDD" id="latitud-segundos-partida">
+                    </div>
+                    <div class="col-md-3">
+                      <select class="form-control" id="latitud-hemisferio-partida">
+                        <option value="N">N</option>
+                        <option value="S">S</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group mt-3">
+                  <label for="longitud-partida">Longitud:</label>
+                  <div class="row">
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" placeholder="GG" id="longitud-grados-partida">
+                    </div>
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" placeholder="MM" id="longitud-minutos-partida">
+                    </div>
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" placeholder="SS.DDDDD" id="longitud-segundos-partida">
+                    </div>
+                    <div class="col-md-3">
+                      <select class="form-control" id="longitud-hemisferio-partida">
+                        <option value="E">E</option>
+                        <option value="W">W</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Elipsoidal Decimal -->
+              <div class="tab-pane fade" id="elipsoidal-decimal-partida" role="tabpanel" aria-labelledby="elipsoidal-decimal-tab-partida">
+                <div class="form-group mt-3">
+                  <label for="latitud-decimal-partida">Latitud (decimal):</label>
+                  <input type="text" class="form-control" placeholder="Latitud (decimal)" id="latitud-decimal-partida">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="longitud-decimal-partida">Longitud (decimal):</label>
+                  <input type="text" class="form-control" placeholder="Longitud (decimal)" id="longitud-decimal-partida">
+                </div>
+              </div>
+              <!-- Origen Nacional -->
+              <div class="tab-pane fade" id="origen-nacional-partida" role="tabpanel" aria-labelledby="origen-nacional-tab-partida">
+                <div class="form-group mt-3">
+                  <label for="norte-partida">Norte (m):</label>
+                  <input type="text" class="form-control" id="norte-partida">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="este-partida">Este (m):</label>
+                  <input type="text" class="form-control" id="este-partida">
+                </div>
+              </div>
+              <!-- Geocéntrica -->
+              <div class="tab-pane fade" id="geocentrica-partida" role="tabpanel" aria-labelledby="geocentrica-tab-partida">
+                <div class="form-group mt-3">
+                  <label for="x-partida">X (m):</label>
+                  <input type="text" class="form-control" id="x-partida">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="y-partida">Y (m):</label>
+                  <input type="text" class="form-control" id="y-partida">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="z-partida">Z (m):</label>
+                  <input type="text" class="form-control" id="z-partida">
+                </div>
+              </div>
+              <!-- Plana Cartesiana -->
+              <div class="tab-pane fade" id="plana-cartesiana-partida" role="tabpanel" aria-labelledby="plana-cartesiana-tab-partida">
+                <div class="form-group mt-3">
+                  <label for="norte-pc-partida">Norte (m):</label>
+                  <input type="text" class="form-control" id="norte-pc-partida">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="este-pc-partida">Este (m):</label>
+                  <input type="text" class="form-control" id="este-pc-partida">
+                </div>
+              </div>
+              <!-- UTM -->
+              <div class="tab-pane fade" id="utm-partida" role="tabpanel" aria-labelledby="utm-tab-partida">
+                <div class="form-group mt-3">
+                  <label for="norte-utm-partida">Norte (m):</label>
+                  <input type="text" class="form-control" id="norte-utm-partida">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="este-utm-partida">Este (m):</label>
+                  <input type="text" class="form-control" id="este-utm-partida">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="huso-partida">Huso:</label>
+                  <input type="text" class="form-control" id="huso-partida">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="hemisferio-partida">Hemisferio:</label>
+                  <select class="form-control" id="hemisferio-partida">
+                    <option value="N">N</option>
+                    <option value="S">S</option>
+                  </select>
+                </div>
+              </div>
+              <!-- Gauss Krüger -->
+              <div class="tab-pane fade" id="gauss-kruger-partida" role="tabpanel" aria-labelledby="gauss-kruger-tab-partida">
+                <div class="form-group mt-3">
+                  <label for="norte-gk-partida">Norte (m):</label>
+                  <input type="text" class="form-control" id="norte-gk-partida">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="este-gk-partida">Este (m):</label>
+                  <input type="text" class="form-control" id="este-gk-partida">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="origen-gauss-partida">Origen Gauss:</label>
+                  <select class="form-control" id="origen-gauss-partida">
+                    <option value="Central">Central</option>
+                    <option value="Este">Este</option>
+                    <option value="Insular">Insular</option>
+                    <option value="Oeste">Oeste</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Columna para Tipo de Coordenada de Destino -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            Tipo de Coordenada de Destino
+          </div>
+          <div class="card-body">
+            <!-- Navegación de pestañas -->
+            <ul class="nav nav-tabs" id="myTabDestino" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="elipsoidal-tab-destino" data-bs-toggle="tab" data-bs-target="#elipsoidal-destino" type="button" role="tab" aria-controls="elipsoidal-destino" aria-selected="true">Elipsoidal Sexagesimal</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="elipsoidal-decimal-tab-destino" data-bs-toggle="tab" data-bs-target="#elipsoidal-decimal-destino" type="button" role="tab" aria-controls="elipsoidal-decimal-destino" aria-selected="false">Elipsoidal Decimal</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="origen-nacional-tab-destino" data-bs-toggle="tab" data-bs-target="#origen-nacional-destino" type="button" role="tab" aria-controls="origen-nacional-destino" aria-selected="false">Origen Nacional</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="geocentrica-tab-destino" data-bs-toggle="tab" data-bs-target="#geocentrica-destino" type="button" role="tab" aria-controls="geocentrica-destino" aria-selected="false">Geocéntrica</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="plana-cartesiana-tab-destino" data-bs-toggle="tab" data-bs-target="#plana-cartesiana-destino" type="button" role="tab" aria-controls="plana-cartesiana-destino" aria-selected="false">Plana Cartesiana</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="utm-tab-destino" data-bs-toggle="tab" data-bs-target="#utm-destino" type="button" role="tab" aria-controls="utm-destino" aria-selected="false">UTM</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="gauss-kruger-tab-destino" data-bs-toggle="tab" data-bs-target="#gauss-kruger-destino" type="button" role="tab" aria-controls="gauss-kruger-destino" aria-selected="false">Gauss Krüger</button>
+              </li>
+            </ul>
+            <!-- Contenido de las pestañas -->
+            <div class="tab-content" id="myTabContentDestino">
+              <!-- Elipsoidal Sexagesimal -->
+              <div class="tab-pane fade show active" id="elipsoidal-destino" role="tabpanel" aria-labelledby="elipsoidal-tab-destino">
+                <div class="form-group mt-3">
+                  <label for="latitud-destino">Latitud:</label>
+                  <div class="row">
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" placeholder="GG" id="latitud-grados-destino">
+                    </div>
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" placeholder="MM" id="latitud-minutos-destino">
+                    </div>
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" placeholder="SS.DDDDD" id="latitud-segundos-destino">
+                    </div>
+                    <div class="col-md-3">
+                      <select class="form-control" id="latitud-hemisferio-destino">
+                        <option value="N">N</option>
+                        <option value="S">S</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group mt-3">
+                  <label for="longitud-destino">Longitud:</label>
+                  <div class="row">
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" placeholder="GG" id="longitud-grados-destino">
+                    </div>
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" placeholder="MM" id="longitud-minutos-destino">
+                    </div>
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" placeholder="SS.DDDDD" id="longitud-segundos-destino">
+                    </div>
+                    <div class="col-md-3">
+                      <select class="form-control" id="longitud-hemisferio-destino">
+                        <option value="E">E</option>
+                        <option value="W">W</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Elipsoidal Decimal -->
+              <div class="tab-pane fade" id="elipsoidal-decimal-destino" role="tabpanel" aria-labelledby="elipsoidal-decimal-tab-destino">
+                <div class="form-group mt-3">
+                  <label for="latitud-decimal-destino">Latitud (decimal):</label>
+                  <input type="text" class="form-control" placeholder="Latitud (decimal)" id="latitud-decimal-destino">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="longitud-decimal-destino">Longitud (decimal):</label>
+                  <input type="text" class="form-control" placeholder="Longitud (decimal)" id="longitud-decimal-destino">
+                </div>
+              </div>
+              <!-- Origen Nacional -->
+              <div class="tab-pane fade" id="origen-nacional-destino" role="tabpanel" aria-labelledby="origen-nacional-tab-destino">
+                <div class="form-group mt-3">
+                  <label for="norte-destino">Norte (m):</label>
+                  <input type="text" class="form-control" id="norte-destino">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="este-destino">Este (m):</label>
+                  <input type="text" class="form-control" id="este-destino">
+                </div>
+              </div>
+              <!-- Geocéntrica -->
+              <div class="tab-pane fade" id="geocentrica-destino" role="tabpanel" aria-labelledby="geocentrica-tab-destino">
+                <div class="form-group mt-3">
+                  <label for="x-destino">X (m):</label>
+                  <input type="text" class="form-control" id="x-destino">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="y-destino">Y (m):</label>
+                  <input type="text" class="form-control" id="y-destino">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="z-destino">Z (m):</label>
+                  <input type="text" class="form-control" id="z-destino">
+                </div>
+              </div>
+              <!-- Plana Cartesiana -->
+              <div class="tab-pane fade" id="plana-cartesiana-destino" role="tabpanel" aria-labelledby="plana-cartesiana-tab-destino">
+                <div class="form-group mt-3">
+                  <label for="norte-pc-destino">Norte (m):</label>
+                  <input type="text" class="form-control" id="norte-pc-destino">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="este-pc-destino">Este (m):</label>
+                  <input type="text" class="form-control" id="este-pc-destino">
+                </div>
+              </div>
+              <!-- UTM -->
+              <div class="tab-pane fade" id="utm-destino" role="tabpanel" aria-labelledby="utm-tab-destino">
+                <div class="form-group mt-3">
+                  <label for="norte-utm-destino">Norte (m):</label>
+                  <input type="text" class="form-control" id="norte-utm-destino">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="este-utm-destino">Este (m):</label>
+                  <input type="text" class="form-control" id="este-utm-destino">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="huso-destino">Huso:</label>
+                  <input type="text" class="form-control" id="huso-destino">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="hemisferio-destino">Hemisferio:</label>
+                  <select class="form-control" id="hemisferio-destino">
+                    <option value="N">N</option>
+                    <option value="S">S</option>
+                  </select>
+                </div>
+              </div>
+              <!-- Gauss Krüger -->
+              <div class="tab-pane fade" id="gauss-kruger-destino" role="tabpanel" aria-labelledby="gauss-kruger-tab-destino">
+                <div class="form-group mt-3">
+                  <label for="norte-gk-destino">Norte (m):</label>
+                  <input type="text" class="form-control" id="norte-gk-destino">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="este-gk-destino">Este (m):</label>
+                  <input type="text" class="form-control" id="este-gk-destino">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="origen-gauss-destino">Origen Gauss:</label>
+                  <select class="form-control" id="origen-gauss-destino">
+                    <option value="Central">Central</option>
+                    <option value="Este">Este</option>
+                    <option value="Insular">Insular</option>
+                    <option value="Oeste">Oeste</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 
+  <!-- Botones de Acción -->
+  <div class="row mt-3">
+    <div class="col-md-12 text-center">
+      <button class="btn btn-primary">Calcular</button>
+      <button class="btn btn-secondary">Limpiar</button>
+    </div>
+  </div>
 
-        <%- include('./partials/pie.ejs'); %>
+</div>
+ <!-- JavaScript para actualizar el módulo de información -->
+ <script>
+// Función para mostrar la información del modelo VEMOS seleccionado
+function mostrarInformacionVemos() {
+    var seleccion = document.getElementById("modeloVelocidadesPartida").value;
+    var informacionVemos = document.getElementById("informacionVemos");
+  
+    // Limpia el contenido actual
+    informacionVemos.innerHTML = "";
+  
+    // Información según el modelo seleccionado
+    if (seleccion === "vemos2022") {
+      informacionVemos.innerHTML = 
+        '<p><strong>VEMOS 2022:</strong> Cubre el periodo comprendido entre el 1 de febrero de 2017 y el 30 de abril de 2022.</p>';
+    } else if (seleccion === "vemos2017") {
+      informacionVemos.innerHTML = 
+        '<p><strong>VEMOS 2017:</strong> Cubre la región comprendida entre 120°W, 55°S y 35°W, 32°N con una resolución espacial de 1° x 1°. La incertidumbre promedio es ±1.0 mm/a en la dirección norte-sur y ±1.7 mm/a en la dirección este-oeste.</p>';
+    } else if (seleccion === "vemos2015") {
+      informacionVemos.innerHTML = 
+        '<p><strong>VEMOS 2015:</strong> Válido del 14 de marzo de 2010 al 11 de abril del 2015. La incertidumbre media es ±0.6 mm/a en la dirección norte-sur y ±1.2 mm/a en la dirección este-oeste.</p>';
+    } else if (seleccion === "vemos2009") {
+      informacionVemos.innerHTML = 
+        '<p><strong>VEMOS 2009:</strong> Válido para el periodo entre enero 2 de 2000 y junio 30 de 2009. La incertidumbre media es aproximadamente 1.5 mm/a.</p>';
+    }
+  }
+  
+  // Ejecuta la función al cargar la página para mostrar la información del modelo por defecto
+  document.addEventListener("DOMContentLoaded", function() {
+    mostrarInformacionVemos();
+  });
+  </script>
+  
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+<%- include('./partials/pie.ejs'); %>
