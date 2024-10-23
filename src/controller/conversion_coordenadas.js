@@ -99,6 +99,17 @@ console.log(grs.f);
 
 
 
-function planas_cartesianas_a_curvilienas(planas_cartesianas, origencoordenadas){
-    //var conetion = 
+async function planas_cartesianas_a_curvilienas(planas_cartesianas, origencoordenadas){
+    var con = new conexion();
+    var oc = new planas_cartesianas(origencoordenadas);
+    
+    try{
+        await con.open();
+        var query = "select * from origen_cartografico where fk_municipio = ? and fk_sistema = ? and fk_corregimiento and anio ?";
+        var parametros = [oc]
+        var origen = await con.getOne()
+
+    }catch(error){
+
+    }
 }
