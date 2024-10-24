@@ -29,56 +29,27 @@
   </style>
 </head>
 <body>
-
-<!-- Fila para Sistema de Referencia de Partida y Llegada -->
-<div class="row mt-3">
-    <!-- Columna para Sistema de Referencia de Partida -->
-    <div class="col-md-6">
-      <div class="card">
+    <div class="card shadow">
         <div class="card-header">
-          Sistema de Referencia de Partida
+            <h2>Cambio de Época</h2>
         </div>
         <div class="card-body">
-          <div class="form-group">
-            <!-- Opciones de Sistema de Referencia de Partida -->
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="sistemaPartida" id="magnaSIRGASPartida" checked>
-              <label class="form-check-label" for="magnaSIRGASPartida">MAGNA-SIRGAS</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="sistemaPartida" id="datumBogotaPartida">
-              <label class="form-check-label" for="datumBogotaPartida">Datum Bogotá</label>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  
-    <!-- Columna para Sistema de Referencia de Llegada -->
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          Sistema de Referencia de Llegada
-        </div>
-        <div class="card-body">
-          <div class="form-group">
-            <!-- Opciones de Sistema de Referencia de Llegada -->
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="sistemaLlegada" id="magnaSIRGASLlegada" checked>
-              <label class="form-check-label" for="magnaSIRGASLlegada">MAGNA-SIRGAS</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="sistemaLlegada" id="datumBogotaLlegada">
-              <label class="form-check-label" for="datumBogotaLlegada">Datum Bogotá</label>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-<p></p>
 
-<div class="container">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <button class="nav-link active" id="panel_directo_tab" data-bs-toggle="tab"
+                        data-bs-target="#panel_directo" type="button" role="tab" aria-controls="panel_directo"
+                        aria-selected="true">Individual</button>
+                    <button class="nav-link" id="panel_inverso_tab" data-bs-toggle="tab"
+                        data-bs-target="#panel_inverso" type="button" role="tab" aria-controls="panel_inverso"
+                        aria-selected="false">Archivo</button>
+                </div>
+            </nav>
+
+        </div>
+    </div>
+
+<div class="container-fluid">
     <!-- Fila para Época de Rastreo y Época de Referencia -->
     <div class="row mt-3">
       <!-- Columna para Época de Rastreo -->
@@ -111,7 +82,7 @@
     </div>
   </div>
 <p></p>
-<div class="container">
+<div class="container-fluid">
     <!-- Fila para Modelo de Velocidades y Módulo de Información -->
     <div class="row mt-3">
       <!-- Columna para Modelo de Velocidades -->
@@ -127,6 +98,7 @@
                 <option value="vemos2017">VEMOS 2017</option>
                 <option value="vemos2015">VEMOS 2015</option>
                 <option value="vemos2009">VEMOS 2009</option>
+                <option value="vemos2009">VEMOS 2003</option>
               </select>
             </div>
           </div>
@@ -143,6 +115,11 @@
             <div id="informacionVemos" class="form-group">
               <!-- La información del modelo seleccionado aparecerá aquí -->
               Cada modelo de velocidades es válido para un lapso de tiempo determinado
+              <p></p>VEMOS 2022: Entre el 1 de febrero de 2017 y el 30 de abril de 2022.
+              <p></p>VEMOS 2017: Entre el 1 de febrero de 2017 y el 30 de abril de 2022.
+              <p></p>VEMOS 2015: Entre el 1 de febrero de 2017 y el 30 de abril de 2022.
+              <p></p>VEMOS 2009: Entre el 1 de febrero de 2017 y el 30 de abril de 2022.
+              <p></p>VEMOS 2003: Entre el 1 de febrero de 2017 y el 30 de abril de 2022.
             </div>
           </div>
         </div>
@@ -153,7 +130,7 @@
  
   
   <p></p>    
-  <div class="container">
+  <div class="container-fluid">
     <!-- Fila para Tipo de Coordenada de Partida y Destino -->
     <div class="row mt-3">
       <!-- Columna para Tipo de Coordenada de Partida -->
