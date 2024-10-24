@@ -11,6 +11,11 @@ const archivo = path.join(__dirname, geocol2004);
 // para interpolar los puntos dentro de las grillas utilizamos el metodo de interpolación bilineal
 //este es el método que tiene la versión magna pro 5.1 
 
+
+//el siguiente desarrollo es basado en la anterior version del magna pro 5.1 en lenguaje Java
+//este modulo fue programado por:
+//Mayra Yesenia Cadena Blanco - Ingeniera Catastral y Geodesta - Tecnologa en Análisis y Desarrollo de Sistemas de Información
+
 function cabecero() {
   return new Promise((resolve, reject) => {
     fs.readFile(archivo, "utf8", (err, data) => {

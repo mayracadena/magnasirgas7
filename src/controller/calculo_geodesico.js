@@ -2,17 +2,24 @@ const elipsoide_referencia = require("../class/elipsoide_referencia");
 const fs = require('fs');
 const conexion = require('../db/conexion');
 
+
+//Problema geodesico directo de Vincenty
+//este es el algoritmo mas utilizado debidoa  su precisión
+//tomado del siguiente link: https://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf
+//este modulo fue programado por:
+//Mayra Yesenia Cadena Blanco - Ingeniera Catastral y Geodesta - Tecnologa en Análisis y Desarrollo de Sistemas de Información
+
 //funcion que llama el elipoide de referencia GRS80 de la base de datos
 async function elipoide() {
   var con = new conexion();
   try {
       await con.open();  
 
-      var elipsoide_grs80 = "select semieje_mayor, achatamiento from elipsoide where nombre = ?";
-      var elip = await con.getOne(elipsoide_grs80, ['GRS80']);  
-      const grs = new elipsoide_referencia(elip.semieje_mayor, elip.achatamiento);
+      var query_elipsoide_grs80 = "select semieje_mayor, achatamiento from elipsoide where nombre = ?";
+      var elip = await con.getOne(query_elipsoide_grs80, ['GRS80']);  
+      const result_grs = new elipsoide_referencia(elip.semieje_mayor, elip.achatamiento);
       
-      return grs;
+      return result_grs;
   } catch (error) {
       console.error("Ocurrió un error:", error);
   } finally {
@@ -21,10 +28,6 @@ async function elipoide() {
 }
 
 
-
-//Problema geodesico directo de Vincenty
-//este es el algoritmo mas utilizado debidoa  su precisión
-//tomado del siguiente link: https://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf
 
 async function problema_directo_Vicenty(phi1, lambda1, a12, s) {
   //llamar el elipsoide de referencia

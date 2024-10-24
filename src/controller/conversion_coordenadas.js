@@ -10,15 +10,15 @@ const fs = require('fs');
 const conexion = require('../db/conexion');
 
 
-//funcion que llama el elipoide de referencia
+//funcion que llama el elipoide de referencia segun el datum escogido
 async function elipoide(id) {
     var con = new conexion();
     try {
         await con.open();
 
-        var elipsoide_grs80 = "select e.semieje_mayor, e.achatamiento from elipsoide e inner join sistema_referencia sr where sr.id = ?";
-        var elip = await con.getOne(elipsoide_grs80, [id]);
-        const elipsoide_consultado = new elipsoide_referencia(elip.semieje_mayor, elip.achatamiento);
+        var query_elipsoide = "select e.semieje_mayor, e.achatamiento from elipsoide e inner join sistema_referencia sr where sr.id = ?";
+        var reult_elip = await con.getOne(query_elipsoide, [id]);
+        const elipsoide_consultado = new elipsoide_referencia(reult_elip.semieje_mayor, reult_elip.achatamiento);
 
         return elipsoide_consultado;
     } catch (error) {
@@ -32,15 +32,15 @@ async function elipoide(id) {
 const ctm = new CTM12();
 const utm = new UTM();
 
-//coordenadas planas UTM a curvilineas
 
 
 //El siguiente desarrollo es basado a la recopilación de las formulas del ingeniero Siervo William León Callejas
-//Programado por:
+//Este modulo fue programado por:
 //Mayra Yesenia Cadena Blanco - Ingeniera Catastral y Geodesta - Tecnologa en Análisis y Desarrollo de Sistemas de Información
 //Michael Steveen Ramirez Bohorquez - Ingeniero Catastral y Geodesta
 
 
+//coordenadas planas UTM a curvilineas
 async function utm_a_curvilineas(norte, este, huso, sist_refe) {
     //llamar valores del sistema de referencia
     var elip = await elipoide(sist_refe);
@@ -107,26 +107,65 @@ async function utm_a_curvilineas(norte, este, huso, sist_refe) {
 
 
 
-
+//esta funcion recibe un objeto de coordenadas planas y el id del origen cartografico escogido
 async function planas_cartesianas_a_curvilienas(coordenadas_planas, id_pc) {
     var con = new conexion();
-    var oc = new coord_planas(coordenadas_planas.norte, coordenadas_planas.este);
-    var elip = await elipoide();
+    var cp = new coord_planas(coordenadas_planas.norte, coordenadas_planas.este);
+    
+    //traer informacion de las coordenadas planas al hacer la conversion
     try {
         await con.open();
+        //traer todos los datos del origen cartografico
         var query_origen = "select * from origen_cartografico where id = ?";
         var parametros = [id_pc];
-        var origen = await con.getOne(query_origen, parametros);
-        var elipsoide_referencia = "select e.semieje_mayor, e.achatamiento from sistema_referencia sr inner join elipsoide e on e.id = sr.fk_elipsoide where sr.id = ?";
-        var elip = await con.getOne(elipsoide_referencia, [origen.fk_sistema]);
-        console.log(origen)
-        console.log(elip)
+        var result_origen = await con.getOne(query_origen, parametros);
+        var oc = new planas_cartesianas(result_origen.id, result_origen.fk_sistema, result_origen.detalle, result_origen.anio, result_origen.fk_corregimiento, result_origen.fk_municipio, result_origen.latitud, result_origen.longitud, result_origen.norte, result_origen.este, result_origen.plano_proyeccion, result_origen.descripcion, result_origen.oficial);
+
+        //traer todos los datos del elipsoide del sistema de referencia escogido
+        var query_elipsoide_referencia = "select e.semieje_mayor, e.achatamiento from sistema_referencia sr inner join elipsoide e on e.id = sr.fk_elipsoide where sr.id = ?";
+        var result_elip = await con.getOne(query_elipsoide_referencia, [result_origen.fk_sistema]);
+        var elip = new elipsoide_referencia(result_elip.semieje_mayor, result_elip.achatamiento)
+        
     } catch (error) {
         console.error("Ocurrió un error:", error);
     } finally {
         await con.close();
     }
+    //diferencia de coordenadas ingresadas y coordenadas de origen plano cartesiano
+    var D_N = cp.norte - oc.fnorte;
+    var D_E = cp.este - oc.feste;
+
+    //cálculo de la normal en la latitud de origen de coordenadas
+    //se debe cambiar la latitud del origen de coordenadasde decimal a radianes
+    var N_phi0 = (elip.a)/(Math.pow(1-(elip.e2*Math.pow(Math.sin(oc.latitud*(Math.PI / 180)),2)), (1/2)));
+    //calculo del radio medio de curvatura
+    var rho = (elip.a*(1-elip.e2))/(Math.pow(1-(elip.e2*(Math.pow(Math.sin(oc.latitud*(Math.PI / 180)),2))), 3/2));
+
+    //diferencias de latitud
+
+    var D_phi = (D_N/(1+((oc.plano_proyeccion)/(elip.a*(1-elip.e2)))*rho)) - ((Math.tan(oc.latitud*(Math.PI / 180))/(2*rho*N_phi0))*(Math.pow((D_E/(1+(oc.plano_proyeccion/elip.a))),2)));
+
+    //resultado final de latitud 
+    var phi = oc.latitud + D_phi;
+
+    //cálculo de la normal en la latitud de la coordenada
+    //se debe cambiar la latitud de la coordenada previamente calculada del punto de decimal a radianes
+    var N_phi = (elip.a)/(Math.pow(1-(elip.e2*Math.pow(Math.sin(phi*(Math.PI / 180)),2)), (1/2)));
+
+    //se debe verificar que phi este en radianes o en grados
+    var D_lambda = D_E/(N_phi*Math.cos(phi*(Math.PI / 180))*(1+(oc.plano_proyeccion/elip.a)));
+
+    var lambda = oc.longitud + D_lambda;
+
+
+   
+    console.log("delta  phi", D_phi*(180/ Math.PI ), "\n delta lambda", D_lambda);
+    console.log("n phi 0", N_phi0, "\n n phi", N_phi);
+    console.log("rho: ",rho);
+    console.log("lat: ",phi);
+    console.log("long: ",lambda);
+    
 }
 
-var cpe = new coord_planas(27500, 26000);
-planas_cartesianas_a_curvilienas(cpe, 2840);
+var cpe = new coord_planas(85751.864, 94803.436);
+planas_cartesianas_a_curvilienas(cpe,2603);
