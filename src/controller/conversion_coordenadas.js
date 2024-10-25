@@ -169,3 +169,33 @@ async function planas_cartesianas_a_curvilienas(coordenadas_planas, id_pc) {
 
 var cpe = new coord_planas(85751.864, 94803.436);
 planas_cartesianas_a_curvilienas(cpe,2603);
+
+async function planas_cartesianas_a_curvilienas2(coordenadas_planas, id_pc) {
+    var con = new conexion();
+    var cp = new coord_planas(coordenadas_planas.norte, coordenadas_planas.este);
+    
+    //traer informacion de las coordenadas planas al hacer la conversion
+    try {
+        await con.open();
+        //traer todos los datos del origen cartografico
+        var query_origen = "select * from origen_cartografico where id = ?";
+        var parametros = [id_pc];
+        var result_origen = await con.getOne(query_origen, parametros);
+        var oc = new planas_cartesianas(result_origen.id, result_origen.fk_sistema, result_origen.detalle, result_origen.anio, result_origen.fk_corregimiento, result_origen.fk_municipio, result_origen.latitud, result_origen.longitud, result_origen.norte, result_origen.este, result_origen.plano_proyeccion, result_origen.descripcion, result_origen.oficial);
+
+        //traer todos los datos del elipsoide del sistema de referencia escogido
+        var query_elipsoide_referencia = "select e.semieje_mayor, e.achatamiento from sistema_referencia sr inner join elipsoide e on e.id = sr.fk_elipsoide where sr.id = ?";
+        var result_elip = await con.getOne(query_elipsoide_referencia, [result_origen.fk_sistema]);
+        var elip = new elipsoide_referencia(result_elip.semieje_mayor, result_elip.achatamiento)
+        
+    } catch (error) {
+        console.error("Ocurrió un error:", error);
+    } finally {
+        await con.close();
+    }
+
+    var TN = (elip.a - elip.b)/(elip.a + elip.b);
+    var A0 = 1-TN+(5*((Math.pow(TN, 2)-Math.pow(TN,3))/4))+(81*((Math.pow(TN,4)-Math.pow(TN,5))/64));
+    var A2 = 3*((TN-Math.pow(TN,2)+((7*(Math.pow(TN,3)-Math.pow(TN,4)/8))+((55*Math.pow(TN,5))/64)))/2);
+    
+}
