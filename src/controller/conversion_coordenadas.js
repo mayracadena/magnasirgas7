@@ -167,8 +167,8 @@ async function planas_cartesianas_a_curvilienas(coordenadas_planas, id_pc) {
     
 }
 
-var cpe = new coord_planas(85751.864, 94803.436);
-planas_cartesianas_a_curvilienas(cpe,2603);
+// var cpe = new coord_planas(85751.864, 94803.436);
+// planas_cartesianas_a_curvilienas(cpe,2603);
 
 async function planas_cartesianas_a_curvilienas2(coordenadas_planas, id_pc) {
     var con = new conexion();
@@ -197,5 +197,96 @@ async function planas_cartesianas_a_curvilienas2(coordenadas_planas, id_pc) {
     var TN = (elip.a - elip.b)/(elip.a + elip.b);
     var A0 = 1-TN+(5*((Math.pow(TN, 2)-Math.pow(TN,3))/4))+(81*((Math.pow(TN,4)-Math.pow(TN,5))/64));
     var A2 = 3*((TN-Math.pow(TN,2)+((7*(Math.pow(TN,3)-Math.pow(TN,4)/8))+((55*Math.pow(TN,5))/64)))/2);
+    var A4 = 15*((Math.pow(TN, 2)-Math.pow(TN,3))/16)+((3*(Math.pow(TN,4)-Math.pow(TN,5)))/64);
+    var A6 = 35*((Math.pow(TN,3)-Math.pow(TN,4))/48)+((11*Math.pow(TN, 5))/64);
+    //verificar si es -315
+    var A8 = -315*((Math.pow(TN,4)-Math.pow(TN, 5))/512);
+    //k para planas cartesianas
+    var D_N = (cp.norte-oc.fnorte);
+    var D_E = cp.este-oc.feste;
+
+    var phi1 = D_N/((elip.a+elip.b)/2);
+    console.log("antes del do: ",phi1)
+    var limite =  1e-12;
     
+    do{
+        var FP = elip.a*((A0*phi1)-A2*Math.sin(2*phi1)+(A4*Math.sin(4*phi1))-(A6*Math.sin(6*phi1))+A8*Math.sin(8*phi1))*D_N;
+        var FH= elip.a*(A0-2*A2*Math.cos(2*phi1)+4*A4*Math.cos(4*phi1)-6*A6*Math.cos(6*phi1)+8*A8*Math.cos(8*phi1));
+        var DIF = FP/FH;
+        var phi2 = phi1-DIF;
+        DIF = phi2-phi1;
+        phi1=phi2
+        
+        console.log("dentro del do: ",phi1)
+        console.log("DIF abs: ", Math.abs(DIF))
+    }while(Math.abs(DIF) < limite)
+
+    var ETA = Math.sqrt((Math.pow(elip.a,2)-Math.pow(elip.b,2))/(Math.pow(elip.b, 2)*Math.pow(Math.cos(phi1),2)));
+    var N = elip.a/Math.sqrt(1-elip.e2*(Math.pow(Math.sin(phi1), 2)))
+    var rho = (elip.a*(1-elip.e2))/(Math.pow(1-(elip.e2*(Math.pow(Math.sin(phi1),2))), 3/2));
+
+    var T = Math.tan(phi1);
+    var SP = Math.sin(phi1);
+    var CP = Math.cos(phi1);
+
+    //la latitud del punto esta dada por:
+    var phip = phi1- T*(D_E/N)*(D_E/(2*rho))+T*(Math.pow(D_E/N), 3)*(D_E/(24*rho))*(5+3*Math.pow(T,2)+Math.pow(ETA,2)-T*(Math.pow(D_E/N,5))*(D_E/(720*rho))*(61-90*Math.pow(T,2)));
+
+    //la longitud del punto está dada por:
+    var lambdap = oc.longitud + (((D_E/N)-(Math.pow(D_E/N,3)/6)*(1+2*Math.pow(T,2)+Math.pow(ETA,2)+(Math.pow(D_E/N,5)/120)*(5+6*Math.pow(ETA,2)+28*T-3*Math.pow(ETA,4))))/Math.cos(phi1));
+
+    console.log("phi1: ", phi1)
+    console.log("lambda 0: ", oc.longitud)
+    console.log("phip: ", phip*(180/Math.PI))
+    console.log("lambdap: ", lambdap)
+
+}
+
+// var cpe = new coord_planas(85751.864, 94803.436);
+// planas_cartesianas_a_curvilienas2(cpe,2603);
+
+async function planas_cartesianas_a_curvilienas3(coordenadas_planas, id_pc) {
+    var con = new conexion();
+    var cp = new coord_planas(coordenadas_planas.norte, coordenadas_planas.este);
+    
+    //traer informacion de las coordenadas planas al hacer la conversion
+    try {
+        await con.open();
+        //traer todos los datos del origen cartografico
+        var query_origen = "select * from origen_cartografico where id = ?";
+        var parametros = [id_pc];
+        var result_origen = await con.getOne(query_origen, parametros);
+        var oc = new planas_cartesianas(result_origen.id, result_origen.fk_sistema, result_origen.detalle, result_origen.anio, result_origen.fk_corregimiento, result_origen.fk_municipio, result_origen.latitud, result_origen.longitud, result_origen.norte, result_origen.este, result_origen.plano_proyeccion, result_origen.descripcion, result_origen.oficial);
+
+        //traer todos los datos del elipsoide del sistema de referencia escogido
+        var query_elipsoide_referencia = "select e.semieje_mayor, e.achatamiento from sistema_referencia sr inner join elipsoide e on e.id = sr.fk_elipsoide where sr.id = ?";
+        var result_elip = await con.getOne(query_elipsoide_referencia, [result_origen.fk_sistema]);
+        var elip = new elipsoide_referencia(result_elip.semieje_mayor, result_elip.achatamiento)
+        
+    } catch (error) {
+        console.error("Ocurrió un error:", error);
+    } finally {
+        await con.close();
+    }
+    var pp = oc.plano_proyeccion;
+
+    var deltaN = cp.norte - oc.fnorte;
+    var deltaE = cp.este - oc.feste;
+
+    var senolat = Math.sin(oc.latitud*(Math.PI/180));
+    var n1 = 1 - elip.e2*Math.pow(senolat,2)
+    var N = elip.a/Math.sqrt(n1)
+    var M = elip.a*(1-elip.e2)/Math.pow(n1, 3/2);
+    var l1 = deltaN/(1+pp/elip.a*(1-elip.e2))*M;
+    var l2 = Math.tan(oc.latitud*(Math.PI/180))/2*N*M;
+    var l3 = Math.pow(deltaE/(1+pp/a),2);
+    var deltaL = l1-l2*l3;
+    var la = (oc.latitud*(Math.PI/180))+deltaL;
+    var latitud = la*(180/Math.PI);
+
+    var senola = Math.sin(la);
+    var n2 = 1-elip.e2*Math.pow(senola,2);
+    var Np = a/Math.sqrt(n2);
+    var deltalo = deltaE
+
 }
