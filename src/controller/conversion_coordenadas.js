@@ -111,7 +111,7 @@ async function utm_a_curvilineas(norte, este, huso, sist_refe) {
 async function planas_cartesianas_a_curvilienas(coordenadas_planas, id_pc) {
     var con = new conexion();
     var cp = new coord_planas(coordenadas_planas.norte, coordenadas_planas.este);
-    
+
     //traer informacion de las coordenadas planas al hacer la conversion
     try {
         await con.open();
@@ -125,46 +125,50 @@ async function planas_cartesianas_a_curvilienas(coordenadas_planas, id_pc) {
         var query_elipsoide_referencia = "select e.semieje_mayor, e.achatamiento from sistema_referencia sr inner join elipsoide e on e.id = sr.fk_elipsoide where sr.id = ?";
         var result_elip = await con.getOne(query_elipsoide_referencia, [result_origen.fk_sistema]);
         var elip = new elipsoide_referencia(result_elip.semieje_mayor, result_elip.achatamiento)
-        
+
     } catch (error) {
         console.error("Ocurrió un error:", error);
     } finally {
         await con.close();
     }
+
+    
     //diferencia de coordenadas ingresadas y coordenadas de origen plano cartesiano
     var D_N = cp.norte - oc.fnorte;
     var D_E = cp.este - oc.feste;
 
     //cálculo de la normal en la latitud de origen de coordenadas
     //se debe cambiar la latitud del origen de coordenadasde decimal a radianes
-    var N_phi0 = (elip.a)/(Math.pow(1-(elip.e2*Math.pow(Math.sin(oc.latitud*(Math.PI / 180)),2)), (1/2)));
+    var N_phi0 = (elip.a) / (Math.pow(1 - (elip.e2 * Math.pow(Math.sin(oc.latitud * (Math.PI / 180)), 2)), (1 / 2)));
     //calculo del radio medio de curvatura
-    var rho = (elip.a*(1-elip.e2))/(Math.pow(1-(elip.e2*(Math.pow(Math.sin(oc.latitud*(Math.PI / 180)),2))), 3/2));
+    var rho = (elip.a * (1 - elip.e2)) / (Math.pow(1 - (elip.e2 * (Math.pow(Math.sin(oc.latitud * (Math.PI / 180)), 2))), 3 / 2));
 
     //diferencias de latitud
 
-    var D_phi = (D_N/(1+((oc.plano_proyeccion)/(elip.a*(1-elip.e2)))*rho)) - ((Math.tan(oc.latitud*(Math.PI / 180))/(2*rho*N_phi0))*(Math.pow((D_E/(1+(oc.plano_proyeccion/elip.a))),2)));
+    var D_phi = (D_N / (1 + ((oc.plano_proyeccion) / (elip.a * (1 - elip.e2))) * rho)) - ((Math.tan(oc.latitud * (Math.PI / 180)) / (2 * rho * N_phi0)) * (Math.pow((D_E / (1 + (oc.plano_proyeccion / elip.a))), 2)));
 
     //resultado final de latitud 
-    var phi = oc.latitud + D_phi;
+    var phi = (oc.latitud*(Math.PI/180))+ D_phi;
 
     //cálculo de la normal en la latitud de la coordenada
     //se debe cambiar la latitud de la coordenada previamente calculada del punto de decimal a radianes
-    var N_phi = (elip.a)/(Math.pow(1-(elip.e2*Math.pow(Math.sin(phi*(Math.PI / 180)),2)), (1/2)));
+    var N_phi = (elip.a) / (Math.pow(1 - (elip.e2 * Math.pow(Math.sin(phi), 2)), (1 / 2)));
 
     //se debe verificar que phi este en radianes o en grados
-    var D_lambda = D_E/(N_phi*Math.cos(phi*(Math.PI / 180))*(1+(oc.plano_proyeccion/elip.a)));
+    var D_lambda = D_E / (N_phi * Math.cos(phi) * (1 + (oc.plano_proyeccion / elip.a)));
 
-    var lambda = oc.longitud + D_lambda;
+    var lambda = (oc.longitud) + (D_lambda*(180/Math.PI));
 
 
-   
-    console.log("delta  phi", D_phi*(180/ Math.PI ), "\n delta lambda", D_lambda);
-    console.log("n phi 0", N_phi0, "\n n phi", N_phi);
-    console.log("rho: ",rho);
-    console.log("lat: ",phi);
-    console.log("long: ",lambda);
-    
+
+    console.log("PARAMETROS DE ENTRADA: ")
+    console.log("NORTE: ",cp.norte)
+    console.log("ESTE: ",cp.este)
+    console.log("NORTE FALSO: ",oc.fnorte)
+    console.log("ESTE FALSO: ",oc.feste)
+    console.log("descripcion origen: ",oc.descripcion)
+    console.log("delta de lat: ",D_phi)
+    console.log("RESULTADOS FINALES: lat: ",phi, " long:",lambda);
 }
 
 // var cpe = new coord_planas(85751.864, 94803.436);
@@ -173,7 +177,7 @@ async function planas_cartesianas_a_curvilienas(coordenadas_planas, id_pc) {
 async function planas_cartesianas_a_curvilienas2(coordenadas_planas, id_pc) {
     var con = new conexion();
     var cp = new coord_planas(coordenadas_planas.norte, coordenadas_planas.este);
-    
+
     //traer informacion de las coordenadas planas al hacer la conversion
     try {
         await con.open();
@@ -187,57 +191,57 @@ async function planas_cartesianas_a_curvilienas2(coordenadas_planas, id_pc) {
         var query_elipsoide_referencia = "select e.semieje_mayor, e.achatamiento from sistema_referencia sr inner join elipsoide e on e.id = sr.fk_elipsoide where sr.id = ?";
         var result_elip = await con.getOne(query_elipsoide_referencia, [result_origen.fk_sistema]);
         var elip = new elipsoide_referencia(result_elip.semieje_mayor, result_elip.achatamiento)
-        
+
     } catch (error) {
         console.error("Ocurrió un error:", error);
     } finally {
         await con.close();
     }
 
-    var TN = (elip.a - elip.b)/(elip.a + elip.b);
-    var A0 = 1-TN+(5*((Math.pow(TN, 2)-Math.pow(TN,3))/4))+(81*((Math.pow(TN,4)-Math.pow(TN,5))/64));
-    var A2 = 3*((TN-Math.pow(TN,2)+((7*(Math.pow(TN,3)-Math.pow(TN,4)/8))+((55*Math.pow(TN,5))/64)))/2);
-    var A4 = 15*((Math.pow(TN, 2)-Math.pow(TN,3))/16)+((3*(Math.pow(TN,4)-Math.pow(TN,5)))/64);
-    var A6 = 35*((Math.pow(TN,3)-Math.pow(TN,4))/48)+((11*Math.pow(TN, 5))/64);
+    var TN = (elip.a - elip.b) / (elip.a + elip.b);
+    var A0 = 1 - TN + (5 * ((Math.pow(TN, 2) - Math.pow(TN, 3)) / 4)) + (81 * ((Math.pow(TN, 4) - Math.pow(TN, 5)) / 64));
+    var A2 = 3 * ((TN - Math.pow(TN, 2) + ((7 * (Math.pow(TN, 3) - Math.pow(TN, 4) / 8)) + ((55 * Math.pow(TN, 5)) / 64))) / 2);
+    var A4 = 15 * ((Math.pow(TN, 2) - Math.pow(TN, 3)) / 16) + ((3 * (Math.pow(TN, 4) - Math.pow(TN, 5))) / 64);
+    var A6 = 35 * ((Math.pow(TN, 3) - Math.pow(TN, 4)) / 48) + ((11 * Math.pow(TN, 5)) / 64);
     //verificar si es -315
-    var A8 = -315*((Math.pow(TN,4)-Math.pow(TN, 5))/512);
+    var A8 = -315 * ((Math.pow(TN, 4) - Math.pow(TN, 5)) / 512);
     //k para planas cartesianas
-    var D_N = (cp.norte-oc.fnorte);
-    var D_E = cp.este-oc.feste;
+    var D_N = (cp.norte - oc.fnorte);
+    var D_E = cp.este - oc.feste;
 
-    var phi1 = D_N/((elip.a+elip.b)/2);
-    console.log("antes del do: ",phi1)
-    var limite =  1e-12;
-    
-    do{
-        var FP = elip.a*((A0*phi1)-A2*Math.sin(2*phi1)+(A4*Math.sin(4*phi1))-(A6*Math.sin(6*phi1))+A8*Math.sin(8*phi1))*D_N;
-        var FH= elip.a*(A0-2*A2*Math.cos(2*phi1)+4*A4*Math.cos(4*phi1)-6*A6*Math.cos(6*phi1)+8*A8*Math.cos(8*phi1));
-        var DIF = FP/FH;
-        var phi2 = phi1-DIF;
-        DIF = phi2-phi1;
-        phi1=phi2
-        
-        console.log("dentro del do: ",phi1)
+    var phi1 = D_N / ((elip.a + elip.b) / 2);
+    console.log("antes del do: ", phi1)
+    var limite = 1e-12;
+
+    do {
+        var FP = elip.a * ((A0 * phi1) - A2 * Math.sin(2 * phi1) + (A4 * Math.sin(4 * phi1)) - (A6 * Math.sin(6 * phi1)) + A8 * Math.sin(8 * phi1)) * D_N;
+        var FH = elip.a * (A0 - 2 * A2 * Math.cos(2 * phi1) + 4 * A4 * Math.cos(4 * phi1) - 6 * A6 * Math.cos(6 * phi1) + 8 * A8 * Math.cos(8 * phi1));
+        var DIF = FP / FH;
+        var phi2 = phi1 - DIF;
+        DIF = phi2 - phi1;
+        phi1 = phi2
+
+        console.log("dentro del do: ", phi1)
         console.log("DIF abs: ", Math.abs(DIF))
-    }while(Math.abs(DIF) < limite)
+    } while (Math.abs(DIF) < limite)
 
-    var ETA = Math.sqrt((Math.pow(elip.a,2)-Math.pow(elip.b,2))/(Math.pow(elip.b, 2)*Math.pow(Math.cos(phi1),2)));
-    var N = elip.a/Math.sqrt(1-elip.e2*(Math.pow(Math.sin(phi1), 2)))
-    var rho = (elip.a*(1-elip.e2))/(Math.pow(1-(elip.e2*(Math.pow(Math.sin(phi1),2))), 3/2));
+    var ETA = Math.sqrt((Math.pow(elip.a, 2) - Math.pow(elip.b, 2)) / (Math.pow(elip.b, 2) * Math.pow(Math.cos(phi1), 2)));
+    var N = elip.a / Math.sqrt(1 - elip.e2 * (Math.pow(Math.sin(phi1), 2)))
+    var rho = (elip.a * (1 - elip.e2)) / (Math.pow(1 - (elip.e2 * (Math.pow(Math.sin(phi1), 2))), 3 / 2));
 
     var T = Math.tan(phi1);
     var SP = Math.sin(phi1);
     var CP = Math.cos(phi1);
 
     //la latitud del punto esta dada por:
-    var phip = phi1- T*(D_E/N)*(D_E/(2*rho))+T*(Math.pow(D_E/N), 3)*(D_E/(24*rho))*(5+3*Math.pow(T,2)+Math.pow(ETA,2)-T*(Math.pow(D_E/N,5))*(D_E/(720*rho))*(61-90*Math.pow(T,2)));
+    var phip = phi1 - T * (D_E / N) * (D_E / (2 * rho)) + T * (Math.pow(D_E / N), 3) * (D_E / (24 * rho)) * (5 + 3 * Math.pow(T, 2) + Math.pow(ETA, 2) - T * (Math.pow(D_E / N, 5)) * (D_E / (720 * rho)) * (61 - 90 * Math.pow(T, 2)));
 
     //la longitud del punto está dada por:
-    var lambdap = oc.longitud + (((D_E/N)-(Math.pow(D_E/N,3)/6)*(1+2*Math.pow(T,2)+Math.pow(ETA,2)+(Math.pow(D_E/N,5)/120)*(5+6*Math.pow(ETA,2)+28*T-3*Math.pow(ETA,4))))/Math.cos(phi1));
+    var lambdap = oc.longitud + (((D_E / N) - (Math.pow(D_E / N, 3) / 6) * (1 + 2 * Math.pow(T, 2) + Math.pow(ETA, 2) + (Math.pow(D_E / N, 5) / 120) * (5 + 6 * Math.pow(ETA, 2) + 28 * T - 3 * Math.pow(ETA, 4)))) / Math.cos(phi1));
 
     console.log("phi1: ", phi1)
     console.log("lambda 0: ", oc.longitud)
-    console.log("phip: ", phip*(180/Math.PI))
+    console.log("phip: ", phip * (180 / Math.PI))
     console.log("lambdap: ", lambdap)
 
 }
@@ -248,7 +252,7 @@ async function planas_cartesianas_a_curvilienas2(coordenadas_planas, id_pc) {
 async function planas_cartesianas_a_curvilienas3(coordenadas_planas, id_pc) {
     var con = new conexion();
     var cp = new coord_planas(coordenadas_planas.norte, coordenadas_planas.este);
-    
+
     //traer informacion de las coordenadas planas al hacer la conversion
     try {
         await con.open();
@@ -262,7 +266,7 @@ async function planas_cartesianas_a_curvilienas3(coordenadas_planas, id_pc) {
         var query_elipsoide_referencia = "select e.semieje_mayor, e.achatamiento from sistema_referencia sr inner join elipsoide e on e.id = sr.fk_elipsoide where sr.id = ?";
         var result_elip = await con.getOne(query_elipsoide_referencia, [result_origen.fk_sistema]);
         var elip = new elipsoide_referencia(result_elip.semieje_mayor, result_elip.achatamiento)
-        
+
     } catch (error) {
         console.error("Ocurrió un error:", error);
     } finally {
@@ -270,23 +274,46 @@ async function planas_cartesianas_a_curvilienas3(coordenadas_planas, id_pc) {
     }
     var pp = oc.plano_proyeccion;
 
+    var laORad = oc.latitud * (Math.PI / 180);
     var deltaN = cp.norte - oc.fnorte;
     var deltaE = cp.este - oc.feste;
 
-    var senolat = Math.sin(oc.latitud*(Math.PI/180));
-    var n1 = 1 - elip.e2*Math.pow(senolat,2)
-    var N = elip.a/Math.sqrt(n1)
-    var M = elip.a*(1-elip.e2)/Math.pow(n1, 3/2);
-    var l1 = deltaN/(1+pp/elip.a*(1-elip.e2))*M;
-    var l2 = Math.tan(oc.latitud*(Math.PI/180))/2*N*M;
-    var l3 = Math.pow(deltaE/(1+pp/a),2);
-    var deltaL = l1-l2*l3;
-    var la = (oc.latitud*(Math.PI/180))+deltaL;
-    var latitud = la*(180/Math.PI);
+    var sinLaORad = Math.sin(laORad);
+    var n1 = 1 - elip.e2 * Math.pow(sinLaORad, 2);
+    var N = elip.a / Math.sqrt(n1);
+    var M = elip.a * (1 - elip.e2) / Math.pow(n1, 1.5);
 
-    var senola = Math.sin(la);
-    var n2 = 1-elip.e2*Math.pow(senola,2);
-    var Np = a/Math.sqrt(n2);
-    var deltalo = deltaE
+    var l1 = deltaN / (1 + (pp /( elip.a * (1 - elip.e2))) * M);
+    var l2 = Math.tan(laORad) / (2* N * M);
+    var l3 = Math.pow((deltaE / (1 + (pp / elip.a))), 2);
+
+    var deltaL = l1 - (l2 * l3);
+    //  var deltaL = (deltaN / (1 + ((pp) / (elip.a * (1 - elip.e2))) * M)) - ((Math.tan(oc.latitud * (Math.PI / 180)) / (2 * M * N)) * (Math.pow((deltaE / (1 + (pp / elip.a))), 2)));
+
+    //resultado final de latitud 
+
+    var la = laORad + deltaL;
+    var latitud = la*(180/Math.PI) ;
+
+    var sinLa = Math.sin(la);
+    var n2 = 1 - elip.e2 * Math.pow(sinLa, 2);
+    var Np = elip.a / Math.sqrt(n2);
+    var deltaLo = (deltaE / (Np * Math.cos(la))) * (1 + pp / elip.a);
+    var lon = oc.longitud * (Math.PI / 180) + deltaLo;
+    var longitud = lon * (180 / Math.PI);
+
+
+    console.log("PARAMETROS DE ENTRADA: ")
+    console.log("NORTE: ",cp.norte)
+    console.log("ESTE: ",cp.este)
+    console.log("NORTE FALSO: ",oc.fnorte)
+    console.log("ESTE FALSO: ",oc.feste)
+    console.log("descripcion origen: ",oc.descripcion)
+    console.log("delta de lat: ",deltaL)
+    console.log("RESULTADOS FINALES: lat: ",latitud, " long:",longitud);
 
 }
+
+var cpe = new coord_planas(25751.864, 24803.436);
+planas_cartesianas_a_curvilienas3(cpe, 2840);
+planas_cartesianas_a_curvilienas(cpe, 2840);
