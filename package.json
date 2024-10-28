@@ -18,8 +18,10 @@
     "bootstrap-icons": "^1.11.3",
     "ejs-electron": "^3.0.0",
     "electron-reload": "^2.0.0-alpha.1",
-    "ol": "^9.2.4",
-    "proj4": "^2.11.0",
-    "sqlite3": "^5.1.7"
+    "leaflet": "^1.9.4",
+    "proj4": "^2.14.0",
+    "proj4leaflet": "^1.0.2",
+    "sqlite3": "^5.1.7",
+    "topojson-client": "^3.1.0"
   }
 }
