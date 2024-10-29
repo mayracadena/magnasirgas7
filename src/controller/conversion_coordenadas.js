@@ -139,16 +139,16 @@ async function planas_cartesianas_a_curvilienas(coordenadas_planas, id_pc) {
 
     //cálculo de la normal en la latitud de origen de coordenadas
     //se debe cambiar la latitud del origen de coordenadasde decimal a radianes
-    var N_phi0 = (elip.a) / (Math.pow(1 - (elip.e2 * Math.pow(Math.sin(oc.latitud * (Math.PI / 180)), 2)), (1 / 2)));
+    var N_phi0 = (elip.a) / (Math.sqrt(1 - (elip.e2 * Math.pow(Math.sin(oc.latitud * (Math.PI / 180)), 2))));
     //calculo del radio medio de curvatura
     var rho = (elip.a * (1 - elip.e2)) / (Math.pow(1 - (elip.e2 * (Math.pow(Math.sin(oc.latitud * (Math.PI / 180)), 2))), 3 / 2));
 
     //diferencias de latitud
 
-    var D_phi = (D_N / (1 + ((oc.plano_proyeccion) / (elip.a * (1 - elip.e2))) * rho)) - ((Math.tan(oc.latitud * (Math.PI / 180)) / (2 * rho * N_phi0)) * (Math.pow((D_E / (1 + (oc.plano_proyeccion / elip.a))), 2)));
+    var D_phi = D_N / ((1 + oc.plano_proyeccion / (elip.a * (1 - elip.e2))) * rho) - ((Math.tan(oc.latitud * (Math.PI / 180)) / (2 * rho * N_phi0)) * (Math.pow(D_E / (1 + oc.plano_proyeccion / elip.a), 2)));
 
     //resultado final de latitud 
-    var phi = (oc.latitud*(Math.PI/180))+ D_phi;
+    var phi = (oc.latitud*Math.PI/180) + D_phi;
 
     //cálculo de la normal en la latitud de la coordenada
     //se debe cambiar la latitud de la coordenada previamente calculada del punto de decimal a radianes
@@ -162,13 +162,21 @@ async function planas_cartesianas_a_curvilienas(coordenadas_planas, id_pc) {
 
 
     console.log("PARAMETROS DE ENTRADA: ")
-    console.log("NORTE: ",cp.norte)
-    console.log("ESTE: ",cp.este)
-    console.log("NORTE FALSO: ",oc.fnorte)
-    console.log("ESTE FALSO: ",oc.feste)
-    console.log("descripcion origen: ",oc.descripcion)
+    console.log("Normal: ", N_phi0)
+    console.log("radio m curvatura: ", rho)
+    console.log("latutud del origen: ",(oc.latitud* (Math.PI / 180)))
+    console.log("seno latitud: ",Math.pow(Math.sin(oc.latitud * (Math.PI / 180)),2))
+    console.log("sin raiz: ",(1 - (elip.e2 * Math.pow(Math.sin(oc.latitud * (Math.PI / 180)), 2))))
+    console.log("semieje a: ",elip.a)
+    console.log("semieje a: ",elip.e2)
+    console.log("plano de proyeccion: ", oc.plano_proyeccion)
+    console.log("delta norte: ", D_N)
+    console.log("delta este: ", D_E)
+    console.log("primer termino d: ",D_N / ((1 + oc.plano_proyeccion / (elip.a * (1 - elip.e2))) * rho))
+    console.log("primer termino d2: ",((Math.tan(oc.latitud * (Math.PI / 180)) / (2 * rho * N_phi0)) )) 
+    console.log("primer termino d3: ",Math.pow(D_E / (1 + oc.plano_proyeccion / elip.a), 2) )
     console.log("delta de lat: ",D_phi)
-    console.log("RESULTADOS FINALES: lat: ",phi, " long:",lambda);
+    console.log("RESULTADOS FINALES: lat: ",phi*(180/Math.PI), " long:",lambda);
 }
 
 // var cpe = new coord_planas(85751.864, 94803.436);
@@ -304,16 +312,12 @@ async function planas_cartesianas_a_curvilienas3(coordenadas_planas, id_pc) {
 
 
     console.log("PARAMETROS DE ENTRADA: ")
-    console.log("NORTE: ",cp.norte)
-    console.log("ESTE: ",cp.este)
-    console.log("NORTE FALSO: ",oc.fnorte)
-    console.log("ESTE FALSO: ",oc.feste)
-    console.log("descripcion origen: ",oc.descripcion)
-    console.log("delta de lat: ",deltaL)
-    console.log("RESULTADOS FINALES: lat: ",latitud, " long:",longitud);
+    console.log("primer termino d1: ",l1)
+    console.log("primer termino d2: ",l2)
+    console.log("primer termino d3: ",l3)
 
 }
 
-var cpe = new coord_planas(25751.864, 24803.436);
-planas_cartesianas_a_curvilienas3(cpe, 2840);
-planas_cartesianas_a_curvilienas(cpe, 2840);
+var cpe = new coord_planas(100000, 100000);
+//planas_cartesianas_a_curvilienas3(cpe, 1106);
+planas_cartesianas_a_curvilienas(cpe, 1106);
