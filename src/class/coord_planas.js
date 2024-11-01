@@ -2,6 +2,7 @@ class coord_planas{
     constructor(norte, este){
         this._norte = norte;
         this._este = este;
+       
     }
 
     // Getter para norte
@@ -23,6 +24,8 @@ class coord_planas{
     set este(value) {
         this._este = value;
     }
+
+    
 
 }
 //esto se realiza para usar esta clase en otros metodos
