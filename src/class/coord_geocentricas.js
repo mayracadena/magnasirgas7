@@ -1,8 +1,8 @@
 class coord_geocentricas{
     constructor(X, Y, Z){
-        this._X;
-        this._Y;
-        this._Z;
+        this._X = X;
+        this._Y = Y;
+        this._Z = Z;
     }
 
     // Getter y Setter para X

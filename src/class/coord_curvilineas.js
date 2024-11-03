@@ -4,11 +4,7 @@ class coord_curvilineas{
         this._lambda = lambda;
         this._h = h;
     }
-    constructor(phi, lambda){
-        this._phi = phi;
-        this._lambda = lambda;
-        
-    }
+    
 
 
     // Getter para phi
