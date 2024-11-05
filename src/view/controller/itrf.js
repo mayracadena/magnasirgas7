@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', (event) => {
     console.log('DOM fully loaded and parsed');
-
     const fileInput = document.getElementById('fileInput');
     const viewDataBtn = document.getElementById('viewDataBtn');
     const processBtn = document.getElementById('processBtn');
@@ -204,6 +203,7 @@ function downloadCSV() {
     link.click();
     document.body.removeChild(link);
 }
+
 // Ejemplos de funciones de transformación
 function itrf1990_to_itrf2014(x, y, z) {
     // Transformación específica de ITRF1990 a ITRF2014

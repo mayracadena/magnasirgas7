@@ -1,4 +1,4 @@
-<%- include('./partials/cabecero.ejs', {"titulo": "ITRF" }); %>
+<%- include('./partials/cabecero.ejs', {"titulo": "Calculo de velocidades individual" }); %>
 <%- include('./partials/menu.ejs'); %>
 
 <!DOCTYPE html>
@@ -159,7 +159,7 @@
             <ul class="nav nav-tabs" id="myTab" role="tablist">
               <!-- Tab Items -->
               <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="elipsoidal-tab" data-bs-toggle="tab" data-bs-target="#elipsoidal" type="button" role="tab" aria-controls="elipsoidal" aria-selected="true">Elipsoidal Sexajesimal</button>
+                <button class="nav-link active" id="elipsoidal-tab" data-bs-toggle="tab" data-bs-target="#elipsoidal" type="button" role="tab" aria-controls="elipsoidal" aria-selected="true">Elipsoidal Sexagesimal</button>
               </li>
               <li class="nav-item" role="presentation">
                 <button class="nav-link" id="elipsoidaldecimal-tab" data-bs-toggle="tab" data-bs-target="#coordenadas-decimales" type="button" role="tab" aria-controls="elipsoidaldecimal" aria-selected="false">Elipsoidal Decimal</button>
@@ -458,7 +458,7 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Custom Script -->
-  <script src="controller/ondulacion.js"></script>
+  <script src="controller/velocidades.js"></script>
 </body>
 </html>
 <%- include('./partials/pie.ejs'); %>
