@@ -1,12 +1,12 @@
-<%- include('./partials/cabecero.ejs', {"titulo": "ITRF" }); %>
+<%- include('./partials/cabecero.ejs', {"titulo": "Conversión y transformación de coordenadas" }); %>
 <%- include('./partials/menu.ejs'); %>
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interfaz de Cálculo Geodésico</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Interfaz de Cálculo Geodésico</title> -->
+  <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
       background-color: #f8f9fa;
@@ -28,6 +28,7 @@
     }
   </style>
 </head>
+<<<<<<< HEAD
 <body>
   <div class="card shadow">
     <div class="card-header">
@@ -48,6 +49,12 @@
 
     </div>
 </div>
+=======
+<body> -->
+
+  <link rel="stylesheet" href="../../node_modules/leaflet/dist/leaflet.css">
+ 
+
 <!-- Fila para Sistema de Referencia de Partida y Llegada -->
 <div class="card shadow">
 <div class="container-fluid">
@@ -456,43 +463,21 @@
       <button class="btn btn-secondary">Limpiar</button>
     </div>
   </div>
-
+  <br><br>
+  <div id="map" type class="container-fluid" style="width:80%; height: 600px; position: relative;"></div>
 </div>
- <!-- JavaScript para actualizar el módulo de información -->
- <script>
-// Función para mostrar la información del modelo VEMOS seleccionado
-function mostrarInformacionVemos() {
-    var seleccion = document.getElementById("modeloVelocidadesPartida").value;
-    var informacionVemos = document.getElementById("informacionVemos");
-  
-    // Limpia el contenido actual
-    informacionVemos.innerHTML = "";
-  
-    // Información según el modelo seleccionado
-    if (seleccion === "vemos2022") {
-      informacionVemos.innerHTML = 
-        '<p><strong>VEMOS 2022:</strong> Cubre el periodo comprendido entre el 1 de febrero de 2017 y el 30 de abril de 2022.</p>';
-    } else if (seleccion === "vemos2017") {
-      informacionVemos.innerHTML = 
-        '<p><strong>VEMOS 2017:</strong> Cubre la región comprendida entre 120°W, 55°S y 35°W, 32°N con una resolución espacial de 1° x 1°. La incertidumbre promedio es ±1.0 mm/a en la dirección norte-sur y ±1.7 mm/a en la dirección este-oeste.</p>';
-    } else if (seleccion === "vemos2015") {
-      informacionVemos.innerHTML = 
-        '<p><strong>VEMOS 2015:</strong> Válido del 14 de marzo de 2010 al 11 de abril del 2015. La incertidumbre media es ±0.6 mm/a en la dirección norte-sur y ±1.2 mm/a en la dirección este-oeste.</p>';
-    } else if (seleccion === "vemos2009") {
-      informacionVemos.innerHTML = 
-        '<p><strong>VEMOS 2009:</strong> Válido para el periodo entre enero 2 de 2000 y junio 30 de 2009. La incertidumbre media es aproximadamente 1.5 mm/a.</p>';
-    }
-  }
-  
-  // Ejecuta la función al cargar la página para mostrar la información del modelo por defecto
-  document.addEventListener("DOMContentLoaded", function() {
-    mostrarInformacionVemos();
-  });
-  </script>
+
   
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<script src="../../node_modules/leaflet/dist/leaflet.js"></script>
+<script src="../../node_modules/proj4/dist/proj4.js"></script>
+<script src="../../node_modules/proj4leaflet/src/proj4leaflet.js"></script>
+<script src="../../node_modules/topojson-client/dist/topojson-client.js"></script>
+
+<script type="module" src="../js/conver_trans.js"></script>
+
+
+<!-- </body>
+</html> -->
 
 <%- include('./partials/pie.ejs'); %>

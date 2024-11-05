@@ -3,7 +3,7 @@ const path = require('path');
 
 class conexion {
     constructor() {
-        this.dbFilePath = path.resolve('../db/cord_planas_cartesianas_igac.db3'); // Resolución de la ruta para evitar errores de ruta relativos
+        this.dbFilePath = path.resolve('../db/coord_planas_cartesianas_igac.db3'); // Resolución de la ruta para evitar errores de ruta relativos
         this.db = null;
     }
 

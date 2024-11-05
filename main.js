@@ -17,15 +17,15 @@ const createWindow = () => {
     width: 1200,
     height: 800,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false, // Necesario para usar Node.js en el renderer
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"], // Permite cargar recursos desde el mismo origen
-          imgSrc: ["'self'", "data:"], // Permite cargar imágenes desde 'self' y 'data:'
-          // Otras directivas según sea necesario
-        },
-      },
+      nodeIntegration: false,
+      contextIsolation: true, // Necesario para usar Node.js en el renderer
+      // contentSecurityPolicy: {
+      //   directives: {
+      //     defaultSrc: ["'self'"], // Permite cargar recursos desde el mismo origen
+      //     imgSrc: ["'self'", "data:"], // Permite cargar imágenes desde 'self' y 'data:'
+      //     // Otras directivas según sea necesario
+      //   },
+      // },
     },
     icon: "./src/img/logo.ico",
   });
