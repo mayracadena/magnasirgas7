@@ -8,7 +8,7 @@ const coord_planas = require("../class/coord_planas");
 const coord_curvilineas = require("../class/coord_curvilineas");
 const fs = require('fs');
 const conexion = require('../db/conexion');
-const coord_geocentricas = require("../class/coord_geocentricas")
+const coord_geocentricas = require("../class/coord_geocentricas");
 
 
 //funcion que llama el elipoide de referencia segun el datum escogido
@@ -76,7 +76,7 @@ async function utm_a_curvilineas(c_utm, sist_refe) {
     var EN = Y1 * (1 - (EN2 / 3));
     var ENphi = (ENN * (1 - EN2)) + phi;
     var Ee = (Math.exp(EN) - Math.exp(-EN)) / 2;
-    var EAC = Math.atan2(Ee , Math.cos(ENphi));
+    var EAC = Math.atan2(Ee, Math.cos(ENphi));
     var EAT = Math.atan(Math.cos(EAC) * Math.tan(ENphi));
 
     var lambda_final = (EAC * (180 / Math.PI)) + (6 * huso - 183);
@@ -85,12 +85,12 @@ async function utm_a_curvilineas(c_utm, sist_refe) {
     var phi_fd = phi_fr * (180 / Math.PI)
 
 
-    
-    
+
+
 
     var coord_elip = new coord_curvilineas(phi_fd, lambda_final);
 
-    console.log("utm: ",coord_elip )
+    console.log("utm: ", coord_elip)
 
     return coord_elip;
 
@@ -174,13 +174,13 @@ async function geocentricas_a_curvilineas(coord_geoc, sist_refe) {
     var lat = Math.atan(geo.Z / raizCuad * (1 - elip.e2));
 
     let latPrev;
-    do{
+    do {
         latPrev = lat;
         var sinLat = Math.sin(lat);
-        N = elip.a / Math.sqrt(1 - elip.e2 *Math.pow(sinLat, 2));
+        N = elip.a / Math.sqrt(1 - elip.e2 * Math.pow(sinLat, 2));
         h = raizCuad / Math.cos(lat) - N;
         lat = Math.atan((geo.Z + elip.e2 * N * sinLat) / raizCuad);
-    }while (Math.abs(lat - latPrev) > 1e-12);
+    } while (Math.abs(lat - latPrev) > 1e-12);
 
     var longitud = Math.atan2(geo.Y, geo.X) * (180 / Math.PI);
     // var senLaRad = Math.sin(laRad);
@@ -188,32 +188,33 @@ async function geocentricas_a_curvilineas(coord_geoc, sist_refe) {
     // var n1 = 1 - elip.e2 * Math.pow(senLaRad, 2);
     // var N = elip.a / Math.sqrt(n1);
     // var h = raizCuad / cosLaRad - N;
-    var coord_elip = new coord_curvilineas( lat * (180 / Math.PI), longitud, h);
+    var coord_elip = new coord_curvilineas(lat * (180 / Math.PI), longitud, h);
 
-    console.log("geocentricas: " ,coord_elip);
-    
+    console.log("geocentricas: ", coord_elip);
+
 
     return coord_elip;
- 
+
 }
 
 
 async function origen_nacional_a_curvilienas(coord_on, sist_refe) {
     var ctm = new CTM12();
     var cp = new coord_planas(coord_on.norte, coord_on.este);
+    //llamar valores del sistema de referencia
     var elip = await elipoide(sist_refe);
 
     var norte = cp.norte;
     var este = cp.este;
 
-    var phi = (norte-ctm.N0) / (((elip.a + elip.b) / 2) * ctm.k);
+    var phi = (norte - ctm.N0) / (((elip.a + elip.b) / 2) * ctm.k);
 
     //se halla el radio medio de curvatura de la primera vertical
     var N = ((elip.c) / (Math.sqrt(1 + elip.es2 * Math.pow(Math.cos(phi), 2)))) * ctm.k;
 
     var Y1 = (este - ctm.E0) / N;
 
-    var phi2 = Math.sin(2 * phi); 
+    var phi2 = Math.sin(2 * phi);
     var phi3 = phi2 * Math.pow(Math.cos(phi), 2);
     var phi4 = phi + (phi2 / 2);
     var phi5 = (3 * phi4 + phi3) / 4;
@@ -226,7 +227,7 @@ async function origen_nacional_a_curvilienas(coord_on, sist_refe) {
     var phi7 = (5 / 3) * Math.pow(phi6, 2);
     var phi8 = (35 / 27) * Math.pow(phi6, 3);
     var NTE = ctm.k * elip.c * (phi - (phi6 * phi4) + (phi7 * phi5) - (phi8 * lambda));
-    var ENN = (norte-ctm.N0- NTE) / N;
+    var ENN = (norte - ctm.N0 - NTE) / N;
     var EN2 = ((elip.es2 * Math.pow(Y1, 2)) / 2) * Math.pow(Math.cos(phi), 2);
     var EN = Y1 * (1 - (EN2 / 3));
     var ENphi = (ENN * (1 - EN2)) + phi;
@@ -234,22 +235,86 @@ async function origen_nacional_a_curvilienas(coord_on, sist_refe) {
     var EAC = Math.atan(Ee / Math.cos(ENphi));
     var EAT = Math.atan(Math.cos(EAC) * Math.tan(ENphi));
 
-    var lambda_final = (EAC * (180/Math.PI)) + ctm.landa0;
-    
+    var lambda_final = (EAC * (180 / Math.PI)) + ctm.landa0;
 
-     var phi_fr =  phi + (1 + elip.es2 * Math.pow(Math.cos(phi), 2)- ((3 / 2) * elip.es2 * Math.sin(phi) * Math.cos(phi) * (EAT - phi))) * (EAT - phi);
-    var phi_final = (phi_fr * (180 / Math.PI))+ctm.phi0;
+
+    var phi_fr = phi + (1 + elip.es2 * Math.pow(Math.cos(phi), 2) - ((3 / 2) * elip.es2 * Math.sin(phi) * Math.cos(phi) * (EAT - phi))) * (EAT - phi);
+    var phi_final = (phi_fr * (180 / Math.PI)) + ctm.phi0;
 
     console.log(phi_final, lambda_final)
-    
-    
+
+
 
 }
 
 
+async function curvilienas_a_planas_cartesianas(coord_curvi, sist_refe, id_pc) {
+    //llamar valores del sistema de referencia
+    var elip = await elipoide(sist_refe);
 
-var cutm = new coord_utm(774218.962, 720945.889, 18);
-utm_a_curvilineas(cutm, 2);
+    var cc = new coord_curvilineas(coord_curvi.phi, coord_curvi.lambda, coord_curvi.h);
+
+    var con = new conexion();
+    try {
+        await con.open();
+        //traer todos los datos del origen cartografico
+        var query_origen = "select * from origen_cartografico where id = ?";
+        var parametros = [id_pc];
+        var result_origen = await con.getOne(query_origen, parametros);
+        var oc = new coord_planas_cartesianas(result_origen.id, result_origen.fk_sistema, result_origen.detalle, result_origen.anio, result_origen.fk_corregimiento, result_origen.fk_municipio, result_origen.latitud, result_origen.longitud, result_origen.norte, result_origen.este, result_origen.plano_proyeccion, result_origen.descripcion, result_origen.oficial);
+
+    } catch (error) {
+        console.error("Ocurrió un error:", error);
+    } finally {
+        await con.close();
+    }
+
+    var a = elip.a;
+    var e1 = elip.e2;
+    //valores en radianes de latitud y longitud del origen cartesiano
+    var laORad = oc.latitud * (Math.PI / 180);
+    var loORad = oc.longitud * (Math.PI / 180);
+
+    var laRad = cc.phi * (Math.PI / 180);
+    var loRad = cc.lambda * (Math.PI / 180);
+
+    var pp = oc.plano_proyeccion;
+    var deltaLa = laRad - laORad;
+    var deltaLo = loRad - loORad;
+    var laM = (laORad + laRad) / 2;
+    var senLaRad = Math.sin(laRad);
+    var n1 = 1 - e1 * Math.pow(senLaRad, 2);
+    var N = a / Math.sqrt(n1);
+    var sinLaORad = Math.sin(laORad);
+    var senLaORad = Math.sin(laORad);
+    var no = 1 - e1 * Math.pow(senLaORad, 2);
+    var No = a / Math.sqrt(no);
+    var sinLaMRad = Math.sin(laM);
+    var n3 = 1 - e1 * Math.pow(sinLaMRad, 2);
+    var M = a * (1 - e1) / Math.pow(n3, 1/3);
+    var Mo = a * (1 - e1) / Math.pow(no, 1.5);
+    var N1 = Math.tan(laORad)*Math.pow(deltaLo*N*Math.cos(laRad),2);
+    var N2 = 1 + pp / M;
+    var N3 = 2*M*No;
+    var norte = oc.fnorte + M*deltaLa+(N1*N2/N3)
+    var E1 = deltaLo * N * Math.cos(laRad);
+    var E2 = 1 + pp / No;
+    var este = E1 * E2 + oc.feste;
+
+    var cp = new coord_planas(norte, este);
+    console.log("elipsoidales a planas: \n", cp)
+    console.log("este : \n", este)
+    console.log("norte : \n", norte)
+    console.log("falso este : \n", oc.feste)
+    console.log("falso norte : \n",  oc.fnorte)
+    console.log("multiplicacion : \n",  Mo * N1 * N2)
+}
+
+
+//seccion de pruebas
+
+// var cutm = new coord_utm(774218.962, 720945.889, 18);
+// utm_a_curvilineas(cutm, 2);
 
 // var cgeoc = new coord_geocentricas(1851153.085 , -6054848.9154, 772207.3386);
 
@@ -258,3 +323,5 @@ utm_a_curvilineas(cutm, 2);
 // var on = new coord_planas(2033154.021, 4966724.022);
 // origen_nacional_a_curvilienas(on, 2);
 
+// var cc = new coord_curvilineas(4.467434, -74.124358);
+// curvilienas_a_planas_cartesianas(cc, 2, 1106);
