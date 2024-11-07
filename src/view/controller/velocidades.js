@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const velocidadX = document.getElementById('velocidad-x');
     const velocidadY = document.getElementById('velocidad-y');
     const velocidadZ = document.getElementById('velocidad-z');
+    
     function geocentricToEllipsoidal(x, y, z) {
         const a = 6378137.0; // Radio ecuatorial en metros
         const f = 1 / 298.257223563; // Aplanamiento de la Tierra
@@ -44,26 +45,44 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
     
-    // Detectar qué pestaña está activa
-    function getActiveCoordinateType() {
-        // Verificar si las coordenadas sexagesimales están activas
-        if (document.getElementById('latitud-grados') && !document.getElementById('latitud-grados').disabled) {
-            return 'sexagesimal';
-        }
-        // Verificar si las coordenadas decimales están activas
-        if (document.getElementById('latitud-decimal') && !document.getElementById('latitud-decimal').disabled) {
-            return 'decimal';
-        }
-        // Verificar si las coordenadas geocéntricas están activas
-        if (document.getElementById('coord-x') && !document.getElementById('coord-x').disabled) {
-            return 'geocentric';
-        }
-        // Si ninguna de las opciones está activa, devolver null
-        return null;
+   // Función mejorada para detectar qué pestaña está activa y tiene valores
+function getActiveCoordinateType() {
+    // Verificar si las coordenadas sexagesimales están activas y tienen valores
+    if (
+        latitudGrados.value !== '' &&
+        latitudMinutos.value !== '' &&
+        latitudSegundos.value !== '' &&
+        latitudHemisferio.value !== '' &&
+        longitudGrados.value !== '' &&
+        longitudMinutos.value !== '' &&
+        longitudSegundos.value !== '' &&
+        longitudHemisferio.value !== ''
+    ) {
+        return 'sexagesimal';
     }
     
+    // Verificar si las coordenadas decimales están activas y tienen valores
+    if (latitudDecimal.value !== '' && longitudDecimal.value !== '') {
+        return 'decimal';
+    }
+    
+    // Verificar si las coordenadas geocéntricas están activas y tienen valores
+    if (
+        document.getElementById('coord-x').value !== '' &&
+        document.getElementById('coord-y').value !== '' &&
+        document.getElementById('coord-z').value !== ''
+    ) {
+        return 'geocentric';
+    }
+    
+    // Si ninguna de las opciones está activa o tiene valores, devolver null
+    return null;
+}
+
+    
    // Evento de cálculo
-   calculateButton.addEventListener('click', async function (event) {
+
+calculateButton.addEventListener('click', async function (event) {
     event.preventDefault();
 
     const coordinateType = getActiveCoordinateType();
@@ -74,7 +93,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let latitud, longitud, x, y, z;
     let geocentricCoords = null;
-       
     // Procesar según el formato activo
     if (coordinateType === 'sexagesimal') {
         latitud = parseSexagesimal(
@@ -89,14 +107,30 @@ document.addEventListener('DOMContentLoaded', function () {
             parseFloat(longitudSegundos.value),
             longitudHemisferio.value
         );
+        console.log("Coordenadas Sexagesimales - Latitud:", latitud, "Longitud:", longitud);
+
     } else if (coordinateType === 'decimal') {
         latitud = parseFloat(latitudDecimal.value);
         longitud = parseFloat(longitudDecimal.value);
+        console.log("Coordenadas Decimales - Latitud:", latitud, "Longitud:", longitud);
+
     } else if (coordinateType === 'geocentric') {
         x = parseFloat(document.getElementById('coord-x').value);
         y = parseFloat(document.getElementById('coord-y').value);
         z = parseFloat(document.getElementById('coord-z').value);
-        geocentricCoords = { X: x, Y: y, Z: z }; // Asignar coordenadas geocéntricas directamente
+        console.log("Coordenadas Geocéntricas - X:", x, "Y:", y, "Z:", z);
+
+        // Convertir a elipsoidales
+        const ellipsoidalCoords = geocentricToEllipsoidal(x, y, z);
+        latitud = ellipsoidalCoords.latitude;
+        longitud = ellipsoidalCoords.longitude;
+        console.log("Convertidas a Elipsoidales - Latitud:", latitud, "Longitud:", longitud);
+
+        if (isNaN(latitud) || isNaN(longitud)) {
+            console.error("Error: Conversión a coordenadas elipsoidales resultó en NaN");
+            alert("Error: Conversión a coordenadas elipsoidales no fue exitosa.");
+            return;
+        }
     }
 
     try {
@@ -125,7 +159,6 @@ document.addEventListener('DOMContentLoaded', function () {
         alert("Ocurrió un error al calcular las velocidades.");
     }
 });
-
 
     // Evento de limpiar
     clearButton.addEventListener('click', function (event) {
@@ -264,23 +297,40 @@ class VelocitiesReader {
 }
 
 // Función para calcular las velocidades basadas en la matriz y coordenadas
-function calculateVelocities(matrix, lat, lon, coordType, geocentricCoords) {
+async function calculateVelocities(matrix, lat, lon, coordType, geocentricCoords) {
     let coordinate;
-    
+
+    // Determina si la coordenada es geocéntrica o elipsoidal
     if (coordType === 'geocentric') {
-        // Convertir coordenadas geocéntricas a elipsoidales
-        const ellipsoidalCoords = geocentricToEllipsoidal(geocentricCoords.x, geocentricCoords.y, geocentricCoords.z);
-        coordinate = new EllipsoidalCoordinate(ellipsoidalCoords.latitude, ellipsoidalCoords.longitude, ellipsoidalCoords.height);
+        if (geocentricCoords && geocentricCoords.x && geocentricCoords.y && geocentricCoords.z) {
+            console.log("Convirtiendo coordenadas geocéntricas a elipsoidales...");
+            const ellipsoidalCoords = geocentricas_elipsoidales(geocentricCoords.x, geocentricCoords.y, geocentricCoords.z);
+            console.log("Coordenadas elipsoidales convertidas:", ellipsoidalCoords);
+
+            // Crear una instancia de EllipsoidalCoordinate con las coordenadas convertidas
+            coordinate = new EllipsoidalCoordinate(ellipsoidalCoords.latDec, ellipsoidalCoords.lonDec, ellipsoidalCoords.hReferencia);
+        } else {
+            console.error("Coordenadas geocéntricas no válidas:", geocentricCoords);
+            return null;
+        }
     } else {
-        // Utilizar directamente las coordenadas elipsoidales ingresadas
+        // Usa las coordenadas elipsoidales directamente
         coordinate = new EllipsoidalCoordinate(lat, lon);
     }
 
+    // Confirmar que las coordenadas sean válidas antes de proceder
+    if (isNaN(coordinate.latitude) || isNaN(coordinate.longitude)) {
+        console.error("Coordenadas inválidas en calculateVelocities:", coordinate);
+        return null;
+    }
+
+    // Verificación de la matriz de datos
     if (matrix.length === 0) {
         console.error("No hay datos de velocidad disponibles en la grilla.");
         return null;
     }
 
+    // Realizar el cálculo de las velocidades usando IDW
     const velocitySN = idwCalculate(matrix, 0);
     const velocityWE = idwCalculate(matrix, 1);
 
@@ -296,6 +346,7 @@ function calculateVelocities(matrix, lat, lon, coordType, geocentricCoords) {
     const adjustedVelocities = calculateXYZ(velocities, coordinate);
     return adjustedVelocities;
 }
+
 
 // Función de interpolación de distancia inversa (IDW) para calcular la velocidad
 function idwCalculate(matrix, posData) {
