@@ -291,30 +291,53 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+<!-- Particles.js Script -->
 <script>
-    particlesJS('particles-js', {
-        particles: {
-            number: { value: 100 },
-            color: { value: '#00ff00' },
-            shape: { type: 'circle', stroke: { width: 0, color: '#000000' }, polygon: { nb_sides: 5 } },
-            opacity: { value: 0.5 },
-            size: { value: 3 },
-            line_linked: { enable: true, distance: 150, color: '#00ff00', opacity: 0.4, width: 1 },
-            move: { enable: true, speed: 3, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
-        },
-        interactivity: {
-            detect_on: 'canvas',
-            events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
-            modes: {
-                grab: { distance: 400, line_linked: { opacity: 1 } },
-                bubble: { distance: 400, size: 40, duration: 2, opacity: 8 },
-                repulse: { distance: 200 },
-                push: { particles_nb: 4 },
-                remove: { particles_nb: 2 }
-            }
-        },
-        retina_detect: true
-    });
+  particlesJS('particles-js', {
+    particles: {
+      number: { value: 80 },
+      color: { value: '#00d4ff' },
+      shape: {
+        type: 'circle',
+        stroke: { width: 0, color: '#000000' },
+        polygon: { nb_sides: 5 },
+      },
+      opacity: { value: 0.5 },
+      size: { value: 3 },
+      line_linked: {
+        enable: true,
+        distance: 150,
+        color: '#00d4ff',
+        opacity: 0.4,
+        width: 1
+      },
+      move: {
+        enable: true,
+        speed: 2,
+        direction: 'none',
+        random: false,
+        straight: false,
+        out_mode: 'out',
+        bounce: false,
+      }
+    },
+    interactivity: {
+      detect_on: 'canvas',
+      events: {
+        onhover: { enable: true, mode: 'grab' },
+        onclick: { enable: true, mode: 'push' },
+        resize: true
+      },
+      modes: {
+        grab: { distance: 200, line_linked: { opacity: 1 } },
+        bubble: { distance: 200, size: 40, duration: 2, opacity: 8 },
+        repulse: { distance: 100 },
+        push: { particles_nb: 4 },
+        remove: { particles_nb: 2 }
+      }
+    },
+    retina_detect: true
+  });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
