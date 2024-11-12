@@ -3,13 +3,12 @@ const a = 6378137.0; // Radio ecuatorial en metros
 const f = 1 / 298.257223563; // Aplanamiento de la Tierra
 // CONSTANTES Y CONFIGURACIÓN DE MODELOS
 const modelosVelocidad = [
-    { nombre: "VEMOS 2022", inicio: new Date("2017-02-01"), fin: null, archivo: "grids/Velogrid2022.txt" },
+    { nombre: "VEMOS 2022", inicio: new Date("2017-02-01"), fin: new Date("2040-01-28"), archivo: "grids/Velogrid2022.txt" },
     { nombre: "VEMOS 2017", inicio: new Date("2014-01-01"), fin: new Date("2017-01-28"), archivo: "grids/Velogrid2017.txt" },
     { nombre: "VEMOS 2015", inicio: new Date("2010-03-14"), fin: new Date("2015-04-11"), archivo: "grids/Velogrid2015.txt" },
-    { nombre: "VEMOS 2009", inicio: new Date("2000-01-02"), fin: new Date("2009-06-30"), archivo: "grids/Velogrid2010.txt" },
-    { nombre: "VEMOS 2003", inicio: null, fin: new Date("1999-12-31"), archivo: "grids/Velogrid2003.txt" }
+    { nombre: "VEMOS 2009", inicio: new Date("2000-01-01"), fin: new Date("2009-06-30"), archivo: "grids/Velogrid2010.txt" },
+    { nombre: "VEMOS 2003", inicio: new Date("1950-01-02"), fin: new Date("1999-12-31"), archivo: "grids/Velogrid2003.txt" }
 ];
-
 
 {}
 // FUNCIONES DE CONVERSIÓN
@@ -86,89 +85,82 @@ function calcularCambioDeEpoca(x, y, z, velX, velY, velZ, deltaTiempo) {
     const nuevaZ = z + (deltaTiempo * velZ);
     return { nuevaX, nuevaY, nuevaZ };
 }
+// Función para agregar logs al contenedor de la interfaz
+function addLog(message) {
+    const logsContent = document.getElementById('logsContent');
+    const logMessage = document.createElement('p');
+    logMessage.textContent = message;
+    logsContent.appendChild(logMessage);
+
+    // Desplazar automáticamente hacia abajo para ver el último mensaje
+    logsContent.scrollTop = logsContent.scrollHeight;
+}
 
 async function realizarCambioDeEpocaPorModelos(fechaInicio, fechaDestino, lat, lon, h) {
-    console.log(`Iniciando cambio de época desde ${fechaInicio.toLocaleDateString()} hasta ${fechaDestino.toLocaleDateString()}`);
+    addLog(`Iniciando cambio de época desde ${fechaInicio.toLocaleDateString()} hasta ${fechaDestino.toLocaleDateString()}`);
     
-    // Convertir coordenadas iniciales a cartesianas
     const { X: xInicial, Y: yInicial, Z: zInicial } = elipsoidalToCartesian(lat, lon, h);
     let coordX = xInicial, coordY = yInicial, coordZ = zInicial;
 
-    console.log(`Coordenadas iniciales (X, Y, Z): (${coordX}, ${coordY}, ${coordZ})`);
+    addLog(`Coordenadas iniciales (X, Y, Z): (${coordX}, ${coordY}, ${coordZ})`);
 
-    // Obtener todos los modelos aplicables entre fechaInicio y fechaDestino
     const modelos = obtenerModelosAplicables(fechaInicio, fechaDestino);
     if (modelos.length === 0) {
-        console.error("No se encontraron modelos de velocidad aplicables para el rango de fechas seleccionado.");
+        addLog("No se encontraron modelos de velocidad aplicables para el rango de fechas seleccionado.");
         return null;
     }
 
     let fechaActual = fechaInicio;
 
     for (const modelo of modelos) {
-        // Determinar la fecha de corte para este modelo (hasta dónde es válido)
-       // Determinar la fecha de corte para este modelo
         const fechaCorte = modelo.fin && modelo.fin < fechaActual ? modelo.fin : fechaDestino;
-
         let deltaTiempoMs = fechaActual - fechaCorte;
-
-        // Convertir delta de tiempo a años
         let deltaTiempo = Math.abs(deltaTiempoMs) / (1000 * 60 * 60 * 24 * 365.25);
 
-        console.log(`Usando modelo: ${modelo.nombre}`);
-        console.log(`Fecha actual: ${fechaActual.toLocaleDateString()}, Fecha de corte: ${fechaCorte.toLocaleDateString()}, Delta tiempo (años): ${deltaTiempo.toFixed(4)}`);
+        addLog(`Usando modelo: ${modelo.nombre}`);
+        addLog(`Fecha actual: ${fechaActual.toLocaleDateString()}, Fecha de corte: ${fechaCorte.toLocaleDateString()}, Delta tiempo (años): ${deltaTiempo.toFixed(4)}`);
 
-        // Calcular las velocidades NS y WE para el modelo actual usando su archivo de grilla
         const velocities = await calculateVelocitiesNSWE(lat, lon, modelo.archivo);
         if (!velocities) {
-            console.error(`Error: No se pudieron obtener las velocidades para el modelo ${modelo.nombre}`);
+            addLog(`Error: No se pudieron obtener las velocidades para el modelo ${modelo.nombre}`);
             return null;
         }
 
-        console.log(`Velocidades calculadas - NS: ${velocities.velocityNS}, WE: ${velocities.velocityWE}`);
+        addLog(`Velocidades calculadas - NS: ${velocities.velocityNS}, WE: ${velocities.velocityWE}`);
 
-        // Convertir las velocidades NS y WE a componentes X, Y, Z
         const { velX, velY, velZ } = convertVelocitiesToXYZ(velocities.velocityNS, velocities.velocityWE, lat, lon);
+        addLog(`Velocidades en X, Y, Z: (${velX}, ${velY}, ${velZ})`);
 
-        console.log(`Velocidades en X, Y, Z: (${velX}, ${velY}, ${velZ})`);
-
-        // Calcular la nueva posición geocéntrica aplicando el delta de tiempo y las velocidades calculadas
         const nuevaPosicion = calcularCambioDeEpoca(coordX, coordY, coordZ, velX, velY, velZ, deltaTiempo);
         coordX = nuevaPosicion.nuevaX;
         coordY = nuevaPosicion.nuevaY;
         coordZ = nuevaPosicion.nuevaZ;
 
-        console.log(`Nueva posición después de aplicar ${modelo.nombre} hasta ${fechaCorte.toLocaleDateString()}: X=${coordX}, Y=${coordY}, Z=${coordZ}`);
+        addLog(`Nueva posición después de aplicar ${modelo.nombre} hasta ${fechaCorte.toLocaleDateString()}: X=${coordX}, Y=${coordY}, Z=${coordZ}`);
 
-        // Actualizar fecha actual para el siguiente ciclo usando la fecha de corte
         fechaActual = new Date(fechaCorte.getTime());
-
-        // Si la fecha actual ya coincide con la fecha de destino, se termina el proceso
         if (fechaActual <= fechaDestino) break;
 
-        console.log(`Fecha actualizada a: ${fechaActual.toLocaleDateString()}\n---`);
+        addLog(`Fecha actualizada a: ${fechaActual.toLocaleDateString()}\n---`);
     }
 
-    console.log(`Posición final (X, Y, Z): (${coordX}, ${coordY}, ${coordZ})`);
+    addLog(`Posición final (X, Y, Z): (${coordX}, ${coordY}, ${coordZ})`);
     return { coordX, coordY, coordZ };
 }
 
 // Función para obtener los modelos aplicables en el rango de fechas
 function obtenerModelosAplicables(fechaInicio, fechaDestino) {
     const modelos = [
-        { nombre: "VEMOS 2022", inicio: new Date("2017-02-01"), fin: null, archivo: "grids/Velogrid2022.txt" },
+    { nombre: "VEMOS 2022", inicio: new Date("2017-02-01"), fin: new Date("2040-01-28"), archivo: "grids/Velogrid2022.txt" },
     { nombre: "VEMOS 2017", inicio: new Date("2014-01-01"), fin: new Date("2017-01-28"), archivo: "grids/Velogrid2017.txt" },
     { nombre: "VEMOS 2015", inicio: new Date("2010-03-14"), fin: new Date("2015-04-11"), archivo: "grids/Velogrid2015.txt" },
     { nombre: "VEMOS 2009", inicio: new Date("2000-01-02"), fin: new Date("2009-06-30"), archivo: "grids/Velogrid2010.txt" },
-    { nombre: "VEMOS 2003", inicio: null, fin: new Date("1999-12-31"), archivo: "grids/Velogrid2003.txt" }
+    { nombre: "VEMOS 2003", inicio: new Date("1950-01-02"), fin: new Date("1999-12-31"), archivo: "grids/Velogrid2003.txt" }
     ];
 
     // Filtrar los modelos que se aplican en el rango de fechas
     return modelos.filter(modelo => modelo.inicio <= fechaInicio && modelo.fin >= fechaDestino);
 }
-
-
-
 
 
 // EVENTOS DE LA INTERFAZ
@@ -179,9 +171,10 @@ document.addEventListener('DOMContentLoaded', function () {
     calculateButton.addEventListener('click', async function (event) {
         event.preventDefault();
 
+        document.getElementById('logsContent').innerHTML = ''; // Limpiar logs anteriores
+
         const fechaInicio = new Date(document.getElementById('fechaRastreoPartida').value);
         const fechaDestino = new Date(document.getElementById('fechaReferenciaPartida').value);
-
 
         if (fechaInicio <= fechaDestino) {
             alert("La fecha de inicio debe ser posterior a la fecha de destino para un cambio de época hacia el pasado.");
@@ -191,9 +184,9 @@ document.addEventListener('DOMContentLoaded', function () {
         let lat = parseFloat(document.getElementById('latitud-decimal').value);
         let lon = parseFloat(document.getElementById('longitud-decimal').value);
 
-
         const resultado = await realizarCambioDeEpocaPorModelos(fechaInicio, fechaDestino, lat, lon);
         if (resultado) {
+            addLog(`Posición final en la época ${fechaDestino.toLocaleDateString()}:\nX: ${resultado.coordX.toFixed(4)}\nY: ${resultado.coordY.toFixed(4)}\nZ: ${resultado.coordZ.toFixed(4)}`);
             alert(`Posición final en la época ${fechaDestino.toLocaleDateString()}:\nX: ${resultado.coordX.toFixed(4)}\nY: ${resultado.coordY.toFixed(4)}\nZ: ${resultado.coordZ.toFixed(4)}`);
         }
     });
@@ -203,5 +196,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('latitud-decimal').value = '';
         document.getElementById('longitud-decimal').value = '';
         document.getElementById('altura-elipsoidal').value = '';
+        document.getElementById('logsContent').innerHTML = ''; // Limpiar los logs
     });
 });
