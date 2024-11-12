@@ -7,11 +7,123 @@
     <title>Prueba de Video</title>
 </head>
 <body>
-    <div id="introVideo">
-        <video width="100%" autoplay muted controls>
-            <source src="../img/INTRO_MAGNA.h264" type="video/h264">
-            Tu navegador no soporta el video.
-        </video>
+  <div class="main-content" >
+  <div class="card shadow">
+  <div id="particles-js"></div>
+  <div class="main-card card shadow">
+    <div class="card-header">
+      <h2>Cambio de Época</h2>
+    </div>
+    <div class="card-body">
+      <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <button class="nav-link active" id="panel_directo_tab" data-bs-toggle="tab"
+                  data-bs-target="#panel_directo" type="button" role="tab" aria-controls="panel_directo"
+                  aria-selected="true">Individual</button>
+          <button class="nav-link" id="panel_inverso_tab" data-bs-toggle="tab"
+                  data-bs-target="#panel_inverso" type="button" role="tab" aria-controls="panel_inverso"
+                  aria-selected="false">Archivo</button>
+        </div>
+      </nav>
+
+      <div class="tab-content mt-4" id="nav-tabContent">
+        <!-- Panel Individual -->
+        <div class="tab-pane fade show active" id="panel_directo" role="tabpanel" aria-labelledby="panel_directo_tab">
+          <div class="container-fluid">
+            <!-- Fila para Época de Rastreo y Época de Referencia -->
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="fechaRastreoPartida">Época de Rastreo</label>
+                  <input type="date" class="form-control" id="fechaRastreoPartida">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="fechaReferenciaPartida">Época de Referencia</label>
+                  <input type="date" class="form-control" id="fechaReferenciaPartida">
+                </div>
+              </div>
+            </div>
+
+            <!-- Fila para Modelo de Velocidades e Información -->
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="modeloVelocidadesPartida">Modelo de Velocidades</label>
+                  <select class="form-control" id="modeloVelocidadesPartida" onchange="mostrarInformacionVemos()">
+                    <option value="vemos2022">VEMOS 2022</option>
+                    <option value="vemos2017">VEMOS 2017</option>
+                    <option value="vemos2015">VEMOS 2015</option>
+                    <option value="vemos2009">VEMOS 2009</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Información del Modelo de Velocidades</label>
+                  <div id="informacionVemos" class="p-2 bg-light text-dark rounded">
+                    Cada modelo de velocidades es válido para un lapso de tiempo determinado.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Fila para Tipo de Coordenada de Partida -->
+            <div class="row mt-3">
+              <div class="col-md-12">
+                <label>Tipo de Coordenada de Partida</label>
+                <ul class="nav nav-tabs" id="myTabPartida" role="tablist">
+                  <li class="nav-item">
+                    <button class="nav-link active" id="elipsoidal-tab-partida" data-bs-toggle="tab" data-bs-target="#elipsoidal-partida" type="button" role="tab" aria-controls="elipsoidal-partida" aria-selected="true">Elipsoidal Sexagesimal</button>
+                  </li>
+                  <li class="nav-item">
+                    <button class="nav-link" id="elipsoidal-decimal-tab-partida" data-bs-toggle="tab" data-bs-target="#elipsoidal-decimal-partida" type="button" role="tab" aria-controls="elipsoidal-decimal-partida" aria-selected="false">Elipsoidal Decimal</button>
+                  </li>
+                  <!-- Agrega las otras pestañas según sea necesario -->
+                </ul>
+                <div class="tab-content mt-2" id="myTabContentPartida">
+                  <div class="tab-pane fade show active" id="elipsoidal-partida" role="tabpanel" aria-labelledby="elipsoidal-tab-partida">
+                    <div class="form-group mt-3">
+                      <label for="latitud-partida">Latitud</label>
+                      <input type="text" class="form-control" id="latitud-partida" placeholder="GG.MM.SS">
+                    </div>
+                    <div class="form-group mt-3">
+                      <label for="longitud-partida">Longitud</label>
+                      <input type="text" class="form-control" id="longitud-partida" placeholder="GG.MM.SS">
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="elipsoidal-decimal-partida" role="tabpanel" aria-labelledby="elipsoidal-decimal-tab-partida">
+                    <div class="form-group mt-3">
+                      <label for="latitud-partida-decimal">Latitud Decimal</label>
+                      <input type="text" class="form-control" id="latitud-partida-decimal" placeholder="Decimal">
+                    </div>
+                    <div class="form-group mt-3">
+                      <label for="longitud-partida-decimal">Longitud Decimal</label>
+                      <input type="text" class="form-control" id="longitud-partida-decimal" placeholder="Decimal">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="row mt-4">
+              <div class="col text-center">
+                <button class="btn btn-primary" onclick="procesarArchivo()">Calcular</button>
+                <button class="btn btn-secondary" onclick="limpiarFormulario()">Limpiar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel Archivo -->
+        <div class="tab-pane fade" id="panel_inverso" role="tabpanel" aria-labelledby="panel_inverso_tab">
+          <div class="container-fluid">
+            <!-- Similar estructura del panel "Archivo" aquí -->
+          </div>
+        </div>
+      </div>
     </div>
 </body>
 </html>
