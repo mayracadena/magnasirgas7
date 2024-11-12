@@ -230,22 +230,27 @@ class Velocities {
         return this.velocityWE;
     }
 }
+   // Obtener el archivo de grilla correspondiente según el modelo seleccionado
+function getFilePathByModel() {
+    const modelSelect = document.getElementById("modelo-velocidades");
+    return `grids/${modelSelect.value}`;
+}
 
-// Función principal para obtener velocidades desde el archivo Velogrid2017.txt
+// Función principal para obtener velocidades desde el archivo seleccionado
 async function getVelocitiesFromFile(lat, lon) {
-    const filePath = 'grids/Velogrid2017.txt'; 
+    const filePath = getFilePathByModel(); // Obtiene la ruta según el modelo seleccionado
     try {
         const response = await fetch(filePath);
         if (!response.ok) throw new Error("No se pudo cargar el archivo de grilla.");
 
         const textData = await response.text();
-        console.log("Contenido del archivo:", textData); // Verifica el contenido del archivo aquí
+        console.log("Contenido del archivo:", textData);
 
         const lines = textData.trim().split('\n');
         const reader = new VelocitiesReader(lines);
 
         const matrix = reader.getMatrix(lat, lon);
-        console.log("Matriz de datos cargada:", matrix); // Verifica el contenido de la matriz aquí
+        console.log("Matriz de datos cargada:", matrix);
 
         const velocities = calculateVelocities(matrix, lat, lon);
         return velocities;
@@ -254,7 +259,6 @@ async function getVelocitiesFromFile(lat, lon) {
         return null;
     }
 }
-
 
 // Clase para procesar el archivo y obtener la matriz de velocidades
 class VelocitiesReader {

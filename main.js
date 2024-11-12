@@ -3,34 +3,36 @@ const url = require("url");
 const path = require("path");
 const ejse = require("ejs-electron");
 
-// Código para mirar en tiempo real los cambios realizados
 if (process.env.NODE_ENV !== "production") {
   require("electron-reload")(__dirname, {});
 }
 
-// Initialize the ejs parser
 ejse.data({ titulo: "Bienvenido" });
 
-// Función para crear la ventana
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
     webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true, // Necesario para usar Node.js en el renderer
-      // contentSecurityPolicy: {
-      //   directives: {
-      //     defaultSrc: ["'self'"], // Permite cargar recursos desde el mismo origen
-      //     imgSrc: ["'self'", "data:"], // Permite cargar imágenes desde 'self' y 'data:'
-      //     // Otras directivas según sea necesario
-      //   },
-      // },
+      nodeIntegration: true, // Cambiado a true
+      contextIsolation: false, // Cambiado a false
     },
     icon: "./src/img/logo.ico",
   });
+  
+  // Establecer Content Security Policy para mejorar la seguridad
+  win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          "default-src 'self'; script-src 'self' 'unsafe-inline'; media-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline';"
+        ],
+      },
+    });
+  });
 
-  // Cargar la ventana inicial y le indicamos en qué ruta inicia
+  // Cargar la ventana inicial con index.ejs
   win.loadURL(
     url.format({
       pathname: path.join(__dirname, "src/view/index.ejs"),
@@ -39,10 +41,8 @@ const createWindow = () => {
     })
   );
 
-  // Abre las herramientas de desarrollo al inicio
+  // Abre las herramientas de desarrollo si estás en modo de desarrollo
   win.webContents.openDevTools();
-
-  // Ajustar Content Security Policy
 };
 
 app.whenReady().then(() => {

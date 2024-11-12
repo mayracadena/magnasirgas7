@@ -1,11 +1,11 @@
 <%- include('./partials/cabecero.ejs', {"titulo": "Cambio de epoca" }); %>
 <%- include('./partials/menu.ejs'); %>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interfaz de cambio de epoca</title>
+  <title>Cambio de Época</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     /* Variables de raíz */
@@ -24,11 +24,9 @@
       --card-header-bg-color: rgba(0, 31, 63, 0.8);
       --btn-secondary-bg-color: #555555;
       --btn-secondary-hover-bg-color: #777777;
-      --panel-bg-color: rgba(255, 255, 255, 0.05);
-      --panel-border-color: rgba(255, 255, 255, 0.1);
       --btn-secondary-text-color: #faffff;
     }
-  
+
     /* Estilos globales */
     body {
       margin: 0;
@@ -39,7 +37,7 @@
       overflow: hidden;
       height: 100vh;
     }
-  
+
     /* Fondo de partículas */
     #particles-js {
       position: absolute;
@@ -47,103 +45,92 @@
       height: 100%;
       z-index: -1;
     }
-  .main-container {
-    display: flex;
-  
-    width: 100vw; /* Ancho completo de la ventana */
-    overflow: hidden; /* Evita que el contenedor principal tenga desplazamiento */
-  }
-  
-  /* Barra lateral */
-  .sidebar {
-    width: 250px; /* Ajusta el ancho según tu diseño */
-    background-color: #0056b3; /* Color de fondo de la barra lateral */
-    overflow-y: auto; /* Agrega desplazamiento en la barra lateral si es necesario */
-  }
-  /* Contenido principal */
-  .main-content {
-    flex: 1; /* Ocupa el espacio restante a la derecha de la barra lateral */
-    display: flex;
-    margin-left: 300px;
-    flex-direction: column;
-    max-height: 100vh; /* Limita la altura del contenido principal a la ventana */
-    overflow-y: auto; /* Permite el desplazamiento vertical si el contenido es mayor */
-    padding: 20px;
-    background: var(--bg-translucent);
-  }
-  
-  
+
+    .main-container {
+      display: flex;
+      width: 100vw;
+      overflow: hidden;
+    }
+
+    /* Contenido principal */
+    .main-content {
+      flex: 1;
+      display: flex;
+      margin-left: 300px;
+      flex-direction: column;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 20px;
+      background: var(--bg-translucent);
+    }
+
     /* Estilos de tarjeta */
     .card { 
       background: transparent;
       border: none;
     }
-  
+
     .card-header {
-      position: sticky;
-      top: 0;
-      width: 100%;
       background: var(--card-header-bg-color);
       color: var(--primary-color);
       text-align: center;
-      z-index: 10;
       padding: 15px;
       border-bottom: 1px solid var(--border-color-regular);
     }
-  
+
     .card-body {
       padding: 30px;
     }
-  
+
     /* Estilos de formulario */
     .form-group label {
       font-weight: bold;
       color: var(--primary-color);
     }
-  
+
     .form-control {
       background: var(--form-control-bg-color);
       border: 1px solid var(--border-color-regular);
       color: var(--text-color);
     }
-  
+
     .form-control::placeholder {
       color: var(--text-muted-color);
     }
-  
+
     .form-control:focus {
       background: var(--focus-bg-color);
       color: var(--text-color);
     }
-  
+
     /* Botones */
     .btn {
       border: none;
       transition: background-color 0.3s, transform 0.3s;
     }
-  
+
     .btn:hover {
       transform: translateY(-2px);
     }
-  
+
     .btn-primary {
       background-color: var(--secondary-color);
       color: var(--primary-color);
     }
-  
+
     .btn-primary:hover {
       background-color: var(--secondary-hover-color);
     }
-  
+
     .btn-secondary {
       background-color: var(--btn-secondary-bg-color);
       color: var(--btn-secondary-text-color);
     }
-  
+
     .btn-secondary:hover {
       background-color: var(--btn-secondary-hover-bg-color);
     }
-  
+
     /* Paneles */
     .panel {
       background: var(--panel-bg-color);
@@ -152,13 +139,13 @@
       border-radius: 10px;
       border: 1px solid var(--panel-border-color);
     }
-  
+
     .panel h2,
     .panel h3 {
       margin-bottom: 20px;
       color: var(--primary-color);
     }
-  
+
     /* Pestañas */
     .nav-tabs .nav-link {
       background: transparent;
@@ -167,23 +154,33 @@
       font-weight: bold;
       transition: color 0.3s, border-bottom 0.3s;
     }
-  
+
     .nav-tabs .nav-link.active {
       color: #000000;
       border-bottom: 2px solid var(--primary-color);
     }
-  
+
     .nav-tabs .nav-link:hover {
       color: var(--text-color);
     }
-  
+
     /* Personalización de partículas */
     .particles-js-canvas-el {
       position: absolute;
       top: 0;
       left: 0;
     }
-  
+
+    /* Contenedor de resultados y modelos de velocidad */
+    .resultados-container, .modelos-utilizados-container {
+      background: var(--panel-bg-color);
+      padding: 20px;
+      margin-top: 20px;
+      border: 1px solid var(--border-color-light);
+      border-radius: 8px;
+      color: var(--primary-color);
+    }
+
     /* Consultas de medios */
     @media (max-width: 768px) {
       .row {
@@ -194,670 +191,215 @@
       }
     }
   </style>
-  
 </head>
 <body>
-   <!-- Particles Background -->
-   <div id="particles-js"></div>
+  <!-- Particles Background -->
+  <div id="particles-js"></div>
 
-    <div class="main-content" >
-    <div class="card shadow">
-    <div class="card shadow">
-        <div class="card-header">
-            <h2>Cambio de Época</h2>
-        </div>
-        <div class="card-body">
-
-            <nav>
-                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <button class="nav-link active" id="panel_directo_tab" data-bs-toggle="tab"
-                        data-bs-target="#panel_directo" type="button" role="tab" aria-controls="panel_directo"
-                        aria-selected="true">Individual</button>
-                    <button class="nav-link" id="panel_inverso_tab" data-bs-toggle="tab"
-                        data-bs-target="#panel_inverso" type="button" role="tab" aria-controls="panel_inverso"
-                        aria-selected="false">Archivo</button>
-                </div>
-            </nav>
-         
-        </div>
-    </div>
-
-<div class="tab-content" id="nav-tabContent">
-  <!-- Panel Individual -->
-  <div class="tab-pane fade show active" id="panel_directo" role="tabpanel" aria-labelledby="panel_directo_tab">
-    <!-- Contenido original del procesamiento individual -->
-    <div class="container-fluid">
-      <!-- Fila para Época de Rastreo y Época de Referencia -->
-      <div class="row mt-3">
-        <!-- Columna para Época de Rastreo -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Época de Rastreo
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <input type="date" class="form-control" id="fechaRastreoPartida">
-              </div>
-            </div>
+  <div class="main-content">
+      <div class="card shadow">
+          <div class="card-header">
+              <h2>Cambio de Época</h2>
           </div>
-        </div>
-    
-        <!-- Columna para Época de Referencia -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Época de Referencia
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <input type="date" class="form-control" id="fechaReferenciaPartida">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <p></p>
-    <div class="container-fluid">
-      <!-- Fila para Modelo de Velocidades y Módulo de Información -->
-      <div class="row mt-3">
-        <!-- Columna para Modelo de Velocidades -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Modelo de Velocidades
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <select class="form-control" id="modeloVelocidadesPartida" onchange="mostrarInformacionVemos()">
-                  <option value="vemos2022">VEMOS 2022</option>
-                  <option value="vemos2017">VEMOS 2017</option>
-                  <option value="vemos2015">VEMOS 2015</option>
-                  <option value="vemos2009">VEMOS 2009</option>
-                  <option value="vemos2003">VEMOS 2003</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-    
-        <!-- Columna para el Módulo de Información -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Información del Modelo de Velocidades
-            </div>
-            <div class="card-body">
-              <div id="informacionVemos" class="form-group">
-                <!-- La información del modelo seleccionado aparecerá aquí -->
-                Cada modelo de velocidades es válido para un lapso de tiempo determinado
-                <p></p>VEMOS 2022: Entre el 1 de febrero de 2017 y el 30 de abril de 2022.
-                <p></p>VEMOS 2017: Entre el 1 de febrero de 2017 y el 30 de abril de 2022.
-                <p></p>VEMOS 2015: Entre el 1 de febrero de 2017 y el 30 de abril de 2022.
-                <p></p>VEMOS 2009: Entre el 1 de febrero de 2017 y el 30 de abril de 2022.
-                <p></p>VEMOS 2003: Entre el 1 de febrero de 2017 y el 30 de abril de 2022.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Resto del contenido del panel individual -->
-    <!-- Aquí mantienes el contenido original del panel individual tal cual -->
-    <!-- Fila para Tipo de Coordenada de Partida y Destino -->
-    <p></p>    
-    <div class="container-fluid">
-      <!-- Fila para Tipo de Coordenada de Partida y Destino -->
-      <div class="row mt-3">
-        <!-- Columna para Tipo de Coordenada de Partida -->
-        <div class="col-md-6">
-          <div class="panel">
-              <h6>Tipo de Coordenada</h6>
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-              <!-- Tab Items -->
-              <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="elipsoidal-tab" data-bs-toggle="tab" data-bs-target="#elipsoidal" type="button" role="tab" aria-controls="elipsoidal" aria-selected="true">Elipsoidal Sexagesimal</button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" id="elipsoidaldecimal-tab" data-bs-toggle="tab" data-bs-target="#coordenadas-decimales" type="button" role="tab" aria-controls="elipsoidaldecimal" aria-selected="false">Elipsoidal Decimal</button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" id="origen-nacional-tab" data-bs-toggle="tab" data-bs-target="#origen-nacional" type="button" role="tab" aria-controls="origen-nacional" aria-selected="false">Origen Nacional</button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" id="geocentrica-tab" data-bs-toggle="tab" data-bs-target="#geocentrica" type="button" role="tab" aria-controls="geocentrica" aria-selected="false">Geocéntrica</button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" id="plana-cartesiana-tab" data-bs-toggle="tab" data-bs-target="#plana-cartesiana" type="button" role="tab" aria-controls="plana-cartesiana" aria-selected="false">Plana Cartesiana</button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" id="utm-tab" data-bs-toggle="tab" data-bs-target="#utm" type="button" role="tab" aria-controls="utm" aria-selected="false">UTM</button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" id="gauss-kruger-tab" data-bs-toggle="tab" data-bs-target="#gauss-kruger" type="button" role="tab" aria-controls="gauss-kruger" aria-selected="false">Gauss Krüger</button>
-              </li>
-            </ul>
-            <div class="tab-content" id="myTabContent">
-              <!-- Elipsoidal Tab Pane -->
-              <div class="tab-pane fade show active" id="elipsoidal" role="tabpanel" aria-labelledby="elipsoidal-tab">
-                <!-- Latitud Input -->
-                <div class="form-group">
-                  <label for="latitud">Latitud:</label>
-                  <div class="row">
-                    <div class="col-md-3">
-                      <input type="text" class="form-control" placeholder="GG" id="latitud-grados">
-                    </div>
-                    <div class="col-md-3">
-                      <input type="text" class="form-control" placeholder="MM" id="latitud-minutos">
-                    </div>
-                    <div class="col-md-3">
-                      <input type="text" class="form-control" placeholder="SS.DDDDD" id="latitud-segundos">
-                    </div>
-                    <div class="col-md-3">
-                      <select class="form-control" id="latitud-hemisferio">
-                        <option value="N">N</option>
-                        <option value="S">S</option>
-                      </select>
-                    </div>
+          <div class="card-body">
+              <nav>
+                  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                      <button class="nav-link active" id="panel_directo_tab" data-bs-toggle="tab" data-bs-target="#panel_directo" type="button" role="tab" aria-controls="panel_directo" aria-selected="true">Individual</button>
+                      <button class="nav-link" id="panel_inverso_tab" data-bs-toggle="tab" data-bs-target="#panel_inverso" type="button" role="tab" aria-controls="panel_inverso" aria-selected="false">Archivo</button>
                   </div>
-                </div>
-                <!-- Longitud Input -->
-                <div class="form-group">
-                  <label for="longitud">Longitud:</label>
-                  <div class="row">
-                    <div class="col-md-3">
-                      <input type="text" class="form-control" placeholder="GG" id="longitud-grados">
-                    </div>
-                    <div class="col-md-3">
-                      <input type="text" class="form-control" placeholder="MM" id="longitud-minutos">
-                    </div>
-                    <div class="col-md-3">
-                      <input type="text" class="form-control" placeholder="SS.DDDDD" id="longitud-segundos">
-                    </div>
-                    <div class="col-md-3">
-                      <select class="form-control" id="longitud-hemisferio">
-                        <option value="E">E</option>
-                        <option value="W">W</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- Elipsoidal Decimal Tab Pane -->
-              <div class="tab-pane fade" id="coordenadas-decimales" role="tabpanel" aria-labelledby="elipsoidaldecimal-tab">
-                <div class="form-group">
-                  <label for="latitud-decimal">Latitud (decimal):</label>
-                  <input type="text" class="form-control" placeholder="Latitud (decimal)" id="latitud-decimal">
-                </div>
-                <div class="form-group">
-                  <label for="longitud-decimal">Longitud (decimal):</label>
-                  <input type="text" class="form-control" placeholder="Longitud (decimal)" id="longitud-decimal">
-                </div>
-              </div>
-              <!-- Origen Nacional Tab Pane -->
-              <div class="tab-pane fade" id="origen-nacional" role="tabpanel" aria-labelledby="origen-nacional-tab">
-                <div class="form-group">
-                  <label for="norte">Norte (m):</label>
-                  <input type="text" class="form-control" id="norte">
-                </div>
-                <div class="form-group">
-                  <label for="este">Este (m):</label>
-                  <input type="text" class="form-control" id="este">
-                </div>
-              </div>
-              <!-- Geocéntrica Tab Pane -->
-              <div class="tab-pane fade" id="geocentrica" role="tabpanel" aria-labelledby="geocentrica-tab">
-                <div class="form-group">
-                  <label for="x">X (m):</label>
-                  <input type="text" class="form-control" id="x">
-                </div>
-                <div class="form-group">
-                  <label for="y">Y (m):</label>
-                  <input type="text" class="form-control" id="y">
-                </div>
-                <div class="form-group">
-                  <label for="z">Z (m):</label>
-                  <input type="text" class="form-control" id="z">
-                </div>
-              </div>
-              <!-- Plana Cartesiana Tab Pane -->
-              <div class="tab-pane fade" id="plana-cartesiana" role="tabpanel" aria-labelledby="plana-cartesiana-tab">
-                <div class="form-group">
-                  <label for="norte-pc">Norte (m):</label>
-                  <input type="text" class="form-control" id="norte-pc">
-                </div>
-                <div class="form-group">
-                  <label for="este-pc">Este (m):</label>
-                  <input type="text" class="form-control" id="este-pc">
-                </div>
-                <p></p> 
-                <h6>Origen Cartesiano</h6>
-                <div class="form-group">
-                  <label for="departamento">Departamento:</label>
-                  <select class="form-control" id="departamento">
-                    <option value="">--Seleccione Departamento--</option>
-                    <option value="amazonas">Amazonas</option>
-                    <!-- Agregar más opciones según sea necesario -->
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="municipio">Municipio:</label>
-                  <select class="form-control" id="municipio">
-                    <option value="">--Seleccione Municipio--</option>
-                    <!-- Opciones dinámicas según el departamento seleccionado -->
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="origenes-cartesianos">Orígenes Cartesianos Disponibles:</label>
-                  <select class="form-control" id="origenes-cartesianos">
-                    <!-- Opciones dinámicas según el municipio seleccionado -->
-                  </select>
-                </div>
-              </div>
-              <!-- UTM Tab Pane -->
-              <div class="tab-pane fade" id="utm" role="tabpanel" aria-labelledby="utm-tab">
-                <div class="form-group">
-                  <label for="norte-utm">Norte (m):</label>
-                  <input type="text" class="form-control" id="norte-utm">
-                </div>
-                <div class="form-group">
-                  <label for="este-utm">Este (m):</label>
-                  <input type="text" class="form-control" id="este-utm">
-                </div>
-                <div class="form-group">
-                  <label for="huso">Huso:</label>
-                  <input type="text" class="form-control" id="huso">
-                </div>
-                <div class="form-group">
-                  <label for="hemisferio">Hemisferio:</label>
-                  <select class="form-control" id="hemisferio">
-                    <option value="N">N</option>
-                    <option value="S">S</option>
-                  </select>
-                </div>
-              </div>
-              <!-- Gauss Krüger Tab Pane -->
-              <div class="tab-pane fade" id="gauss-kruger" role="tabpanel" aria-labelledby="gauss-kruger-tab">
-                <div class="form-group">
-                  <label for="norte-gk">Norte (m):</label>
-                  <input type="text" class="form-control" id="norte-gk">
-                </div>
-                <div class="form-group">
-                  <label for="este-gk">Este (m):</label>
-                  <input type="text" class="form-control" id="este-gk">
-                </div>
-                <div class="form-group">
-                  <label for="origen-gauss">Origen Gauss:</label>
-                  <select class="form-control" id="origen-gauss">
-                    <option value="Central">Central</option>
-                    <option value="Este">Este</option>
-                    <option value="Este-este">Este-este</option>
-                    <option value="Insular">Insular</option>
-                    <option value="Oeste">Oeste</option>
-                    <option value="Oeste-oeste">Oeste-oeste</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>  
-    
-        <!-- Columna para Tipo de Coordenada de Destino -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Tipo de Coordenada de Destino
-            </div>
-            <div class="card-body">
-              <!-- Navegación de pestañas -->
-              <ul class="nav nav-tabs" id="myTabDestino" role="tablist">
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link active" id="elipsoidal-tab-destino" data-bs-toggle="tab" data-bs-target="#elipsoidal-destino" type="button" role="tab" aria-controls="elipsoidal-destino" aria-selected="true">Elipsoidal Sexagesimal</button>
-                </li>
-                <!-- Resto de las pestañas tal cual -->
-                <!-- ... (No se muestra para abreviar) ... -->
-              </ul>
-              <!-- Contenido de las pestañas -->
-              <div class="tab-content" id="myTabContentDestino">
-                <!-- Elipsoidal Sexagesimal -->
-                <div class="tab-pane fade show active" id="elipsoidal-destino" role="tabpanel" aria-labelledby="elipsoidal-tab-destino">
-                  <div class="form-group mt-3">
-                    <label for="latitud-destino">Latitud:</label>
-                    <div class="row">
-                      <div class="col-md-3">
-                        <input type="text" class="form-control" placeholder="GG" id="latitud-grados-destino">
-                      </div>
-                      <div class="col-md-3">
-                        <input type="text" class="form-control" placeholder="MM" id="latitud-minutos-destino">
-                      </div>
-                      <div class="col-md-3">
-                        <input type="text" class="form-control" placeholder="SS.DDDDD" id="latitud-segundos-destino">
-                      </div>
-                      <div class="col-md-3">
-                        <select class="form-control" id="latitud-hemisferio-destino">
-                          <option value="N">N</option>
-                          <option value="S">S</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Resto del contenido tal cual -->
-                  <!-- ... (No se muestra para abreviar) ... -->
-                </div>
-                <!-- Resto de las pestañas tal cual -->
-                <!-- ... (No se muestra para abreviar) ... -->
-              </div>
-            </div>
+              </nav>
           </div>
-        </div>
       </div>
-    </div>
-    <!-- Botones de Acción -->
-    <div class="row mt-3">
-      <div class="col-md-12 text-center">
-        <button class="btn btn-primary">Calcular</button>
-        <button class="btn btn-secondary">Limpiar</button>
+
+      <div class="tab-content" id="nav-tabContent">
+          <!-- Panel Individual -->
+          <div class="tab-pane fade show active" id="panel_directo" role="tabpanel" aria-labelledby="panel_directo_tab">
+              <div class="container-fluid">
+                  <!-- Fila para Época de Rastreo y Época de Referencia -->
+                  <div class="row mt-3">
+                      <div class="col-md-6">
+                          <div class="card">
+                              <div class="card-header">Época de Rastreo</div>
+                              <div class="card-body">
+                                  <div class="form-group">
+                                      <input type="date" class="form-control" id="fechaRastreoPartida">
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-md-6">
+                          <div class="card">
+                              <div class="card-header">Época de Referencia</div>
+                              <div class="card-body">
+                                  <div class="form-group">
+                                      <input type="date" class="form-control" id="fechaReferenciaPartida">
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- Fila para Tipo de Coordenada de Partida y Destino -->
+                  <div class="container-fluid">
+                      <div class="row mt-3">
+                          <div class="col-md-6">
+                              <div class="panel">
+                                  <h6>Tipo de Coordenada</h6>
+                                  <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                      <li class="nav-item" role="presentation">
+                                          <button class="nav-link active" id="elipsoidal-tab" data-bs-toggle="tab" data-bs-target="#elipsoidal" type="button" role="tab" aria-controls="elipsoidal" aria-selected="true">Elipsoidal Sexagesimal</button>
+                                      </li>
+                                      <li class="nav-item" role="presentation">
+                                          <button class="nav-link" id="elipsoidaldecimal-tab" data-bs-toggle="tab" data-bs-target="#coordenadas-decimales" type="button" role="tab" aria-controls="elipsoidaldecimal" aria-selected="false">Elipsoidal Decimal</button>
+                                      </li>
+                                      <li class="nav-item" role="presentation">
+                                          <button class="nav-link" id="geocentrica-tab" data-bs-toggle="tab" data-bs-target="#geocentrica" type="button" role="tab" aria-controls="geocentrica" aria-selected="false">Geocéntrica</button>
+                                      </li>
+                                  </ul>
+
+                                  <div class="tab-content" id="myTabContent">
+                                      <!-- Elipsoidal Tab Pane -->
+                                      <div class="tab-pane fade show active" id="elipsoidal" role="tabpanel" aria-labelledby="elipsoidal-tab">
+                                          <div class="form-group">
+                                              <label for="latitud">Latitud:</label>
+                                              <div class="row">
+                                                  <div class="col-md-3"><input type="text" class="form-control" placeholder="GG" id="latitud-grados"></div>
+                                                  <div class="col-md-3"><input type="text" class="form-control" placeholder="MM" id="latitud-minutos"></div>
+                                                  <div class="col-md-3"><input type="text" class="form-control" placeholder="SS.DDDDD" id="latitud-segundos"></div>
+                                                  <div class="col-md-3">
+                                                      <select class="form-control" id="latitud-hemisferio">
+                                                          <option value="N">N</option>
+                                                          <option value="S">S</option>
+                                                      </select>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <div class="form-group">
+                                              <label for="longitud">Longitud:</label>
+                                              <div class="row">
+                                                  <div class="col-md-3"><input type="text" class="form-control" placeholder="GG" id="longitud-grados"></div>
+                                                  <div class="col-md-3"><input type="text" class="form-control" placeholder="MM" id="longitud-minutos"></div>
+                                                  <div class="col-md-3"><input type="text" class="form-control" placeholder="SS.DDDDD" id="longitud-segundos"></div>
+                                                  <div class="col-md-3">
+                                                      <select class="form-control" id="longitud-hemisferio">
+                                                          <option value="E">E</option>
+                                                          <option value="W">W</option>
+                                                      </select>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+
+                                      <!-- Elipsoidal Decimal Tab Pane -->
+                                      <div class="tab-pane fade" id="coordenadas-decimales" role="tabpanel" aria-labelledby="elipsoidaldecimal-tab">
+                                          <div class="form-group">
+                                              <label for="latitud-decimal">Latitud (decimal):</label>
+                                              <input type="text" class="form-control" placeholder="Latitud (decimal)" id="latitud-decimal">
+                                          </div>
+                                          <div class="form-group">
+                                              <label for="longitud-decimal">Longitud (decimal):</label>
+                                              <input type="text" class="form-control" placeholder="Longitud (decimal)" id="longitud-decimal">
+                                          </div>
+                                      </div>
+
+                                      <!-- Geocéntrica Tab Pane -->
+                                      <div class="tab-pane fade" id="geocentrica" role="tabpanel" aria-labelledby="geocentrica-tab">
+                                          <div class="form-group">
+                                              <label for="x">X (m):</label>
+                                              <input type="text" class="form-control" id="coord-x">
+                                          </div>
+                                          <div class="form-group">
+                                              <label for="y">Y (m):</label>
+                                              <input type="text" class="form-control" id="coord-y">
+                                          </div>
+                                          <div class="form-group">
+                                              <label for="z">Z (m):</label>
+                                              <input type="text" class="form-control" id="coord-z">
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
+                      <!-- Botones de Acción -->
+                      <div class="row mt-3">
+                          <div class="col-md-12 text-center">
+                              <button class="btn btn-primary" id="calcular">Calcular</button>
+                              <button class="btn btn-secondary" id="limpiar">Limpiar</button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
       </div>
-    </div>
+
+      <!-- Contenedor de Resultados -->
+      <div class="resultados-container" id="resultados">
+          <h5>Coordenadas en la Nueva Época</h5>
+          <p id="coordenadasResultado">Aquí se mostrarán las coordenadas en la nueva época basadas en el tipo de coordenada ingresado.</p>
+      </div>
+
+      <!-- Contenedor de Modelos Utilizados y Fechas -->
+      <div class="modelos-utilizados-container" id="modelosUtilizados">
+          <h5>Modelos de Velocidad Utilizados</h5>
+          <p id="listaModelos">Lista de modelos y rangos de fechas utilizados se mostrarán aquí.</p>
+      </div>
   </div>
 
-  <!-- Panel Archivo -->
-  <div class="tab-pane fade" id="panel_inverso" role="tabpanel" aria-labelledby="panel_inverso_tab">
-    <div class="container-fluid">
-      <!-- Fila para Época de Rastreo y Época de Referencia -->
-      <div class="row mt-3">
-        <!-- Columna para Época de Rastreo -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Época de Rastreo
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <input type="date" class="form-control" id="fechaRastreoArchivo">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Columna para Época de Referencia -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Época de Referencia
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <input type="date" class="form-control" id="fechaReferenciaArchivo">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Fila para Modelo de Velocidades y Módulo de Información -->
-      <div class="row mt-3">
-        <!-- Columna para Modelo de Velocidades -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Modelo de Velocidades
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <select class="form-control" id="modeloVelocidadesArchivo" onchange="mostrarInformacionVemosArchivo()">
-                  <option value="vemos2022">VEMOS 2022</option>
-                  <option value="vemos2017">VEMOS 2017</option>
-                  <option value="vemos2015">VEMOS 2015</option>
-                  <option value="vemos2009">VEMOS 2009</option>
-                  <option value="vemos2003">VEMOS 2003</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Columna para el Módulo de Información -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Información del Modelo de Velocidades
-            </div>
-            <div class="card-body">
-              <div id="informacionVemosArchivo" class="form-group">
-                <!-- La información del modelo seleccionado aparecerá aquí -->
-                Cada modelo de velocidades es válido para un lapso de tiempo determinado
-                <p></p>VEMOS 2022: Entre el 1 de febrero de 2017 y el 30 de abril de 2022.
-                <p></p>VEMOS 2017: Entre el 1 de Enero de 2014 y el 28 de Enero de 2017
-                <p></p>VEMOS 2015: Entre el 14 de marzo de 2010 y el 11 de abril de 2015.
-                <p></p>VEMOS 2009: Entre el 2 de Enero de 2017 y el 30 de Junio de 2009.
-                <p></p>VEMOS 2003: Anterior al 2000.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-   
-            <!-- Fila para Carga de Archivo CSV y Selección de Tipo de Coordenadas -->
-            <div class="row mt-3">
-                <!-- Columna para Carga de Archivo CSV -->
-                <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                    Cargar Archivo CSV
-                    </div>
-                    <div class="card-body">
-                    <div class="form-group">
-                        <input type="file" class="form-control" id="archivoCSV" accept=".csv">
-                    </div>
-                    <div class="form-group mt-2">
-                        <label for="delimitador">Delimitador:</label>
-                        <select class="form-control" id="delimitador">
-                        <option value=",">Coma (,)</option>
-                        <option value=";">Punto y coma (;)</option>
-                        <option value="tab">Tabulación</option>
-                        </select>
-                    </div>
-                    </div>
-                </div>
-                </div>
-
-        <!-- Columna para Selección de Tipo de Coordenadas -->
-        
-        <div class="col-md-6">
-         <div class="tab-pane fade show active" id="panel_directo" role="tabpanel" aria-labelledby="panel_directo_tab">
-          <div class="card">
-            <div class="card-header">
-              Tipo de Coordenadas en el Archivo
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <select class="form-control" id="tipoCoordenadasArchivo" onchange="actualizarOpcionesAdicionales()">
-                  <option value="geocentrica">Geocéntricas</option>
-                  <option value="elipsoidal-sexagesimal">Elipsoidales Sexagesimales</option>
-                  <option value="elipsoidal-decimal">Elipsoidales Decimales</option>
-                  <option value="origen-nacional">Origen Nacional</option>
-                  <option value="plana-cartesiana">Planas Cartesianas</option>
-                  <option value="utm">UTM</option>
-                  <option value="gauss-kruger">Gauss Krüger</option>
-                </select>
-              </div>
-              <div class="form-group mt-2" id="opcionesAdicionales">
-                <!-- Opciones adicionales según el tipo de coordenadas seleccionado aparecerán aquí -->
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <p></p>
-      <!-- Columna para Selección de Tipo de Coordenadas -->
-        
-            <!-- Botones de Acción -->
-            <div class="row mt-3">
-                <div class="col-md-12 text-center">
-                <button class="btn btn-primary" onclick="procesarArchivo()">Procesar Archivo</button>
-                <button class="btn btn-secondary" onclick="limpiarFormulario()">Limpiar</button>
-                </div>
-            </div>
-            </div>
-        </div>
-        </div>
-
-<!-- JavaScript para actualizar el módulo de información y opciones adicionales -->
-<script>
-  // Función para mostrar la información del modelo VEMOS seleccionado en el panel individual
-  function mostrarInformacionVemos() {
-    var seleccion = document.getElementById("modeloVelocidadesPartida").value;
-    var informacionVemos = document.getElementById("informacionVemos");
-
-    // Limpia el contenido actual
-    informacionVemos.innerHTML = "";
-
-    // Información según el modelo seleccionado
-    if (seleccion === "vemos2022") {
-      informacionVemos.innerHTML =
-        '<p><strong>VEMOS 2022:</strong> Cubre el periodo comprendido entre el 1 de febrero de 2017 y el 30 de abril de 2022.</p>';
-    } else if (seleccion === "vemos2017") {
-      informacionVemos.innerHTML =
-        '<p><strong>VEMOS 2017:</strong> Cubre la región comprendida entre 120°W, 55°S y 35°W, 32°N con una resolución espacial de 1° x 1°. La incertidumbre promedio es ±1.0 mm/a en la dirección norte-sur y ±1.7 mm/a en la dirección este-oeste.</p>';
-    } else if (seleccion === "vemos2015") {
-      informacionVemos.innerHTML =
-        '<p><strong>VEMOS 2015:</strong> Válido del 14 de marzo de 2010 al 11 de abril del 2015. La incertidumbre media es ±0.6 mm/a en la dirección norte-sur y ±1.2 mm/a en la dirección este-oeste.</p>';
-    } else if (seleccion === "vemos2009") {
-      informacionVemos.innerHTML =
-        '<p><strong>VEMOS 2009:</strong> Válido para el periodo entre enero 2 de 2000 y junio 30 de 2009. La incertidumbre media es aproximadamente 1.5 mm/a.</p>';
-    } else if (seleccion === "vemos2003") {
-      informacionVemos.innerHTML =
-        '<p><strong>VEMOS 2003:</strong> Información específica del modelo VEMOS 2003.</p>';
-    }
-  }
-
-  // Función para mostrar opciones adicionales según el tipo de coordenadas
-  function actualizarOpcionesAdicionales() {
-    var tipo = document.getElementById("tipoCoordenadasArchivo").value;
-    var opcionesDiv = document.getElementById("opcionesAdicionales");
-    opcionesDiv.innerHTML = "";
-
-    if (tipo === "utm") {
-      opcionesDiv.innerHTML = `
-        <div class="form-group">
-          <label for="huso">Huso:</label>
-          <input type="text" class="form-control" id="huso">
-        </div>
-        <div class="form-group mt-2">
-          <label for="hemisferio">Hemisferio:</label>
-          <select class="form-control" id="hemisferio">
-            <option value="N">Norte</option>
-            <option value="S">Sur</option>
-          </select>
-        </div>
-      `;
-    } else if (tipo === "gauss-kruger") {
-      opcionesDiv.innerHTML = `
-        <div class="form-group mt-2">
-          <label for="origen-gauss">Origen Gauss:</label>
-          <select class="form-control" id="origen-gauss">
-            <option value="Central">Central</option>
-            <option value="Este">Este</option>
-            <option value="Insular">Insular</option>
-            <option value="Oeste">Oeste</option>
-          </select>
-        </div>
-      `;
-    } else {
-      opcionesDiv.innerHTML = "";
-    }
-  }
-
-  // Función para procesar el archivo CSV
-  function procesarArchivo() {
-    var archivoInput = document.getElementById("archivoCSV");
-    var archivo = archivoInput.files[0];
-    var delimitador = document.getElementById("delimitador").value;
-    var tipoCoordenadas = document.getElementById("tipoCoordenadasArchivo").value;
-
-    if (!archivo) {
-      alert("Por favor, selecciona un archivo CSV.");
-      return;
-    }
-
-    // Lógica para procesar el archivo CSV según el tipo de coordenadas seleccionado
-    // Aquí puedes agregar el código necesario para leer el archivo y realizar los cálculos
-  }
-
-  // Función para limpiar el formulario
-  function limpiarFormulario() {
-    document.getElementById("fechaRastreoArchivo").value = "";
-    document.getElementById("fechaReferenciaArchivo").value = "";
-    document.getElementById("modeloVelocidadesArchivo").selectedIndex = 0;
-    document.getElementById("archivoCSV").value = "";
-    document.getElementById("tipoCoordenadasArchivo").selectedIndex = 0;
-    document.getElementById("opcionesAdicionales").innerHTML = "";
-    mostrarInformacionVemosArchivo();
-  }
-
-  // Eventos iniciales
-  document.addEventListener("DOMContentLoaded", function() {
-    mostrarInformacionVemos();
-    mostrarInformacionVemosArchivo();
-    actualizarOpcionesAdicionales();
-  });
-
-  document.getElementById("tipoCoordenadasArchivo").addEventListener("change", actualizarOpcionesAdicionales);
-  document.getElementById("modeloVelocidadesArchivo").addEventListener("change", mostrarInformacionVemosArchivo);
-</script>
-<!-- Particles.js Script -->
-<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
-<script>
-  particlesJS('particles-js', {
-    particles: {
-      number: { value: 80 },
-      color: { value: '#00d4ff' },
-      shape: {
-        type: 'circle',
-        stroke: { width: 0, color: '#000000' },
-        polygon: { nb_sides: 5 },
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="controller/Cambio_epoca.js"></script>
+  <!-- Particles.js Script -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+  <script>
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 80 },
+        color: { value: '#00d4ff' },
+        shape: {
+          type: 'circle',
+          stroke: { width: 0, color: '#000000' },
+          polygon: { nb_sides: 5 },
+        },
+        opacity: { value: 0.5 },
+        size: { value: 3 },
+        line_linked: {
+          enable: true,
+          distance: 150,
+          color: '#00d4ff',
+          opacity: 0.4,
+          width: 1
+        },
+        move: {
+          enable: true,
+          speed: 2,
+          direction: 'none',
+          random: false,
+          straight: false,
+          out_mode: 'out',
+          bounce: false,
+        }
       },
-      opacity: { value: 0.5 },
-      size: { value: 3 },
-      line_linked: {
-        enable: true,
-        distance: 150,
-        color: '#00d4ff',
-        opacity: 0.4,
-        width: 1
+      interactivity: {
+        detect_on: 'canvas',
+        events: {
+          onhover: { enable: true, mode: 'grab' },
+          onclick: { enable: true, mode: 'push' },
+          resize: true
+        },
+        modes: {
+          grab: { distance: 200, line_linked: { opacity: 1 } },
+          bubble: { distance: 200, size: 40, duration: 2, opacity: 8 },
+          repulse: { distance: 100 },
+          push: { particles_nb: 4 },
+          remove: { particles_nb: 2 }
+        }
       },
-      move: {
-        enable: true,
-        speed: 2,
-        direction: 'none',
-        random: false,
-        straight: false,
-        out_mode: 'out',
-        bounce: false,
-      }
-    },
-    interactivity: {
-      detect_on: 'canvas',
-      events: {
-        onhover: { enable: true, mode: 'grab' },
-        onclick: { enable: true, mode: 'push' },
-        resize: true
-      },
-      modes: {
-        grab: { distance: 200, line_linked: { opacity: 1 } },
-        bubble: { distance: 200, size: 40, duration: 2, opacity: 8 },
-        repulse: { distance: 100 },
-        push: { particles_nb: 4 },
-        remove: { particles_nb: 2 }
-      }
-    },
-    retina_detect: true
-  });
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+      retina_detect: true
+    });
+  </script>
 </body>
 </html>
 
-<%- include('./partials/pie.ejs'); %>
+
+
