@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "aplicación de escritorio que permitira realizar las funciones ya realizadas en el magna pro 5 y adicionar las nuevas que se han venido trabajando",
   "main": "main.js",
-  "type": "module",
+
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
