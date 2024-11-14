@@ -1,4 +1,4 @@
-class coord_planas_cartesianas {
+export default class coord_planas_cartesianas {
     constructor(id, fk_sistema, detalle, anio, fk_corregimiento, fk_municipio, latitud, longitud, fnorte, feste, plano_proyeccion, descripcion, oficial) {
         this._id = id;
         this._fk_sistema = fk_sistema;
@@ -133,4 +133,4 @@ class coord_planas_cartesianas {
     }
 }
 
-module.exports = coord_planas_cartesianas;
+// module.exports = coord_planas_cartesianas;

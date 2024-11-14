@@ -1,13 +1,7 @@
-class elipsoide_referencia {
+export default class elipsoide_referencia {
     constructor(a, f){
-        //semieje mayor
-       
-        this._a = a;
-        //semieje menor
-       // this._b = 6356752.31414;
-        this._f=1/f;
-       
-        
+         this._a = a;       
+        this._f=1/f;       
     }
 
     get a(){
@@ -20,8 +14,7 @@ class elipsoide_referencia {
     }
 
     get f(){
-        //el aplanamiento f=(a-b)/a
-       // const f = (this._a-this._b)/this._a;
+        
         return this._f;
     }
     get e2(){
@@ -43,4 +36,4 @@ class elipsoide_referencia {
 }
 
 //esto se realiza para usar esta clase en otros metodos
-module.exports = elipsoide_referencia;
+// module.exports = elipsoide_referencia;

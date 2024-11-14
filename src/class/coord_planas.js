@@ -1,4 +1,4 @@
-class coord_planas{
+export default class coord_planas{
     constructor(norte, este){
         this._norte = norte;
         this._este = este;
@@ -29,4 +29,4 @@ class coord_planas{
 
 }
 //esto se realiza para usar esta clase en otros metodos
-module.exports = coord_planas;
+// module.exports = coord_planas;

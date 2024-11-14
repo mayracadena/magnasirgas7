@@ -1,4 +1,4 @@
-class coord_utm {
+export default class coord_utm {
   constructor(norte, este, huso) {
     this._norte = norte;
     this._este = este;
@@ -53,4 +53,4 @@ class coord_utm {
     }
 }
 
-module.exports = coord_utm;
+// module.exports = coord_utm;
