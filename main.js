@@ -1,7 +1,12 @@
-const { app, BrowserWindow } = require("electron");
-const url = require("url");
-const path = require("path");
-const ejse = require("ejs-electron");
+import { app, BrowserWindow } from "electron";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import ejse from "ejs-electron";
+import { createRequire } from "module";
+import * as path from "path"; // Importación de path
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
 
 // Código para mirar en tiempo real los cambios realizados
 if (process.env.NODE_ENV !== "production") {
@@ -17,34 +22,21 @@ const createWindow = () => {
     width: 1200,
     height: 800,
     webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true, // Necesario para usar Node.js en el renderer
-      // contentSecurityPolicy: {
-      //   directives: {
-      //     defaultSrc: ["'self'"], // Permite cargar recursos desde el mismo origen
-      //     imgSrc: ["'self'", "data:"], // Permite cargar imágenes desde 'self' y 'data:'
-      //     // Otras directivas según sea necesario
-      //   },
-      // },
+      nodeIntegration: true,
+      contextIsolation: false,
     },
     icon: "./src/img/logo.ico",
   });
 
-  // Cargar la ventana inicial y le indicamos en qué ruta inicia
-  win.loadURL(
-    url.format({
-      pathname: path.join(__dirname, "src/view/index.ejs"),
-      protocol: "file",
-      slashes: true,
-    })
-  );
+  // Cargar la ventana inicial usando loadURL con el archivo index.ejs
+  // win.loadURL(`file://${path.join(__dirname, "src", "view", "index.ejs")}`);
+  win.loadFile(path.join(__dirname, "src", "view", "index.ejs"));
 
   // Abre las herramientas de desarrollo al inicio
   win.webContents.openDevTools();
-
-  // Ajustar Content Security Policy
 };
 
+// Inicializar la aplicación cuando esté lista
 app.whenReady().then(() => {
   createWindow();
 
@@ -53,6 +45,7 @@ app.whenReady().then(() => {
   });
 });
 
+// Cerrar la aplicación cuando todas las ventanas estén cerradas
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
