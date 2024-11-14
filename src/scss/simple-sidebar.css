@@ -32,7 +32,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     
-    background: #0066d0;
+    /* background: #0066d0; */
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
@@ -43,7 +43,7 @@
 {
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0);
 	border-radius: 10px;
-	background-color: #f1f1f1;
+	background-color: darkblue;
         
 }
 
@@ -55,9 +55,8 @@
 
 #sidebar-wrapper::-webkit-scrollbar-thumb
 {
-	border-radius: 10px;
-	
-        background-color: #c1c1c1;
+    background: #ccc;
+    border-radius: 4px;
 }
 
 #wrapper.toggled #sidebar-wrapper {
