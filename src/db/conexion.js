@@ -1,9 +1,9 @@
-import sqlite3 from 'sqlite3';
-import path from 'path';
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
 
-export default class conexion {
+class conexion {
     constructor() {
-        this.dbFilePath = path.resolve('../db/coord_planas_cartesianas_igac.db3'); // Resolución de la ruta para evitar errores de ruta relativos
+        this.dbFilePath = path.resolve(__dirname,'../db/coord_planas_cartesianas_igac.db3'); // Resolución de la ruta para evitar errores de ruta relativos
         this.db = null;
     }
 
@@ -84,4 +84,4 @@ export default class conexion {
     }
 }
 
-// module.exports = conexion;
+module.exports = conexion;

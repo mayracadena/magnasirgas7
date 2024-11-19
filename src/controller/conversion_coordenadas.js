@@ -1,16 +1,17 @@
-import Point from "ol/geom/Point.js";
-import { Feature, Map, View } from "ol/index.js";
-import TileLayer from "ol/layer/Tile.js";
-import { Projection, fromLonLat, transform, addCoordinateTransforms } from "ol/proj.js";
-import OSM from "ol/source/OSM.js";
-import proj4 from "proj4";
-import VectorSource from "ol/source/Vector.js";
-import VectorLayer from "ol/layer/Vector.js";
-import { register } from "ol/proj/proj4.js";
-import GeoJSON from "ol/format/GeoJSON.js";
-import { get as getProjection, transformExtent } from "ol/proj.js";
-import { Circle as CircleStyle, Fill, Stroke, Style, Text } from "ol/style.js";
-import TopoJSON from "ol/format/TopoJSON.js";
+// import Point from "./node_modules/ol/geom/Point.js";
+
+// import { Feature, Map, View } from "ol/index.js";
+// import TileLayer from "ol/layer/Tile.js";
+// import { Projection, fromLonLat, transform, addCoordinateTransforms } from "ol/proj.js";
+// import OSM from "ol/source/OSM.js";
+// import proj4 from "proj4";
+// import VectorSource from "ol/source/Vector.js";
+// import VectorLayer from "ol/layer/Vector.js";
+// import { register } from "ol/proj/proj4.js";
+// import GeoJSON from "ol/format/GeoJSON.js";
+// import { get as getProjection, transformExtent } from "ol/proj.js";
+// import { Circle as CircleStyle, Fill, Stroke, Style, Text } from "ol/style.js";
+// import TopoJSON from "ol/format/TopoJSON.js";
 
 
 

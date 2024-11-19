@@ -1,58 +1,6 @@
 <%- include('./partials/cabecero.ejs', {"titulo": "Conversión y transformación de coordenadas" }); %>
 <%- include('./partials/menu.ejs'); %>
-<!-- <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interfaz de Cálculo Geodésico</title> -->
-  <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background-color: #f8f9fa;
-      padding: 20px;
-    }
-    .nav-tabs .nav-link {
-      background-color: #e9ecef;
-      color: #495057;
-    }
-    .nav-tabs .nav-link.active {
-      background-color: #fff;
-      color: #000;
-    }
-    .form-control {
-      margin-bottom: 10px;
-    }
-    .tab-pane {
-      margin-top: 15px;
-    }
-  </style>
-</head>
-<<<<<<< HEAD
-<body>
-  <div class="card shadow">
-    <div class="card-header">
-        <h2>Conversion y Transformacion de Coordenadas</h2>
-    </div>
-    <div class="card-body">
 
-        <nav>
-            <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <button class="nav-link active" id="panel_directo_tab" data-bs-toggle="tab"
-                    data-bs-target="#panel_directo" type="button" role="tab" aria-controls="panel_directo"
-                    aria-selected="true">Individual</button>
-                <button class="nav-link" id="panel_inverso_tab" data-bs-toggle="tab"
-                    data-bs-target="#panel_inverso" type="button" role="tab" aria-controls="panel_inverso"
-                    aria-selected="false">Archivo</button>
-            </div>
-        </nav>
-
-    </div>
-</div>
-=======
-<body> -->
-
-  <link rel="stylesheet" href="../../node_modules/leaflet/dist/leaflet.css">
  
 
 <!-- Fila para Sistema de Referencia de Partida y Llegada -->
@@ -459,7 +407,7 @@
   <!-- Botones de Acción -->
   <div class="row mt-3">
     <div class="col-md-12 text-center">
-      <button class="btn btn-primary">Calcular</button>
+      <button class="btn btn-primary" id="calcular_trans_cover">Calcular</button>
       <button class="btn btn-secondary">Limpiar</button>
     </div>
   </div>
@@ -469,12 +417,34 @@
 
   
 
-<!-- <script src="../../node_modules/leaflet/dist/leaflet.js"></script>
+<script src="../../node_modules/leaflet/dist/leaflet.js"></script>
 <script src="../../node_modules/proj4/dist/proj4.js"></script>
 <script src="../../node_modules/proj4leaflet/src/proj4leaflet.js"></script>
-<script src="../../node_modules/topojson-client/dist/topojson-client.js"></script> -->
-<script src="../../dist/renderer.bundle.js"></script>
+<script  src="../lib/leaflet.shapefile/leaflet.shpfile.js"></script>
+<script  src="../../node_modules/shpjs/dist/shp.js"></script>
+
+<script src="../../node_modules/topojson-client/dist/topojson-client.js"></script>
+<script src="../../node_modules/proj4leaflet/src/proj4leaflet.js"></script>
+<script src="../../node_modules/leaflet-providers/leaflet-providers.js"></script>
+<script src="../../node_modules/ol/dist/ol.js"></script>
+<script type="module" src="../../node_modules/ol/proj.js"></script>
+<script type="module" src="../../node_modules/ol/proj/proj4.js"></script>
+
+
+
+<script>
+
+  window.register = ol.proj.proj4.register;
+  window.transform = ol.proj.transform;
+  
+
+</script>
+
+<script type="module" src="../controller/conversion.js"></script>
 <script type="module" src="../js/conver_trans.js"></script>
+
+<script  src="../js/mapa_colombia.js"></script>
+
 
 
 <!-- </body>

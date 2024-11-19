@@ -1,42 +1,52 @@
-import { app, BrowserWindow } from "electron";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import ejse from "ejs-electron";
-import { createRequire } from "module";
-import * as path from "path"; // Importación de path
+const { app, BrowserWindow } = require("electron");
+const url = require("url");
+const path = require("path");
+const ejse = require("ejs-electron");
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const require = createRequire(import.meta.url);
 
-// Código para mirar en tiempo real los cambios realizados
+
 if (process.env.NODE_ENV !== "production") {
   require("electron-reload")(__dirname, {});
 }
 
-// Initialize the ejs parser
 ejse.data({ titulo: "Bienvenido" });
 
-// Función para crear la ventana
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
+      nodeIntegration: true, // Cambiado a true
+      contextIsolation: false, // Cambiado a false
     },
     icon: "./src/img/logo.ico",
   });
+  
+  // Establecer Content Security Policy para mejorar la seguridad
+  win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          "default-src 'self'; script-src 'self' 'unsafe-inline'; media-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline';"
+        ],
+      },
+    });
+  });
 
-  // Cargar la ventana inicial usando loadURL con el archivo index.ejs
-  // win.loadURL(`file://${path.join(__dirname, "src", "view", "index.ejs")}`);
-  win.loadFile(path.join(__dirname, "src", "view", "index.ejs"));
+  // Cargar la ventana inicial con index.ejs
+  win.loadURL(
+    url.format({
+      pathname: path.join(__dirname, "src/view/index.ejs"),
+      protocol: "file",
+      slashes: true,
+    })
+  );
 
-  // Abre las herramientas de desarrollo al inicio
+  // Abre las herramientas de desarrollo si estás en modo de desarrollo
   win.webContents.openDevTools();
 };
 
-// Inicializar la aplicación cuando esté lista
 app.whenReady().then(() => {
   createWindow();
 
@@ -45,7 +55,6 @@ app.whenReady().then(() => {
   });
 });
 
-// Cerrar la aplicación cuando todas las ventanas estén cerradas
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();

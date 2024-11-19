@@ -165,7 +165,7 @@ async function problema_directo_Vicenty(phi1, lambda1, a12, s) {
 async function problema_inverso_Vicenty(phi1, lambda1, phi2, lambda2) {
   //llamar el elipsoide de referencia
   var grs = await elipoide().then();
-  console.log(grs.a)
+ 
   //se convierten los datos de entrada de decimales a radianes para poder trabajar este procedimiento
   phi1 = phi1 * (Math.PI / 180);
   phi2 = phi2 * (Math.PI / 180);
@@ -257,7 +257,7 @@ async function problema_inverso_Vicenty(phi1, lambda1, phi2, lambda2) {
     a21 = a21 - 360;
   }
 
-  console.log(a12, "\n", a21, "\n", s);
+  
 
   return {
     a12: a12,
@@ -267,7 +267,7 @@ async function problema_inverso_Vicenty(phi1, lambda1, phi2, lambda2) {
 
 }
 
-problema_inverso_Vicenty(0, -73, 5, -73.5);
+// problema_inverso_Vicenty(0, -73, 5, -73.5);
 
 //exportamos los modulos para ser usados en otros js
 module.exports = { problema_directo_Vicenty, problema_inverso_Vicenty };

@@ -3,13 +3,10 @@
   "version": "1.0.0",
   "description": "aplicación de escritorio que permitira realizar las funciones ya realizadas en el magna pro 5 y adicionar las nuevas que se han venido trabajando",
   "main": "main.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "build:main": "webpack --config webpack.main.config.js",
-    "build:renderer": "webpack --config webpack.renderer.config.js",
-    "build": "npm run build:main && npm run build:renderer"
+    "build": "electron-packager . --all"
   },
   "author": "Mayra Yesenia Cadena Blanco",
   "license": "ISC",
@@ -17,26 +14,21 @@
     "@babel/core": "^7.26.0",
     "@babel/preset-env": "^7.26.0",
     "babel-loader": "^9.2.1",
-    "css-loader": "^7.1.2",
-    "electron": "^29.4.6",
-    "style-loader": "^4.0.0",
-    "webpack": "^5.96.1",
-    "webpack-cli": "^5.1.4",
-    "webpack-node-externals": "^3.0.0"
+    "electron": "^29.4.6"
   },
   "dependencies": {
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "decimal.js": "^10.4.3",
-    "ejs": "^3.1.10",
     "ejs-electron": "^3.0.0",
     "electron-reload": "^2.0.0-alpha.1",
     "express": "^4.21.1",
     "leaflet": "^1.9.4",
+    "leaflet-providers": "^2.0.0",
     "ol": "^9.2.4",
-    "proj4": "^2.14.0",
+    "proj4": "^2.6.2",
     "proj4leaflet": "^1.0.2",
-    "rbush": "^2.0.2",
+    "shpjs": "^6.1.0",
     "sqlite3": "^5.1.7",
     "topojson-client": "^3.1.0"
   }

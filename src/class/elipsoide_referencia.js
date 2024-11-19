@@ -1,4 +1,4 @@
-export default class elipsoide_referencia {
+class elipsoide_referencia {
     constructor(a, f){
          this._a = a;       
         this._f=1/f;       
@@ -36,4 +36,4 @@ export default class elipsoide_referencia {
 }
 
 //esto se realiza para usar esta clase en otros metodos
-// module.exports = elipsoide_referencia;
+module.exports = elipsoide_referencia;

@@ -1,30 +1,30 @@
-import Point from "ol/geom/Point.js";
-import { Feature, Map, View } from "ol/index.js";
-import TileLayer from "ol/layer/Tile.js";
-import { Projection, fromLonLat, transform, addCoordinateTransforms, get as getProjection, transformExtent, addProjection } from "ol/proj.js";
-import OSM from "ol/source/OSM.js";
-import proj4 from "proj4";
-import VectorSource from "ol/source/Vector.js";
-import VectorLayer from "ol/layer/Vector.js";
-import { register } from "ol/proj/proj4.js";
-import GeoJSON from "ol/format/GeoJSON.js";
+// import Point from "../../node_modules/ol/geom/Point.js";
+// import { Feature, Map, View } from "../../node_modules/ol/index.js";
+// import TileLayer from "../../node_modules/ol/layer/Tile.js";
+// import { Projection, fromLonLat, transform, addCoordinateTransforms, get as getProjection, transformExtent, addProjection } from "../../node_modules/ol/proj.js";
+// import OSM from "../../node_modules/ol/source/OSM.js";
+// import proj4 from "../../node_modules/proj4/lib/index.js";
+// import VectorSource from "../../node_modules/ol/source/Vector.js";
+// import VectorLayer from "../../node_modules/ol/layer/Vector.js";
+// import { register } from "../../node_modules/ol/proj/proj4.js";
+// import GeoJSON from "../../node_modules/ol/format/GeoJSON.js";
+// import { Circle as CircleStyle, Fill, Stroke, Style, Text } from "../../node_modules/ol/style.js";
+// import TopoJSON from "../../node_modules/ol/format/TopoJSON.js";
 
-import { Circle as CircleStyle, Fill, Stroke, Style, Text } from "ol/style.js";
-import TopoJSON from "ol/format/TopoJSON.js";
+const proj4 = window.proj4;
+const register = window.register;
+const transform = window.transform;
 
 
-
-
-import elipsoide_referencia from "../class/elipsoide_referencia.js";
-import CTM12 from "../class/CTM12.js";
-import coord_utm from "../class/UTM.js";
-import coord_planas_cartesianas from "../class/coord_planas_cartesianas.js";
-import coord_planas from "../class/coord_planas.js";
-import coord_curvilineas from "../class/coord_curvilineas.js";
-import fs from 'fs';
-import conexion from '../db/conexion.js';
-import coord_geocentricas from "../class/coord_geocentricas.js";
-
+const elipsoide_referencia = require("../class/elipsoide_referencia.js");
+const CTM12 = require("../class/CTM12.js");
+const coord_utm = require("../class/UTM.js");
+const coord_planas_cartesianas = require("../class/coord_planas_cartesianas.js");
+const coord_planas = require("../class/coord_planas.js");
+const coord_curvilineas = require("../class/coord_curvilineas.js");
+const fs = require('fs');
+const conexion = require('../db/conexion.js');
+const coord_geocentricas = require("../class/coord_geocentricas.js");
 
 
 
@@ -66,32 +66,17 @@ async function utm_a_curvilineas(c_utm, sist_refe_entrada, sist_refe_salida) {
     "EPSG:21818",
     "+proj=utm +zone=" + huso + "+ellps=intl +towgs84=307,304,-318,0,0,0,0 +units=m +no_defs +type=crs");
 
-  register(proj4);
+  //proj4Module.register(proj4);
   //si es datum bogota con salida en datum bogota
   var coordenadas;
-  if (sist_refe_entrada == 1 && sist_refe_salida == 1) {
-    coordenadas = transform([este, norte],
-      "EPSG:21818",
-      "hayford"
-    )
-    //si es datum bogota con salida datum magna
-  } else if (sist_refe_entrada == 1 && sist_refe_salida == 2) {
-    coordenadas = transform([este, norte],
-      "EPSG:21818",
-      "EPSG:4326"
-    )
-    //si es datum magna con salida datum bogota
-  } else if (sist_refe_entrada == 2 && sist_refe_salida == 1) {
-    coordenadas = transform([este, norte],
-      "EPSG:32618",
-      "hayford"
-    )
-
+  if (sist_refe_entrada === 1 && sist_refe_salida === 1) {
+    coordenadas = proj4("EPSG:21818", "hayford", [este, norte]);
+  } else if (sist_refe_entrada === 1 && sist_refe_salida === 2) {
+    coordenadas = proj4("EPSG:21818", "EPSG:4326", [este, norte]);
+  } else if (sist_refe_entrada === 2 && sist_refe_salida === 1) {
+    coordenadas = proj4("EPSG:32618", "hayford", [este, norte]);
   } else {
-    coordenadas = transform([este, norte],
-      "EPSG:32618",
-      "EPSG:4326"
-    )
+    coordenadas = proj4("EPSG:32618", "EPSG:4326", [este, norte]);
   }
 
   var coord_elip = new coord_curvilineas(coordenadas[1], coordenadas[0]);
@@ -99,7 +84,6 @@ async function utm_a_curvilineas(c_utm, sist_refe_entrada, sist_refe_salida) {
 
   return coord_elip;
 }
-
 
 
 
@@ -133,17 +117,17 @@ async function planas_cartesianas_a_curvilienas(coordenadas_planas, id_pc, sist_
     proj4.defs("planascolombia2",
       "+proj=tmerc +lat_0=" + oc.latitud + " +lon_0=" + oc.longitud + " +k=1 +x_0=" + oc.feste + " +y_0=" + oc.fnorte + " +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
 
-    register(proj4);
+    //proj4Module.register(proj4);
 
-    var coordenadas;
-    if (sist_refe_salida == 1 && oc.fk_sistema == 1) {
-      coordenadas = transform([cp.este, cp.norte], "planascolombia1", "hayford");
-    } else if (sist_refe_salida == 2 && oc.fk_sistema == 1) {
-      coordenadas = transform([cp.este, cp.norte], "planascolombia1", "EPSG:4326");
-    } else if (sist_refe_salida == 1 && oc.fk_sistema == 2) {
-      coordenadas = transform([cp.este, cp.norte], "planascolombia2", "hayford");
+    let coordenadas;
+    if (sist_refe_salida === 1 && oc.fk_sistema === 1) {
+      coordenadas = proj4("planascolombia1", "hayford", [cp.este, cp.norte]);
+    } else if (sist_refe_salida === 2 && oc.fk_sistema === 1) {
+      coordenadas = proj4("planascolombia1", "EPSG:4326", [cp.este, cp.norte]);
+    } else if (sist_refe_salida === 1 && oc.fk_sistema === 2) {
+      coordenadas = proj4("planascolombia2", "hayford", [cp.este, cp.norte]);
     } else {
-      coordenadas = transform([cp.este, cp.norte], "planascolombia2", "EPSG:4326");
+      coordenadas = proj4("planascolombia2", "EPSG:4326", [cp.este, cp.norte]);
     }
 
     var coord_elip = new coord_curvilineas(coordenadas[1], coordenadas[0]);
@@ -171,32 +155,17 @@ async function origen_nacional_a_curvilienas(coord_on, sist_refe_entrada, sist_r
     "+proj=tmerc +lat_0=4.0 +lon_0=-73.0 +k=0.9992 +x_0=5000000 +y_0=2000000 +ellps=intl +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
   );
   proj4.defs("hayford", "+proj=longlat +ellps=intl +towgs84=307,304,-318,0,0,0,0 +no_defs +type=crs");
-  register(proj4);
+  //proj4Module.register(proj4);
   var coordenadas;
   //si es datum bogota con salida en datum bogota
-  if (sist_refe_entrada == 1 && sist_refe_salida == 1) {
-    coordenadas = transform([cp.este, cp.norte],
-      "EPSG:9378",
-      "hayford"
-    )
-    //si es datum bogota con salida datum magna
-  } else if (sist_refe_entrada == 1 && sist_refe_salida == 2) {
-    coordenadas = transform([cp.este, cp.norte],
-      "EPSG:9378",
-      "EPSG:4326"
-    )
-    //si es datum magna con salida datum bogota
-  } else if (sist_refe_entrada == 2 && sist_refe_salida == 1) {
-    coordenadas = transform([cp.este, cp.norte],
-      "EPSG:9377",
-      "hayford"
-    )
-
+  if (sist_refe_entrada === 1 && sist_refe_salida === 1) {
+    coordenadas = proj4("EPSG:9378", "hayford", [cp.este, cp.norte]);
+  } else if (sist_refe_entrada === 1 && sist_refe_salida === 2) {
+    coordenadas = proj4("EPSG:9378", "EPSG:4326", [cp.este, cp.norte]);
+  } else if (sist_refe_entrada === 2 && sist_refe_salida === 1) {
+    coordenadas = proj4("EPSG:9377", "hayford", [cp.este, cp.norte]);
   } else {
-    coordenadas = transform([cp.este, cp.norte],
-      "EPSG:9377",
-      "EPSG:4326"
-    )
+    coordenadas = proj4("EPSG:9377", "EPSG:4326", [cp.este, cp.norte]);
   }
   var coord_elip = new coord_curvilineas(coordenadas[1], coordenadas[0]);
   console.log("Coordenadas curvilíneas:", coord_elip);
@@ -245,7 +214,6 @@ async function geocentricas_a_curvilineas(coord_geoc, sist_refe_entrada, sist_re
   return coord_elip;
 }
 
-
 async function curvilienas_a_planas_cartesianas(coord_curvi, id_pc, sist_refe_salida) {
 
   var cc = new coord_curvilineas(coord_curvi.phi, coord_curvi.lambda);
@@ -273,7 +241,7 @@ async function curvilienas_a_planas_cartesianas(coord_curvi, id_pc, sist_refe_sa
     proj4.defs("planascolombia2",
       "+proj=tmerc +lat_0=" + oc.latitud + " +lon_0=" + oc.longitud + " +k=1 +x_0=" + oc.feste + " +y_0=" + oc.fnorte + " +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
 
-    register(proj4);
+    //proj4Module.register(proj4);
 
     var coordenadas;
     //sist_refe= 1 datum bogota 
@@ -311,3 +279,5 @@ async function curvilienas_a_planas_cartesianas(coord_curvi, id_pc, sist_refe_sa
 
 // var cc = new coord_curvilineas(4.4673476317148735, -74.1243491172994);
 // curvilienas_a_planas_cartesianas(cc, 1106, 2);
+
+

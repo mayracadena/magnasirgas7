@@ -1,4 +1,4 @@
-export default class coord_geocentricas{
+class coord_geocentricas{
     constructor(X, Y, Z){
         this._X = X;
         this._Y = Y;
@@ -33,4 +33,4 @@ export default class coord_geocentricas{
     }
 }
 
-// module.exports = coord_geocentricas;
+module.exports = coord_geocentricas;

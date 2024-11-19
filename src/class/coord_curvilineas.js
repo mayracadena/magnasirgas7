@@ -1,4 +1,4 @@
-export default class coord_curvilineas{
+class coord_curvilineas{
     constructor(phi, lambda, h){
         this._phi = phi;
         this._lambda = lambda;
@@ -39,4 +39,4 @@ export default class coord_curvilineas{
 }
 
 //esto se realiza para usar esta clase en otros metodos
-// module.exports = coord_curvilineas;
+module.exports = coord_curvilineas;
