@@ -82,7 +82,7 @@ fetch('../data/Servicio-610.zip')
       style: style, // Aplicar la función de estilo
       onEachFeature: function (feature, layer) {
         
-        // layer.bindPopup(`Municipio: ${feature.properties.MpNombre}`);
+        layer.bindPopup(`Municipio: ${feature.properties.MpNombre}`);
         label_nombreMunicipio(feature, layer)
       }
     }).addTo(map);
