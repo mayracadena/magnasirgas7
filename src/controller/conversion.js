@@ -212,6 +212,112 @@ async function geocentricas_a_curvilineas(coord_geoc, sist_refe_entrada, sist_re
   return coord_elip;
 }
 
+
+async function gauss_kruger_a_curvilineas(coord_pgk, origen, sist_refe_entrada, sist_refe_salida) {
+  var c_pgk = new coord_planas(coord_pgk.norte, coord_pgk.este);
+  proj4.defs("hayford", "+proj=longlat +ellps=intl +towgs84=307,304,-318,0,0,0,0 +no_defs +type=crs");
+  //Oeste
+  proj4.defs("EPSG:3115", "+proj=tmerc +lat_0=4.59620041666667 +lon_0=-77.0775079166667 +k=1 +x_0=1000000 +y_0=1000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
+  //Oeste Oeste
+  proj4.defs("EPSG:3114", "+proj=tmerc +lat_0=4.59620041666667 +lon_0=-80.0775079166667 +k=1 +x_0=1000000 +y_0=1000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
+  //Bogotá
+  proj4.defs("EPSG:3116", "+proj=tmerc +lat_0=4.59620041666667 +lon_0=-74.0775079166667 +k=1 +x_0=1000000 +y_0=1000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
+  //Este Central
+  proj4.defs("EPSG:3117", "+proj=tmerc +lat_0=4.59620041666667 +lon_0=-71.0775079166667 +k=1 +x_0=1000000 +y_0=1000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
+  //Este Este
+  proj4.defs("EPSG:3118", "+proj=tmerc +lat_0=4.59620041666667 +lon_0=-68.0775079166667 +k=1 +x_0=1000000 +y_0=1000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
+  //Insular
+  proj4.defs("EPSG:3119", "+proj=tmerc +lat_0=4.59620041666667 +lon_0=-83.0775079166667 +k=1 +x_0=1000000 +y_0=1000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
+
+  //datum bogota 
+
+  //esta seccion se debe entrar a revision, ya que se plantean unos parametros de transformacion que se desconocen el motivo
+
+
+  //Oeste Oeste
+  proj4.defs("EPSG:21894", "+proj=tmerc +lat_0=4.59904722222222 +lon_0=-80.0809166666667 +k=1 +x_0=1000000 +y_0=1000000 +ellps=intl +towgs84=221.899,274.136,-397.554,-2.80844591036278,0.44850858891268,2.81017234679107,-2.199943 +units=m +no_defs");
+  //Oeste
+  proj4.defs("EPSG:21896", "+proj=tmerc +lat_0=4.59904722222222 +lon_0=-77.0809166666667 +k=1 +x_0=1000000 +y_0=1000000 +ellps=intl +towgs84=307,304,-318,0,0,0,0 +units=m +no_defs");
+
+  //Bogotá
+  proj4.defs("EPSG:21897", "+proj=tmerc +lat_0=4.59904722222222 +lon_0=-74.0809166666667 +k=1 +x_0=1000000 +y_0=1000000 +ellps=intl +towgs84=307,304,-318,0,0,0,0 +units=m +no_defs");
+  //Este Central
+  proj4.defs("EPSG:21898", "+proj=tmerc +lat_0=4.59904722222222 +lon_0=-71.0809166666667 +k=1 +x_0=1000000 +y_0=1000000 +ellps=intl +towgs84=307,304,-318,0,0,0,0 +units=m +no_defs");
+  //Este Este
+  proj4.defs("EPSG:21899", "+proj=tmerc +lat_0=4.59904722222222 +lon_0=-68.0809166666667 +k=1 +x_0=1000000 +y_0=1000000 +ellps=intl +towgs84=221.899,274.136,-397.554,-2.80844591036278,0.44850858891268,2.81017234679107,-2.199943 +units=m +no_defs");
+  //insular
+  proj4.defs("EPSG:21900", "+proj=tmerc +lat_0=4.59904722222222 +lon_0=-83.0809166666667 +k=1 +x_0=1000000 +y_0=1000000 +ellps=intl +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+ 
+
+  //esta seccion se debe modificar 
+  var coordenadas;
+  //si es datum bogota con salida en datum bogota
+  if (sist_refe_entrada == 'datumBogotaPartida' && sist_refe_salida == 'datumBogotaLlegada') {
+
+    switch (origen) {
+      case 'Bogotá':
+        coordenadas = proj4("EPSG:21897", "hayford", [cp.este, cp.norte]);
+        break
+      case 'Este Central':
+        coordenadas = proj4("EPSG:21898", "hayford", [cp.este, cp.norte]);
+        break
+      case 'Este Este':
+        coordenadas = proj4("EPSG:21899", "hayford", [cp.este, cp.norte]);
+        break
+      case 'Oeste':
+        coordenadas = proj4("EPSG:21896", "hayford", [cp.este, cp.norte]);
+        break
+      case 'Oeste Oeste':
+        coordenadas = proj4("EPSG:21894", "hayford", [cp.este, cp.norte]);
+        break
+      case 'Insular':
+        coordenadas = proj4("EPSG:21900", "hayford", [cp.este, cp.norte]);
+        break
+
+
+    }
+
+
+  } else if (sist_refe_entrada == 'datumBogotaPartida' && sist_refe_salida == 'magnaSIRGASLlegada') {
+ 
+
+    switch (origen) {
+      case 'Bogotá':
+        coordenadas = proj4("EPSG:21897", "EPSG:4326", [cp.este, cp.norte]);
+        break
+      case 'Este Central':
+        coordenadas = proj4("EPSG:21898", "EPSG:4326", [cp.este, cp.norte]);
+        break
+      case 'Este Este':
+        coordenadas = proj4("EPSG:21899", "EPSG:4326", [cp.este, cp.norte]);
+        break
+      case 'Oeste':
+        coordenadas = proj4("EPSG:21896", "EPSG:4326", [cp.este, cp.norte]);
+        break
+      case 'Oeste Oeste':
+        coordenadas = proj4("EPSG:21894", "EPSG:4326", [cp.este, cp.norte]);
+        break
+      case 'Insular':
+        coordenadas = proj4("EPSG:21900", "EPSG:4326", [cp.este, cp.norte]);
+        break
+
+
+    }
+
+
+  } else if (sist_refe_entrada == 'magnaSIRGASPartida' && sist_refe_salida == 'datumBogotaLlegada') {
+    coordenadas = proj4("", "hayford", [cp.este, cp.norte]);
+  } else {
+    coordenadas = proj4("", "EPSG:4326", [cp.este, cp.norte]);
+  }
+  var coord_elip = new coord_curvilineas(coordenadas[1], coordenadas[0]);
+  console.log("Coordenadas curvilíneas:", coord_elip);
+  return coord_elip
+
+
+}
+
+
 async function curvilienas_a_planas_cartesianas(coord_curvi, id_pc, sist_refe_salida) {
 
   var cc = new coord_curvilineas(coord_curvi.phi, coord_curvi.lambda);
@@ -267,7 +373,7 @@ async function curvilienas_a_curvilienas(c_cc, sist_refe_entrada, sist_refe_sali
 
   var cc = new coord_curvilineas(c_cc.phi, c_cc.lambda);
 
-   proj4.defs("hayford", "+proj=longlat +ellps=intl +towgs84=307,304,-318,0,0,0,0 +no_defs +type=crs");
+  proj4.defs("hayford", "+proj=longlat +ellps=intl +towgs84=307,304,-318,0,0,0,0 +no_defs +type=crs");
 
 
   if (sist_refe_entrada == 'datumBogotaPartida' && sist_refe_salida == 'datumBogotaLlegada') {
@@ -277,7 +383,7 @@ async function curvilienas_a_curvilienas(c_cc, sist_refe_entrada, sist_refe_sali
   } else if (sist_refe_entrada == 'magnaSIRGASPartida' && sist_refe_salida == 'datumBogotaLlegada') {
     coordenadas = proj4("EPSG:4326", "hayford", [cc.lambda, cc.phi]);
   } else {
-    coordenadas =[cc.lambda, cc.phi];
+    coordenadas = [cc.lambda, cc.phi];
   }
 
   var coord_elip = new coord_curvilineas(coordenadas[1], coordenadas[0]);
@@ -306,7 +412,7 @@ async function curvilienas_a_origen_nacional(coord_cc, sist_refe_entrada, sist_r
   var coordenadas;
   //si es datum bogota con salida en datum bogota
   if (sist_refe_entrada == 'datumBogotaPartida' && sist_refe_salida == 'datumBogotaLlegada') {
-    coordenadas = proj4( "hayford", 'EPSG:9378' [c_cc.lambda, c_cc.phi]);
+    coordenadas = proj4("hayford", 'EPSG:9378'[c_cc.lambda, c_cc.phi]);
   } else if (sist_refe_entrada == 'datumBogotaPartida' && sist_refe_salida == 'magnaSIRGASLlegada') {
     coordenadas = proj4("hayford", "EPSG:9377", [c_cc.lambda, c_cc.phi]);
   } else if (sist_refe_entrada == 'magnaSIRGASPartida' && sist_refe_salida == 'datumBogotaLlegada') {
@@ -317,6 +423,42 @@ async function curvilienas_a_origen_nacional(coord_cc, sist_refe_entrada, sist_r
   var c_p = new coord_planas(coordenadas[1], coordenadas[0])
   console.log("Coordenadas curvilíneas:", c_p);
   return c_p
+}
+
+
+async function curvilienas_a_utm(coord_cc, sist_refe_entrada, sist_refe_salida) {
+
+  var c_cc = new coord_curvilineas(coord_cc.phi, coord_cc.lambda);
+
+  //determinación del huso
+  const huso = Math.floor((c_cc.lambda + 180) / 6) + 1;
+
+  //determinación del hemisferios
+  const hemisferio = c_cc.phi >= 0 ? "N" : "S";
+  const datum = sist_refe_salida === 'datumBogotaLlegada' ? "intl" : "WGS84";
+
+  //se pone condicion de si es hemisferio sur para poner en la cadena de la proyeccion, en caso de ser del hemisferio norte no se debe poner nada
+  proj4.defs('utm_generico', `+proj=utm +zone=${huso} +datum=${datum} +units=m +no_defs ${hemisferio === "S" ? " +south" : ""}`);
+  proj4.defs(
+    "hayford",
+    "+proj=longlat +ellps=intl +towgs84=307,304,-318,0,0,0,0 +no_defs +type=crs"
+  );
+
+  //proj4Module.register(proj4);
+  //si es datum bogota con salida en datum bogota
+  var coordenadas;
+  if (sist_refe_entrada == 'datumBogotaPartida' && sist_refe_salida == 'datumBogotaLlegada') {
+    coordenadas = proj4("hayford", "utm_generico", [este, norte]);
+  } else if (sist_refe_entrada == 'datumBogotaPartida' && sist_refe_salida == 'magnaSIRGASLlegada') {
+    coordenadas = proj4("hayford", "utm_generico", [este, norte]);
+  } else if (sist_refe_entrada == 'magnaSIRGASPartida' && sist_refe_salida == 'datumBogotaLlegada') {
+    coordenadas = proj4("EPSG:4326", "utm_generico", [este, norte]);
+  } else {
+    coordenadas = proj4("EPSG:4326", "utm_generico", [este, norte]);
+  }
+
+  var utm_gen = new coord_utm(coordenadas[1], coordenadas[0]);
+  return utm_gen;
 }
 
 // var cp = new coord_planas(85751.864, 94803.436);
@@ -331,8 +473,11 @@ async function curvilienas_a_origen_nacional(coord_cc, sist_refe_entrada, sist_r
 // var geo = new coord_geocentricas(1860857.8789, -6086591.8657, 442084.6182)
 // geocentricas_a_curvilineas(geo, 2, 2)
 
-// var cc = new coord_curvilineas(4.4673476317148735, -74.1243491172994);
+//  var cc = new coord_curvilineas(4.4673476317148735, -74.1243491172994);
 // curvilienas_a_planas_cartesianas(cc, 1106, 2);
+// curvilienas_a_utm(cc, "magnaSIRGASPartida", "magnaSIRGASLlegada")
 
 
-module.exports = {utm_a_curvilineas, origen_nacional_a_curvilienas,planas_cartesianas_a_curvilienas, geocentricas_a_curvilineas, curvilienas_a_curvilienas,curvilienas_a_planas_cartesianas, curvilienas_a_origen_nacional }
+
+
+module.exports = { utm_a_curvilineas, origen_nacional_a_curvilienas, planas_cartesianas_a_curvilienas, geocentricas_a_curvilineas, curvilienas_a_curvilienas, curvilienas_a_planas_cartesianas, curvilienas_a_origen_nacional, curvilienas_a_utm }

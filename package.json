@@ -13,6 +13,7 @@
   "devDependencies": {
     "@babel/core": "^7.26.0",
     "@babel/preset-env": "^7.26.0",
+    "@electron/packager": "^18.3.6",
     "babel-loader": "^9.2.1",
     "electron": "^29.4.6"
   },
@@ -21,6 +22,7 @@
     "bootstrap-icons": "^1.11.3",
     "decimal.js": "^10.4.3",
     "ejs-electron": "^3.0.0",
+    "electron-packager": "^17.1.2",
     "electron-reload": "^2.0.0-alpha.1",
     "express": "^4.21.1",
     "leaflet": "^1.9.4",
@@ -28,6 +30,7 @@
     "ol": "^9.2.4",
     "proj4": "^2.6.2",
     "proj4leaflet": "^1.0.2",
+    "rbush": "^4.0.1",
     "shpjs": "^6.1.0",
     "sqlite3": "^5.1.7",
     "topojson-client": "^3.1.0"
