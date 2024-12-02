@@ -1,6 +1,14 @@
-const coord_curvilineas = require('../class/coord_curvilineas');
-const coord_planas = require('../class/coord_planas');
-const { utm_a_curvilineas, origen_nacional_a_curvilienas, planas_cartesianas_a_curvilienas, geocentricas_a_curvilineas, curvilienas_a_curvilienas, curvilienas_a_planas_cartesianas, curvilienas_a_origen_nacional, curvilienas_a_utm } = require('../controller/conversion');
+const elipsoide_referencia = require("../class/elipsoide_referencia.js");
+const CTM12 = require("../class/CTM12.js");
+const coord_utm = require("../class/UTM.js");
+const coord_planas_cartesianas = require("../class/coord_planas_cartesianas.js");
+const coord_planas = require("../class/coord_planas.js");
+const coord_curvilineas = require("../class/coord_curvilineas.js");
+const coord_geocentricas = require("../class/coord_geocentricas.js");
+
+const { utm_a_curvilineas, origen_nacional_a_curvilienas, planas_cartesianas_a_curvilienas, geocentricas_a_curvilineas, gauss_kruger_a_curvilineas, curvilienas_a_curvilienas, curvilienas_a_planas_cartesianas, curvilienas_a_origen_nacional, curvilienas_a_utm, curvilineas_a_geocentricas, curvilineas_a_gauss_kruger } = require('../controller/conversion');
+
+
 
 function GMS_a_decimal(grados, minutos, segundos) {
   // Convertir minutos y segundos a grados decimales
@@ -29,6 +37,72 @@ function decimal_a_GMS(coordenada) {
     segundos: segundos
   }
 }
+
+function altura() {
+  const activeTabPartida = document.querySelector("#myTabPartida .nav-link.active");
+
+  const sistemaPartidaActivo = document.querySelector('input[name="sistemaPartida"]:checked');
+  const activeTabLlegada = document.querySelector("#myTabDestino .nav-link.active");
+
+
+  console("altura funcion ",activeTabLlegada)
+  console("altura funcion 2 ",activeTabPartidaId)
+  if (activeTabLlegada == 'geocentrica-tab-destino') {
+    if (activeTabPartidaId == 'elipsoidal-tab-partida') {
+
+      var altura_visible_elipsoidal = document.getElementById('div-altura-partida-elipsoidal');
+      altura_visible_elipsoidal.hidden = false;
+
+    } else if (activeTabPartidaId == 'elipsoidal-decimal-tab-partida-decimal') {
+
+      var altura_visible_elipsoidal_decimal = document.getElementById('div-altura-partida-elipsoidal-decimal');
+      altura_visible_elipsoidal_decimal.hidden = false;
+
+    } else if (activeTabPartidaId == 'origen-nacional-tab-partida') {
+
+      var altura_visible_origen_nacional = document.getElementById('div-altura-partida-origen-nacional');
+      altura_visible_origen_nacional.hidden = false;
+
+    } else if (activeTabPartidaId == 'plana-cartesiana-tab-partida') {
+
+      var altura_visible_plana_cartesiana = document.getElementById('div-altura-partida-plana-cartesiana');
+      altura_visible_plana_cartesiana.hidden = false;
+
+    } else if (activeTabPartidaId == 'utm-tab-partida') {
+
+      var altura_visible_utm = document.getElementById('div-altura-partida-utm');
+      altura_visible_utm.hidden = false;
+
+    } else if (activeTabPartidaId == 'gauss-kruger-tab-partida') {
+
+      var altura_visible_gauss_kruger = document.getElementById('div-altura-partida-gauss-kruger');
+      altura_visible_gauss_kruger.hidden = false;
+
+    }
+  } else {
+
+    var altura_visible_elipsoidal = document.getElementById('div-altura-partida-elipsoidal');
+    altura_visible_elipsoidal.hidden = true;
+
+    var altura_visible_elipsoidal_decimal = document.getElementById('div-altura-partida-elipsoidal-decimal');
+    altura_visible_elipsoidal_decimal.hidden = true;
+
+    var altura_visible_origen_nacional = document.getElementById('div-altura-partida-origen-nacional');
+    altura_visible_origen_nacional.hidden = true;
+
+    var altura_visible_plana_cartesiana = document.getElementById('div-altura-partida-plana-cartesiana');
+    altura_visible_plana_cartesiana.hidden = true;
+
+    var altura_visible_utm = document.getElementById('div-altura-partida-utm');
+    altura_visible_utm.hidden = true;
+
+    var altura_visible_gauss_kruger = document.getElementById('div-altura-partida-gauss-kruger');
+    altura_visible_gauss_kruger.hidden = true;
+
+  }
+
+}
+
 
 
 document.getElementById("calcular_trans_cover").addEventListener("click", async function () {
@@ -144,7 +218,21 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
     } else if (activeTabLlegadaId == 'utm-tab-destino') {
       let coord_respuesta = await curvilienas_a_utm(c_cc, sistemaPartidaActivo.id, sistemaLlegadaActivo.id);
 
-      var c_utm = new coord_planas(coord_respuesta)
+      var c_utm = new coord_utm(coord_respuesta.norte, coord_respuesta.este, coord_respuesta.huso);
+      document.getElementById('norte-utm-destino').value = c_utm.norte;
+      document.getElementById('este-utm-destino').value = c_utm.este;
+      document.getElementById('huso-destino').value = c_utm.huso;
+
+
+    } else if (activeTabLlegadaId == 'geocentrica-tab-destino') {
+      let coord_respuesta = await curvilineas_a_geocentricas(c_cc, sistemaPartidaActivo.id, sistemaLlegadaActivo.id);
+      var c_geo = new coord_geoc(coord_respuesta.X, coord_respuesta.Y, coord_respuesta.Z)
+      document.getElementById('x-destino').value = c_geo.X;
+      document.getElementById('y-destino').value = c_geo.Y;
+      document.getElementById('z-destino').value = c_geo.Z;
+
+
+
     }
 
 

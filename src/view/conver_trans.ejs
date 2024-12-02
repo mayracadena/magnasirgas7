@@ -112,6 +112,9 @@
                         <option value="S">S</option>
                       </select>
                     </div>
+
+                    
+                   
                   </div>
                 </div>
                 <div class="form-group mt-3">
@@ -128,12 +131,20 @@
                     </div>
                     <div class="col-md-3">
                       <select class="form-control" id="longitud-hemisferio-partida">
-                        <option value="E">E</option>
                         <option value="W">W</option>
+                        <option value="E">E</option>                        
                       </select>
                     </div>
                   </div>
                 </div>
+                <div  class="form-group mt-3" id="div-altura-partida-elipsoidal" hidden>
+                  <label for="altura-partida">Altura elipsoidal:</label>
+                  <div class="col-md-6" >
+                    <input type="number" placeholder="mm.mmm" class="form-control" id="altura-partida-elipsoidal"> 
+                  </div>
+                </div>
+                
+
               </div>
               <!-- Elipsoidal Decimal -->
               <div class="tab-pane fade" id="elipsoidal-decimal-partida" role="tabpanel" aria-labelledby="elipsoidal-decimal-tab-partida">
@@ -145,6 +156,12 @@
                   <label for="longitud-decimal-partida">Longitud (decimal):</label>
                   <input type="text" class="form-control" placeholder="Longitud (decimal)" id="longitud-decimal-partida">
                 </div>
+                <div  class="form-group mt-3" id="div-altura-partida-elipsoidal-decimal" hidden>
+                  <label for="altura-partida">Altura elipsoidal:</label>
+                  <div class="col-md-6" >
+                    <input type="number" placeholder="mm.mmm" class="form-control" id="altura-partida-elipsoidal-decimal"> 
+                  </div>
+                </div>
               </div>
               <!-- Origen Nacional -->
               <div class="tab-pane fade" id="origen-nacional-partida" role="tabpanel" aria-labelledby="origen-nacional-tab-partida">
@@ -155,6 +172,12 @@
                 <div class="form-group mt-3">
                   <label for="este-partida">Este (m):</label>
                   <input type="text" class="form-control" id="este-partida">
+                </div>
+                <div  class="form-group mt-3" id="div-altura-partida-origen-nacional" hidden>
+                  <label for="altura-partida">Altura elipsoidal:</label>
+                  <div class="col-md-6" >
+                    <input type="number" placeholder="mm.mmm" class="form-control" id="altura-partida-origen-nacional"> 
+                  </div>
                 </div>
               </div>
               <!-- Geocéntrica -->
@@ -182,6 +205,12 @@
                   <label for="este-pc-partida">Este (m):</label>
                   <input type="text" class="form-control" id="este-pc-partida">
                 </div>
+                <div  class="form-group mt-3" id="div-altura-partida-plana-cartesiana" hidden>
+                  <label for="altura-partida">Altura elipsoidal:</label>
+                  <div class="col-md-6" >
+                    <input type="number" placeholder="mm.mmm" class="form-control" id="altura-partida-plana-cartesiana"> 
+                  </div>
+                </div>
               </div>
               <!-- UTM -->
               <div class="tab-pane fade" id="utm-partida" role="tabpanel" aria-labelledby="utm-tab-partida">
@@ -204,6 +233,12 @@
                     <option value="S">S</option>
                   </select>
                 </div>
+                <div  class="form-group mt-3" id="div-altura-partida-utm" hidden>
+                  <label for="altura-partida">Altura elipsoidal:</label>
+                  <div class="col-md-6" >
+                    <input type="number" placeholder="mm.mmm" class="form-control" id="altura-partida-utm"> 
+                  </div>
+                </div>
               </div>
               <!-- Gauss Krüger -->
               <div class="tab-pane fade" id="gauss-kruger-partida" role="tabpanel" aria-labelledby="gauss-kruger-tab-partida">
@@ -223,6 +258,12 @@
                     <option value="Insular">Insular</option>
                     <option value="Oeste">Oeste</option>
                   </select>
+                </div>
+                <div  class="form-group mt-3" id="div-altura-partida-gauss-kruger" hidden>
+                  <label for="altura-partida">Altura elipsoidal:</label>
+                  <div class="col-md-6" >
+                    <input type="number" placeholder="mm.mmm" class="form-control" id="altura-partida-gauss-kruger"> 
+                  </div>
                 </div>
               </div>
             </div>
@@ -249,7 +290,7 @@
                 <button class="nav-link" id="origen-nacional-tab-destino" data-bs-toggle="tab" data-bs-target="#origen-nacional-destino" type="button" role="tab" aria-controls="origen-nacional-destino" aria-selected="false">Origen Nacional</button>
               </li>
               <li class="nav-item" role="presentation">
-                <button class="nav-link" id="geocentrica-tab-destino" data-bs-toggle="tab" data-bs-target="#geocentrica-destino" type="button" role="tab" aria-controls="geocentrica-destino" aria-selected="false">Geocéntrica</button>
+                <button class="nav-link" id="geocentrica-tab-destino" data-bs-toggle="tab" data-bs-target="#geocentrica-destino" type="button" role="tab" aria-controls="geocentrica-destino" aria-selected="false" onclick="altura()">Geocéntrica</button>
               </li>
               <li class="nav-item" role="presentation">
                 <button class="nav-link" id="plana-cartesiana-tab-destino" data-bs-toggle="tab" data-bs-target="#plana-cartesiana-destino" type="button" role="tab" aria-controls="plana-cartesiana-destino" aria-selected="false">Plana Cartesiana</button>
@@ -283,6 +324,7 @@
                         <option value="S">S</option>
                       </select>
                     </div>
+
                   </div>
                 </div>
                 <div class="form-group mt-3">
@@ -443,11 +485,7 @@
 <script type="module" src="../controller/conversion.js"></script>
 <script type="module" src="../js/conver_trans.js"></script>
 
-<script  src="../js/mapa_colombia.js" async></script>
+<!-- <script  src="../js/mapa_colombia.js" async></script> -->
 
-
-
-<!-- </body>
-</html> -->
 
 <%- include('./partials/pie.ejs'); %>
