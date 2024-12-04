@@ -710,8 +710,8 @@ async function curvilineas_a_gauss_kruger(coord_cc, origen, sist_refe_entrada, s
 // var cp = new coord_planas(85751.864, 94803.436);
 // planas_cartesianas_a_curvilienas(cp, 1106, 2)
 
-// var cutm = new coord_utm(774218.962, 720945.889, 18);
-// utm_a_curvilineas(cutm, 2, 2);
+// var cutm = new coord_utm(442194.9725088, 611011.3296834, 18);
+// utm_a_curvilineas(cutm, "magnaSIRGASPartida", "magnaSIRGASLlegada");
 
 //  var on = new coord_planas(2033154.021, 4966724.022);
 //  origen_nacional_a_curvilienas(on, 2, 2 );
@@ -722,11 +722,11 @@ async function curvilineas_a_gauss_kruger(coord_cc, origen, sist_refe_entrada, s
 // var pgk = new coord_planas(934072.252, 1008607.267);
 // gauss_kruger_a_curvilineas(pgk, "Bogotá", "magnaSIRGASPartida", "magnaSIRGASLlegada");
 
-   var cc = new coord_curvilineas(4.4673476317148735, -74.1243491172994, 2600);
+  //  var cc = new coord_curvilineas(4.4673476317148735, -74.1243491172994, 2600);
 // curvilineas_a_gauss_kruger(cc, "Bogotá" ,"magnaSIRGASPartida", "magnaSIRGASLlegada" )
 // curvilineas_a_geocentricas(cc, "magnaSIRGASPartida", "magnaSIRGASLlegada" )
 // curvilienas_a_planas_cartesianas(cc, 1106, 2);
- curvilienas_a_utm(cc, "magnaSIRGASPartida", "magnaSIRGASLlegada");
+//  curvilienas_a_utm(cc, "magnaSIRGASPartida", "magnaSIRGASLlegada");
 
 
 

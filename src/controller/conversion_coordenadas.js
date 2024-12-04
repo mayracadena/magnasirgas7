@@ -341,8 +341,8 @@ async function utm_a_curvilineas(c_utm, sist_refe) {
 
     //seccion de pruebas
 
-    // var cutm = new coord_utm(774218.962, 720945.889, 18);
-    // utm_a_curvilineas(cutm, 2);
+    //  var cutm = new coord_utm(442397.8228989, 722056.3830013, 18);
+    //  utm_a_curvilineas(cutm, 2);
 
     // var cgeoc = new coord_geocentricas(1851153.085 , -6054848.9154, 772207.3386);
 

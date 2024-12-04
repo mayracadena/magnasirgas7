@@ -38,22 +38,30 @@ function decimal_a_GMS(coordenada) {
   }
 }
 
-function altura() {
+
+
+
+document.getElementById('myTabPartida').addEventListener("click", function(){
+
   const activeTabPartida = document.querySelector("#myTabPartida .nav-link.active");
 
   const sistemaPartidaActivo = document.querySelector('input[name="sistemaPartida"]:checked');
   const activeTabLlegada = document.querySelector("#myTabDestino .nav-link.active");
+  const activeTabPartidaId = activeTabPartida ? activeTabPartida.id : null;
+  const activeTabLlegadaId = activeTabLlegada ? activeTabLlegada.id : null;
 
 
-  console("altura funcion ",activeTabLlegada)
-  console("altura funcion 2 ",activeTabPartidaId)
-  if (activeTabLlegada == 'geocentrica-tab-destino') {
+
+  
+  if (activeTabLlegadaId == 'geocentrica-tab-destino') {
+
+
     if (activeTabPartidaId == 'elipsoidal-tab-partida') {
 
       var altura_visible_elipsoidal = document.getElementById('div-altura-partida-elipsoidal');
       altura_visible_elipsoidal.hidden = false;
 
-    } else if (activeTabPartidaId == 'elipsoidal-decimal-tab-partida-decimal') {
+    } else if (activeTabPartidaId == 'elipsoidal-decimal-tab-partida') {
 
       var altura_visible_elipsoidal_decimal = document.getElementById('div-altura-partida-elipsoidal-decimal');
       altura_visible_elipsoidal_decimal.hidden = false;
@@ -100,8 +108,84 @@ function altura() {
     altura_visible_gauss_kruger.hidden = true;
 
   }
+});
 
-}
+document.getElementById('myTabDestino').addEventListener("click", function(){
+
+  const activeTabPartida = document.querySelector("#myTabPartida .nav-link.active");
+
+  const sistemaPartidaActivo = document.querySelector('input[name="sistemaPartida"]:checked');
+  const activeTabLlegada = document.querySelector("#myTabDestino .nav-link.active");
+  const activeTabPartidaId = activeTabPartida ? activeTabPartida.id : null;
+  const activeTabLlegadaId = activeTabLlegada ? activeTabLlegada.id : null;
+
+
+
+  if (activeTabLlegadaId == 'geocentrica-tab-destino') {
+
+  
+    if (activeTabPartidaId == 'elipsoidal-tab-partida') {
+
+      var altura_visible_elipsoidal = document.getElementById('div-altura-partida-elipsoidal');
+      altura_visible_elipsoidal.hidden = false;
+
+    } else if (activeTabPartidaId == 'elipsoidal-decimal-tab-partida') {
+
+      var altura_visible_elipsoidal_decimal = document.getElementById('div-altura-partida-elipsoidal-decimal');
+      altura_visible_elipsoidal_decimal.hidden = false;
+
+    } else if (activeTabPartidaId == 'origen-nacional-tab-partida') {
+
+      var altura_visible_origen_nacional = document.getElementById('div-altura-partida-origen-nacional');
+      altura_visible_origen_nacional.hidden = false;
+
+    } else if (activeTabPartidaId == 'plana-cartesiana-tab-partida') {
+
+      var altura_visible_plana_cartesiana = document.getElementById('div-altura-partida-plana-cartesiana');
+      altura_visible_plana_cartesiana.hidden = false;
+
+    } else if (activeTabPartidaId == 'utm-tab-partida') {
+
+      var altura_visible_utm = document.getElementById('div-altura-partida-utm');
+      altura_visible_utm.hidden = false;
+
+    } else if (activeTabPartidaId == 'gauss-kruger-tab-partida') {
+
+      var altura_visible_gauss_kruger = document.getElementById('div-altura-partida-gauss-kruger');
+      altura_visible_gauss_kruger.hidden = false;
+
+    }
+  } else {
+
+    var altura_visible_elipsoidal = document.getElementById('div-altura-partida-elipsoidal');
+    altura_visible_elipsoidal.hidden = true;
+
+    var altura_visible_elipsoidal_decimal = document.getElementById('div-altura-partida-elipsoidal-decimal');
+    altura_visible_elipsoidal_decimal.hidden = true;
+
+    var altura_visible_origen_nacional = document.getElementById('div-altura-partida-origen-nacional');
+    altura_visible_origen_nacional.hidden = true;
+
+    var altura_visible_plana_cartesiana = document.getElementById('div-altura-partida-plana-cartesiana');
+    altura_visible_plana_cartesiana.hidden = true;
+
+    var altura_visible_utm = document.getElementById('div-altura-partida-utm');
+    altura_visible_utm.hidden = true;
+
+    var altura_visible_gauss_kruger = document.getElementById('div-altura-partida-gauss-kruger');
+    altura_visible_gauss_kruger.hidden = true;
+
+  }
+});
+
+ 
+
+
+
+  
+  
+
+
 
 
 
