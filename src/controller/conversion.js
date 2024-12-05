@@ -406,7 +406,7 @@ async function curvilienas_a_planas_cartesianas(coord_curvi, id_pc, sist_refe_sa
 
 async function curvilienas_a_curvilienas(c_cc, sist_refe_entrada, sist_refe_salida) {
 
-  var cc = new coord_curvilineas(c_cc.phi, c_cc.lambda, coord_cc.h);
+  var cc = new coord_curvilineas(c_cc.phi, c_cc.lambda, c_cc.h);
 
   proj4.defs("hayford", "+proj=longlat +ellps=intl +towgs84=307,304,-318,0,0,0,0 +no_defs +type=crs");
 

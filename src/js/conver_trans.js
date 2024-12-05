@@ -40,7 +40,7 @@ function decimal_a_GMS(coordenada) {
 
 
 
-
+//captura cuando se escoge coordenadas geocentricas y se pone la opcion de altura elipsoidal
 document.getElementById('myTabPartida').addEventListener("click", function(){
 
   const activeTabPartida = document.querySelector("#myTabPartida .nav-link.active");
@@ -178,7 +178,7 @@ document.getElementById('myTabDestino').addEventListener("click", function(){
   }
 });
 
- 
+ //fin de habilitacion de captura de altura elipsoidal
 
 
 
@@ -207,6 +207,12 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
     console.log("Botón sistema partida:", sistemaPartidaActivo.id);
     console.log("Botón sistema llegada:", sistemaLlegadaActivo.id);
     console.log("tab seleccionado:", activeTabPartidaId);
+/*
+---------------------------------------------
+INICIO DE ENVIO DE COORDENADAS ELIPSOIDALES
+----------------------------------------------
+*/
+
 
     if (activeTabPartidaId == 'elipsoidal-tab-partida') {
       //captura de latitud
@@ -219,6 +225,11 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
       var longitud_minutos_partida = parseInt(document.getElementById('longitud-minutos-partida').value);
       var longitud_segundos_partida = parseFloat(document.getElementById('longitud-segundos-partida').value);
       var hemisferio_longitud = document.getElementById('longitud-hemisferio-partida').value;
+
+      //captura altura
+
+      var altura = parseFloat(document.getElementById('altura-partida-elipsoidal').value) || 0;
+     
 
       //convertir en formato decimal
 
@@ -234,8 +245,8 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
         long_par = long_par * -1;
       }
     }
-    console.log("captura cordenadas", lat_par, long_par)
-    var c_cc = new coord_curvilineas(lat_par, long_par);
+    console.log("captura cordenadas", lat_par, long_par, altura)
+    var c_cc = new coord_curvilineas(lat_par, long_par, altura);
 
 
     //seccion de envio de datos de elipsoidales sexagesimal
@@ -292,10 +303,7 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
       var c_on = new coord_planas(coord_respuesta.norte, coord_respuesta.este);
 
-      console.log(c_cc)
-      console.log(coord_respuesta)
-      console.log(sistemaPartidaActivo.id)
-      console.log(sistemaLlegadaActivo.id)
+      
 
       document.getElementById('norte-destino').value = c_on.norte;
       document.getElementById('este-destino').value = c_on.este;
@@ -310,7 +318,7 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
     } else if (activeTabLlegadaId == 'geocentrica-tab-destino') {
       let coord_respuesta = await curvilineas_a_geocentricas(c_cc, sistemaPartidaActivo.id, sistemaLlegadaActivo.id);
-      var c_geo = new coord_geoc(coord_respuesta.X, coord_respuesta.Y, coord_respuesta.Z)
+      var c_geo = new coord_geocentricas(coord_respuesta.X, coord_respuesta.Y, coord_respuesta.Z)
       document.getElementById('x-destino').value = c_geo.X;
       document.getElementById('y-destino').value = c_geo.Y;
       document.getElementById('z-destino').value = c_geo.Z;
