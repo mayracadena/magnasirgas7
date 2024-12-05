@@ -1,12 +1,11 @@
 class coord_utm {
-  constructor(norte, este, huso) {
+  constructor(norte, este, h, huso) {
     this._norte = norte;
     this._este = este;
+    this._h = h
     this._huso = huso;
-    this._k = 0.9996;
-    this._falso_norte = 0;
-    this._falso_este = 500000;
-    
+    // this._k = 0.9996;
+
   }
 
   get k() {
@@ -15,42 +14,45 @@ class coord_utm {
   get zona() {
     //insertar aca formula para hallar la zona
   }
-  get falso_norte() {
-    return this._falso_norte;
+
+  // Getter para norte
+  get norte() {
+    return this._norte;
   }
 
-  get falso_este() {
-    return this._falso_este;
+  // Setter para norte
+  set norte(value) {
+    this._norte = value;
   }
 
-      // Getter para norte
-      get norte() {
-        return this._norte;
-    }
+  // Getter para este
+  get este() {
+    return this._este;
+  }
 
-    // Setter para norte
-    set norte(value) {
-        this._norte = value;
-    }
+  // Setter para este
+  set este(value) {
+    this._este = value;
+  }
 
-    // Getter para este
-    get este() {
-        return this._este;
-    }
+  get huso() {
+    return this._huso;
+  }
 
-    // Setter para este
-    set este(value) {
-        this._este = value;
-    }
+  // Setter para este
+  set huso(value) {
+    this._huso = value;
+  }
 
-    get huso() {
-        return this._huso;
-    }
+  // Getter para h
+  get h() {
+    return this._h;
+  }
 
-    // Setter para este
-    set huso(value) {
-        this._huso = value;
-    }
+  // Setter para h
+  set h(value) {
+    this._h = value;
+  }
 }
 
 module.exports = coord_utm;
