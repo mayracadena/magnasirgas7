@@ -37,7 +37,7 @@ const colores_departamentos = {
 
 const labelLayer = L.layerGroup();
 
- function style(feature) {
+function style(feature) {
     const departamento = feature.properties.Depto;
     const colors = colores_departamentos[departamento] || { color: "red", border: "white" };
 
@@ -51,7 +51,6 @@ const labelLayer = L.layerGroup();
 
 function label_nombreMunicipio(feature, layer) {
     const nombreMunicipio = feature.properties.MpNombre;
-  
     const center = layer.getBounds().getCenter();
     const iconWidth = Math.max(50, nombreMunicipio.length * 7);
    
@@ -59,13 +58,12 @@ function label_nombreMunicipio(feature, layer) {
       icon: L.divIcon({
         className: 'municipio-label',
         html: nombreMunicipio,
-        iconSize: [iconWidth, 20] 
+        iconSize: [iconWidth, 20]
       })
     });
   
-   
     labelLayer.addLayer(label);
-  }
+}
 
 const map = L.map('map').setView([4, -73], 5);
 
@@ -73,31 +71,50 @@ L.tileLayer.provider('OpenStreetMap.Mapnik', {
     maxZoom: 18,
 }).addTo(map);
 
-
-// Cargar el archivo Shapefile desde un archivo .zip y agregarlo al mapa
-fetch('../data/Servicio-610.zip') 
-  .then(response => response.arrayBuffer())
-  .then(buffer => {
-    L.shapefile(buffer, {
-      style: style, // Aplicar la función de estilo
-      onEachFeature: function (feature, layer) {
-        
+// Cargar el archivo GeoJSON
+fetch('../data/Servicio-610.zip')
+  .then(response => response.json())
+  .then(geojsonData => {
+    L.geoJSON(geojsonData, {
+      style: style,
+      onEachFeature: function(feature, layer) {
         layer.bindPopup(`Municipio: ${feature.properties.MpNombre}`);
-        label_nombreMunicipio(feature, layer)
+        label_nombreMunicipio(feature, layer);
       }
     }).addTo(map);
   })
-  .catch(error => console.error("Error al cargar el archivo Shapefile:", error));
+  .catch(error => console.error("Error al cargar el archivo GeoJSON:", error));
 
-
-  function updateLabelVisibility() {
-    if (map.getZoom() >= 9) { // Cambia 10 por el nivel de zoom deseado
-      map.addLayer(labelLayer); // Mostrar etiquetas
-    } else {
-      map.removeLayer(labelLayer); // Ocultar etiquetas
-    }
+function updateLabelVisibility() {
+  if (map.getZoom() >= 9) {
+    map.addLayer(labelLayer);
+  } else {
+    map.removeLayer(labelLayer);
   }
-  
-  // Llamar a la función al iniciar y cada vez que cambie el nivel de zoom
-  map.on('zoomend', updateLabelVisibility);
-  updateLabelVisibility(); // Llamada inicial
+}
+
+map.on('zoomend', updateLabelVisibility);
+updateLabelVisibility();
+
+
+
+
+// Variable global para contar puntos y almacenar sus coordenadas
+let puntoCounter = 0;
+let allPoints = []; // arreglo para almacenar todas las coordenadas
+
+function agregarPuntoSecuencial(map, lat, lng) {
+    puntoCounter += 1; // Incrementar el contador
+    allPoints.push([lat, lng]); // Guardar el punto
+
+    // Crear marcador en la posición especificada
+    const marker = L.marker([lat, lng]).addTo(map);
+
+    // Asignar popup con el nombre "Punto {contador}"
+    marker.bindPopup(`Punto ${puntoCounter}`);
+
+    // Ajustar el mapa para mostrar todos los puntos
+    const bounds = L.latLngBounds(allPoints);
+    map.fitBounds(bounds);
+}
+

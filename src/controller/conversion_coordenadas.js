@@ -153,6 +153,37 @@ async function geocentricas_a_curvilineas(coord_geoc, sist_refe) {
 }
 
 
+async function curvilienas_a_geocentricas(coord_curvi, sist_refe) {
+
+    var c_c = new coord_curvilineas(coord_curvi.phi, coord_curvi.lambda, coord_curvi.h);
+
+    var elip = await elipoide(sist_refe);
+    // Convertir latitud y longitud a radianes
+    var phi_rad = c_c.phi * Math.PI / 180;
+    var lambda_rad = c_c.lambda * Math.PI / 180;
+
+    var sinPhi = Math.sin(phi_rad);
+    var cosPhi = Math.cos(phi_rad);
+    var sinLambda = Math.sin(lambda_rad);
+    var cosLambda = Math.cos(lambda_rad);
+
+    // Calcular N
+    // e2 es la excentricidad al cuadrado: elip.e2
+    var N = elip.a / Math.sqrt(1 - elip.e2 * (sinPhi * sinPhi));
+
+    // Calcular X, Y, Z
+    var X = (N + c_c.h) * cosPhi * cosLambda;
+    var Y = (N + c_c.h) * cosPhi * sinLambda;
+    var Z = (N * (1 - elip.e2) + c_c.h) * sinPhi;
+
+    // Crear instancia final de coord_geocentricas
+    var coord_geo = new coord_geocentricas(X, Y, Z);
+
+    console.log("geocentricas: ", coord_geo);
+
+    return coord_geo;
+
+}
 
 //coordenadas planas de Gauss, planas origen nacional o planas UTM a curvilineas
 
@@ -305,112 +336,6 @@ async function curvilienas_a_planas(coord_curvi, origen, sist_refe) {
 }
 
 
-//coordenadas planas UTM a curvilineas
-//
-async function utm_a_curvilineas(c_utm, sist_refe) {
-    var utm = new coord_utm(c_utm.norte, c_utm.este, c_utm.huso);
-    var norte = utm.norte - utm.falso_norte;
-    var este = utm.este;
-    var huso = utm.huso;
-    //llamar valores del sistema de referencia
-    var elip = await elipoide(sist_refe);
-    //primero se determina una latitud preliminar
-    var phi = norte / (((elip.a + elip.b) / 2) * utm.k);
-
-    //se halla el radio medio de curvatura de la primera vertical
-    var N = ((elip.c) / (Math.sqrt(1 + elip.es2 * Math.pow(Math.cos(phi), 2)))) * utm.k;
-
-    var Y1 = (este - utm.falso_este) / N;
-    var phi2 = Math.sin(2 * phi);
-    var phi3 = phi2 * Math.pow(Math.cos(phi), 2);
-    var phi4 = phi + (phi2 / 2);
-    var phi5 = (3 * phi4 + phi3) / 4;
-
-    //calculo de la longitud preliminar
-
-    var lambda = ((5 * phi5) + (phi3 * Math.pow(Math.cos(phi), 2))) / 3;
-
-    var phi6 = (3 / 4) * elip.es2;
-    var phi7 = (5 / 3) * Math.pow(phi6, 2);
-    var phi8 = (35 / 27) * Math.pow(phi6, 3);
-
-    var NTE = utm.k * elip.c * (phi - (phi6 * phi4) + (phi7 * phi5) - (phi8 * lambda));
-
-    var ENN = (norte - NTE) / N;
-    var EN2 = ((elip.es2 * Math.pow(Y1, 2)) / 2) * Math.pow(Math.cos(phi), 2);
-    var EN = Y1 * (1 - (EN2 / 3));
-    var ENphi = (ENN * (1 - EN2)) + phi;
-    var Ee = (Math.exp(EN) - Math.exp(-EN)) / 2;
-    var EAC = Math.atan2(Ee, Math.cos(ENphi));
-    var EAT = Math.atan(Math.cos(EAC) * Math.tan(ENphi));
-
-    var lambda_final = (EAC * (180 / Math.PI)) + (6 * huso - 183);
-
-    var phi_fr = phi + (1 + (elip.es2 * Math.pow(Math.cos(phi), 2)) - ((3 / 2) * elip.es2 * Math.sin(phi) * Math.cos(phi) * (EAT - phi))) * (EAT - phi);
-    var phi_fd = phi_fr * (180 / Math.PI)
-
-
-
-
-
-    var coord_elip = new coord_curvilineas(phi_fd, lambda_final);
-
-    console.log("utm: ", coord_elip)
-
-    return coord_elip;
-
-
-}
-
-async function origen_nacional_a_curvilienas(coord_on, sist_refe) {
-    var ctm = new CTM12();
-    var cp = new coord_planas(coord_on.norte, coord_on.este);
-    //llamar valores del sistema de referencia
-    var elip = await elipoide(sist_refe);
-
-    var norte = cp.norte;
-    var este = cp.este;
-
-    var phi = (norte - ctm.N0) / (((elip.a + elip.b) / 2) * ctm.k);
-
-    //se halla el radio medio de curvatura de la primera vertical
-    var N = ((elip.c) / (Math.sqrt(1 + elip.es2 * Math.pow(Math.cos(phi), 2)))) * ctm.k;
-
-    var Y1 = (este - ctm.E0) / N;
-
-    var phi2 = Math.sin(2 * phi);
-    var phi3 = phi2 * Math.pow(Math.cos(phi), 2);
-    var phi4 = phi + (phi2 / 2);
-    var phi5 = (3 * phi4 + phi3) / 4;
-
-    //calculo de la longitud preliminar
-
-    var lambda = ((5 * phi5) + (phi3 * Math.pow(Math.cos(phi), 2))) / 3;
-
-    var phi6 = (3 / 4) * elip.es2;
-    var phi7 = (5 / 3) * Math.pow(phi6, 2);
-    var phi8 = (35 / 27) * Math.pow(phi6, 3);
-    var NTE = ctm.k * elip.c * (phi - (phi6 * phi4) + (phi7 * phi5) - (phi8 * lambda));
-    var ENN = (norte - ctm.N0 - NTE) / N;
-    var EN2 = ((elip.es2 * Math.pow(Y1, 2)) / 2) * Math.pow(Math.cos(phi), 2);
-    var EN = Y1 * (1 - (EN2 / 3));
-    var ENphi = (ENN * (1 - EN2)) + phi;
-    var Ee = (Math.exp(EN) - Math.exp(-EN)) / 2;
-    var EAC = Math.atan(Ee / Math.cos(ENphi));
-    var EAT = Math.atan(Math.cos(EAC) * Math.tan(ENphi));
-
-    var lambda_final = (EAC * (180 / Math.PI)) + ctm.landa0;
-
-
-    var phi_fr = phi + (1 + elip.es2 * Math.pow(Math.cos(phi), 2) - ((3 / 2) * elip.es2 * Math.sin(phi) * Math.cos(phi) * (EAT - phi))) * (EAT - phi);
-    var phi_final = (phi_fr * (180 / Math.PI)) + ctm.phi0;
-
-    console.log(phi_final, lambda_final)
-
-
-
-}
-
 
 async function curvilienas_a_planas_cartesianas(coord_curvi, sist_refe, id_pc) {
     // Cargar parámetros del elipsoide
@@ -511,22 +436,20 @@ async function curvilienas_a_planas_cartesianas(coord_curvi, sist_refe, id_pc) {
 //  utm_a_curvilineas(cutm, 2);
 
 // var cgeoc = new coord_geocentricas(1851153.085 , -6054848.9154, 772207.3386);
-
-//geocentricas_a_curvilineas(cgeoc, 2)
+// geocentricas_a_curvilineas(cgeoc, 'MAGNA-SIRGAS')
 
 // var on = new coord_planas(2033154.021, 4966724.022);
 // origen_nacional_a_curvilienas(on, 2);
 
 var cc = new coord_curvilineas(4, -74, 0);
 // curvilienas_a_planas_cartesianas(cc, 'MAGNA-SIRGAS', 1106);
+// curvilienas_a_geocentricas(cc, 'MAGNA-SIRGAS')
 
-// var cutm = new coord_utm(774218.962, 720945.889, 18);
-// var cutm = new coord_utm(182536.187, 767028.416, 17);
-// utm_a_curvilineas(cutm, 1, 1);
+
 
 
 //ejemplo de planas a curvilineas
-var o = new origen('18N', 0, -75, 0, 500000, 0.9996);
+// var o = new origen('18N', 0, -75, 0, 500000, 0.9996);
 // var p = new coord_planas(442194.970, 611011.330, 0);
 // var prueba_utm = planas_a_curvilineas(p, o, 18, 'N', 'MAGNA-SIRGAS');
-var prueba2 = curvilienas_a_planas(cc, o, 'MAGNA-SIRGAS');
+// var prueba2 = curvilienas_a_planas(cc, o, 'MAGNA-SIRGAS');
