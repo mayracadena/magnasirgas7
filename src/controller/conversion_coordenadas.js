@@ -175,7 +175,8 @@ async function planas_a_curvilineas(c_planas, origen, sist_refe) {
     var A8 = -315 * (Math.pow(TN, 4) - Math.pow(TN, 5))/ 512;
 
     // Aproximación inicial de phi1
-    var phi1 = DN / ((elip.a + elip.b)*origen.k/2);
+    var phi1 = DN / ((elip.a + elip.b)/2*origen.k);
+    console.log(phi1)
 
     // Iteración para encontrar phi1 con precisión
     var DIF = 1e12;
@@ -186,8 +187,7 @@ async function planas_a_curvilineas(c_planas, origen, sist_refe) {
         DIF = FP / FH;
         phi2 = phi1 - DIF;
         DIF = phi2 - phi1;
-        phi1 = phi2
-        
+        phi1 = phi2;
     }
 
     // Cálculo de variables auxiliares
@@ -196,21 +196,31 @@ async function planas_a_curvilineas(c_planas, origen, sist_refe) {
     var CP = Math.cos(phi1);
 
     // Cálculo de η (ETA)
-    var ETA = Math.sqrt((Math.pow(elip.a, 2) - Math.pow(elip.b, 2)) / Math.pow(elip.b, 2)*Math.pow(CP,2)) ;
+    var ETA = Math.sqrt(((Math.pow(elip.a, 2) - Math.pow(elip.b, 2)) / Math.pow(elip.b, 2)) * Math.pow(CP, 2));
 
     // Cálculo de N y rho
     var N = elip.a / Math.sqrt(1 - elip.e2 * Math.pow(SP, 2));
-    var rho = elip.a * (1 - elip.e2) / Math.pow(1 - elip.e2 * Math.pow(SP, 2), 1.5);
+    var rho = (elip.a * (1 - elip.e2)) / Math.pow(1 - elip.e2 * Math.pow(SP, 2), 1.5);
 
     // Cálculo de phi (latitud)
     var DE_N = DE / N;
     var DE_N3 = Math.pow(DE_N, 3);
     var DE_N5 = Math.pow(DE_N, 5);
     
-    var phi = phi1 -T*DE_N*DE/(2*rho)+T*DE_N3*DE/(24*rho)*(5+3*Math.pow(T,2)+Math.pow(ETA,2)-T*DE_N5*DE/(720*rho)*(61-90*Math.pow(T,2)))
+    var phi = phi1 
+    - (T * DE_N * DE / (2 * rho))
+    + (T * DE_N3 * DE / (24 * rho) * (5 + 3 * Math.pow(T, 2) + Math.pow(ETA, 2) ))
+    - (T * DE_N5* DE / (720 * rho) * (61 - 90 * Math.pow(T, 2)));
+
+
         
     // Cálculo de lambda (longitud)
-    var lambda = lambda0 + ((DE_N-DE_N3/6*(1+2*Math.pow(T,2)+Math.pow(ETA, 2)+DE_N5/120*(5+6*Math.pow(ETA,2)+28*T-3*Math.pow(ETA,4))))/CP);
+    var lambda = lambda0 
+    + (DE_N 
+       - (DE_N3 / 6) * (1 + 2 * Math.pow(T, 2) + Math.pow(ETA, 2))
+       + (DE_N5 / 120) * (5 + 6 * Math.pow(ETA, 2) + 28 * Math.pow(T, 2) - 3 * Math.pow(ETA, 4)))
+    / CP;
+
 
     // Conversión a grados
     var phi_deg = phi * (180 / Math.PI);
@@ -219,6 +229,7 @@ async function planas_a_curvilineas(c_planas, origen, sist_refe) {
     // Retornar las coordenadas curvilíneas
     var coord_curvi = new coord_curvilineas(phi_deg, lambda_deg, cp.h);
     console.log(coord_curvi);
+    console.log(lambda_deg.toFixed(9), phi_deg.toFixed(9));
  
 
     return coord_curvi;
