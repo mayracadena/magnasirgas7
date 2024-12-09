@@ -169,48 +169,48 @@ async function planas_a_curvilineas(c_planas, origen, sist_refe) {
     // Coeficientes de la serie (A0, A2, A4, A6, A8)
   
     var A0 = 1 - TN + (5 * (Math.pow(TN, 2) - Math.pow(TN, 3)) / 4) + (81 * (Math.pow(TN, 4) - Math.pow(TN, 5)) / 64);
-    var A2 = (3 * (TN - Math.pow(TN, 2) + (7 * (Math.pow(TN, 3) - Math.pow(TN, 4)) / 8) + (55 * Math.pow(TN, 5) / 64))) / 2;
-    var A4 = (15 * ((Math.pow(TN, 2) - Math.pow(TN, 3)) / 16) + (3 * (Math.pow(TN, 4) - Math.pow(TN, 5)) / 64));
-    var A6 = (35 * (Math.pow(TN, 3) - (Math.pow(TN, 4) / 48)) + (11 * Math.pow(TN, 5) / 768));
-    var A8 = (-135 * (Math.pow(TN, 4) - Math.pow(TN, 5))) / 512;
+    var A2 = 3 * (TN - Math.pow(TN, 2) + 7 * (Math.pow(TN, 3) - Math.pow(TN, 4)) / 8 + 55 * Math.pow(TN, 5) / 64) / 2;
+    var A4 = 15 * ((Math.pow(TN, 2) - Math.pow(TN, 3)) / 16 + (3 * (Math.pow(TN, 4) - Math.pow(TN, 5))) / 64);
+    var A6 = 35 * ((Math.pow(TN, 3) - (Math.pow(TN, 4))) / 48 + (11 * Math.pow(TN, 5) )/ 768);
+    var A8 = -315 * (Math.pow(TN, 4) - Math.pow(TN, 5))/ 512;
 
     // Aproximación inicial de phi1
-    var phi1 = DN / (elip.a * A0);
+    var phi1 = DN / ((elip.a + elip.b)*origen.k/2);
 
     // Iteración para encontrar phi1 con precisión
     var DIF = 1e12;
-    var count = 0;
+    var phi2 = 0;
     while (Math.abs(DIF) > 1e-12) {
         var FP = elip.a * (A0 * phi1 - A2 * Math.sin(2 * phi1) + A4 * Math.sin(4 * phi1) - A6 * Math.sin(6 * phi1) + A8 * Math.sin(8 * phi1)) - DN;
         var FH = elip.a * (A0 - 2 * A2 * Math.cos(2 * phi1) + 4 * A4 * Math.cos(4 * phi1) - 6 * A6 * Math.cos(6 * phi1) + 8 * A8 * Math.cos(8 * phi1));
         DIF = FP / FH;
-        phi1 = phi1 - DIF;
-        count++
+        phi2 = phi1 - DIF;
+        DIF = phi2 - phi1;
+        phi1 = phi2
+        
     }
-    console.log(count)
+
     // Cálculo de variables auxiliares
     var T = Math.tan(phi1);
     var SP = Math.sin(phi1);
     var CP = Math.cos(phi1);
 
     // Cálculo de η (ETA)
-    var ETA = Math.sqrt((Math.pow(elip.a, 2) - Math.pow(elip.b, 2)) / Math.pow(elip.b, 2)) * CP;
+    var ETA = Math.sqrt((Math.pow(elip.a, 2) - Math.pow(elip.b, 2)) / Math.pow(elip.b, 2)*Math.pow(CP,2)) ;
 
     // Cálculo de N y rho
     var N = elip.a / Math.sqrt(1 - elip.e2 * Math.pow(SP, 2));
     var rho = elip.a * (1 - elip.e2) / Math.pow(1 - elip.e2 * Math.pow(SP, 2), 1.5);
 
     // Cálculo de phi (latitud)
-    var phi = phi1
-        - (T * Math.pow(DE, 2) / (2 * rho * N))
-        + (T * Math.pow(DE, 4) / (24 * rho * Math.pow(N, 3))) * (5 + 3 * Math.pow(T, 2) + Math.pow(ETA, 2) - 9 * Math.pow(ETA, 2) * Math.pow(T, 2))
-        - (T * Math.pow(DE, 6) / (720 * rho * Math.pow(N, 5))) * (61 + 90 * Math.pow(T, 2) + 45 * Math.pow(T, 4));
-
+    var DE_N = DE / N;
+    var DE_N3 = Math.pow(DE_N, 3);
+    var DE_N5 = Math.pow(DE_N, 5);
+    
+    var phi = phi1 -T*DE_N*DE/(2*rho)+T*DE_N3*DE/(24*rho)*(5+3*Math.pow(T,2)+Math.pow(ETA,2)-T*DE_N5*DE/(720*rho)*(61-90*Math.pow(T,2)))
+        
     // Cálculo de lambda (longitud)
-    var lambda = lambda0
-        + (DE / (N * CP))
-        - (Math.pow(DE, 3) / (6 * Math.pow(N, 3) * CP)) * (1 + 2 * Math.pow(T, 2) + Math.pow(ETA, 2))
-        + (Math.pow(DE, 5) / (120 * Math.pow(N, 5) * CP)) * (5 + 28 * Math.pow(T, 2) + 24 * Math.pow(T, 4) + 6 * Math.pow(ETA, 2));
+    var lambda = lambda0 + ((DE_N-DE_N3/6*(1+2*Math.pow(T,2)+Math.pow(ETA, 2)+DE_N5/120*(5+6*Math.pow(ETA,2)+28*T-3*Math.pow(ETA,4))))/CP);
 
     // Conversión a grados
     var phi_deg = phi * (180 / Math.PI);
@@ -219,6 +219,7 @@ async function planas_a_curvilineas(c_planas, origen, sist_refe) {
     // Retornar las coordenadas curvilíneas
     var coord_curvi = new coord_curvilineas(phi_deg, lambda_deg, cp.h);
     console.log(coord_curvi);
+ 
 
     return coord_curvi;
 }
@@ -462,6 +463,6 @@ var cc = new coord_curvilineas(4, -74, 0);
 
 //ejemplo de planas a curvilineas
 var o = new origen('18N', 0, -75, 0, 500000, 0.9996);
-var p = new coord_planas(442194.970, 611011.330, 20);
-// planas_a_curvilineas(p, o, 'MAGNA-SIRGAS');
-var prueba2 = curvilienas_a_planas(cc, o, 'MAGNA-SIRGAS');
+var p = new coord_planas(553001.718, 721753.346, 20);
+ planas_a_curvilineas(p, o, 'MAGNA-SIRGAS');
+// var prueba2 = curvilienas_a_planas(cc, o, 'MAGNA-SIRGAS');
