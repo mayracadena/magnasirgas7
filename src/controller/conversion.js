@@ -4,8 +4,6 @@ const transform = window.transform;
 
 
 const elipsoide_referencia = require("../class/elipsoide_referencia.js");
-const CTM12 = require("../class/CTM12.js");
-const coord_utm = require("../class/UTM.js");
 const coord_planas_cartesianas = require("../class/coord_planas_cartesianas.js");
 const coord_planas = require("../class/coord_planas.js");
 const coord_curvilineas = require("../class/coord_curvilineas.js");

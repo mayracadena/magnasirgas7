@@ -76,4 +76,4 @@ async function ejemploUso(cc, zipUrl) {
 // ejemploUso(4.5, -74.1, 'ruta/a/tu/archivo.zip');
 
 var cc = new coord_curvilineas(4,-73, 0);
-ejemploUso(cc, '../data/Regiones.zip');
+ejemploUso(cc, '../data/Regiones.geojson');

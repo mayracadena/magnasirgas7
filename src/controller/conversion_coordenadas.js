@@ -1,12 +1,9 @@
 //aca llamamos las clases para poder trabajar con ellas de manera global
 
 const elipsoide_referencia = require("../class/elipsoide_referencia");
-const CTM12 = require("../class/CTM12");
-const coord_utm = require("../class/UTM");
 const coord_planas_cartesianas = require("../class/coord_planas_cartesianas");
 const coord_planas = require("../class/coord_planas");
 const coord_curvilineas = require("../class/coord_curvilineas");
-const fs = require('fs');
 const conexion = require('../db/conexion');
 const coord_geocentricas = require("../class/coord_geocentricas");
 const origen = require("../class/origen.js");
@@ -40,9 +37,6 @@ async function elipoide(sistema) {
         await con.close();
     }
 }
-
-
-
 
 
 
@@ -153,38 +147,6 @@ async function geocentricas_a_curvilineas(coord_geoc, sist_refe) {
 }
 
 
-async function curvilienas_a_geocentricas(coord_curvi, sist_refe) {
-
-    var c_c = new coord_curvilineas(coord_curvi.phi, coord_curvi.lambda, coord_curvi.h);
-
-    var elip = await elipoide(sist_refe);
-    // Convertir latitud y longitud a radianes
-    var phi_rad = c_c.phi * Math.PI / 180;
-    var lambda_rad = c_c.lambda * Math.PI / 180;
-
-    var sinPhi = Math.sin(phi_rad);
-    var cosPhi = Math.cos(phi_rad);
-    var sinLambda = Math.sin(lambda_rad);
-    var cosLambda = Math.cos(lambda_rad);
-
-    // Calcular N
-    // e2 es la excentricidad al cuadrado: elip.e2
-    var N = elip.a / Math.sqrt(1 - elip.e2 * (sinPhi * sinPhi));
-
-    // Calcular X, Y, Z
-    var X = (N + c_c.h) * cosPhi * cosLambda;
-    var Y = (N + c_c.h) * cosPhi * sinLambda;
-    var Z = (N * (1 - elip.e2) + c_c.h) * sinPhi;
-
-    // Crear instancia final de coord_geocentricas
-    var coord_geo = new coord_geocentricas(X, Y, Z);
-
-    console.log("geocentricas: ", coord_geo);
-
-    return coord_geo;
-
-}
-
 //coordenadas planas de Gauss, planas origen nacional o planas UTM a curvilineas
 
 async function planas_a_curvilineas(c_planas, origen, sist_refe) {
@@ -261,80 +223,38 @@ async function planas_a_curvilineas(c_planas, origen, sist_refe) {
     return coord_curvi;
 }
 
-async function curvilienas_a_planas(coord_curvi, origen, sist_refe) {
+
+async function curvilienas_a_geocentricas(coord_curvi, sist_refe) {
 
     var c_c = new coord_curvilineas(coord_curvi.phi, coord_curvi.lambda, coord_curvi.h);
- 
-    
-
-    // Convertir a radianes
-    let phi = c_c.phi * Math.PI / 180;
-    let lambda = c_c.lambda * Math.PI / 180;
 
     var elip = await elipoide(sist_refe);
-    var a = elip.a;
-    var b = elip.b;
+    // Convertir latitud y longitud a radianes
+    var phi_rad = c_c.phi * Math.PI / 180;
+    var lambda_rad = c_c.lambda * Math.PI / 180;
 
-    var e2 = elip.e2; 
+    var sinPhi = Math.sin(phi_rad);
+    var cosPhi = Math.cos(phi_rad);
+    var sinLambda = Math.sin(lambda_rad);
+    var cosLambda = Math.cos(lambda_rad);
 
-    // Cálculo de TN
-    var TN = (a - b) / (a + b);
+    // Calcular N
+    // e2 es la excentricidad al cuadrado: elip.e2
+    var N = elip.a / Math.sqrt(1 - elip.e2 * (sinPhi * sinPhi));
 
-    var A0 = 1 - TN + (5 * (Math.pow(TN, 2) - Math.pow(TN, 3)) / 4) + (81 * (Math.pow(TN, 4) - Math.pow(TN, 5)) / 64);
-    var A2 = (3 * (TN - Math.pow(TN, 2) + (7 * (Math.pow(TN, 3) - Math.pow(TN, 4)) / 8) + (55 * Math.pow(TN, 5) / 64))) / 2;
-    var A4 = (15 * ((Math.pow(TN, 2) - Math.pow(TN, 3)) / 16) + (3 * (Math.pow(TN, 4) - Math.pow(TN, 5)) / 64));
-    var A6 = (35 * (Math.pow(TN, 3) - (Math.pow(TN, 4) / 48)) + (11 * Math.pow(TN, 5) / 768));
-    var A8 = (-135 * (Math.pow(TN, 4) - Math.pow(TN, 5))) / 512;
+    // Calcular X, Y, Z
+    var X = (N + c_c.h) * cosPhi * cosLambda;
+    var Y = (N + c_c.h) * cosPhi * sinLambda;
+    var Z = (N * (1 - elip.e2) + c_c.h) * sinPhi;
 
-    // Calcular la zona UTM a partir de la longitud en grados
-    let ZONA = Math.floor((c_c.lambda + 180) / 6) + 1;
-    // Meridiano central en grados -> luego a radianes
-    let lambda0_deg = (6 * ZONA - 183);
-    let lambda0 = lambda0_deg * Math.PI / 180;
+    // Crear instancia final de coord_geocentricas
+    var coord_geo = new coord_geocentricas(X, Y, Z);
 
-    // Parámetros auxiliares
-    let SP = Math.sin(phi);
-    let CP = Math.cos(phi);
-    let TP = Math.tan(phi);
-    let T = TP * TP;
+    console.log("geocentricas: ", coord_geo);
 
-   
-    let es2 = elip.es2;
-    let C = es2 * (CP*CP);
+    return coord_geo;
 
-    let D_lambda = lambda - lambda0;
-    let N = a / Math.sqrt(1 - e2 * SP*SP);
-
-    // Calcular M (Arco meridiano)
-    let M = a*(A0*phi
-             - A2*Math.sin(2*phi)
-             + A4*Math.sin(4*phi)
-             - A6*Math.sin(6*phi)
-             + A8*Math.sin(8*phi));
-
-   
-    let A = CP * D_lambda;
-
-    // Expansiones para ESTE
-    let E1 = A;
-    let E2 = (Math.pow(A,3)/6)*(1 - T + C);
-    let E3 = (Math.pow(A,5)/120)*(5 - 18*T + T*T + 72*C - 58*es2);
-    let ESTE = origen.falso_este + origen.k * N * (E1 + E2 + E3);
-
-    // Expansiones para NORTE
-    let N1 = (Math.pow(A,2)/2)*TP;
-    let N2 = (Math.pow(A,4)/24)*TP*(5 - T + 9*C + 4*C*C);
-    let N3 = (Math.pow(A,6)/720)*TP*(61 - 58*T + T*T + 600*C - 330*es2);
-
-    let NORTE = origen.falso_norte + origen.k*(M + N*(N1+N2+N3));
-
-    var c_p = new coord_planas(NORTE, ESTE, c_c.h);
-
-    console.log(c_p)
-
-    return c_p
 }
-
 
 
 async function curvilienas_a_planas_cartesianas(coord_curvi, sist_refe, id_pc) {
@@ -429,6 +349,82 @@ async function curvilienas_a_planas_cartesianas(coord_curvi, sist_refe, id_pc) {
 }
 
 
+async function curvilienas_a_planas(coord_curvi, origen, sist_refe) {
+
+    var c_c = new coord_curvilineas(coord_curvi.phi, coord_curvi.lambda, coord_curvi.h);
+ 
+    
+
+    // Convertir a radianes
+    let phi = c_c.phi * Math.PI / 180;
+    let lambda = c_c.lambda * Math.PI / 180;
+
+    var elip = await elipoide(sist_refe);
+    var a = elip.a;
+    var b = elip.b;
+
+    var e2 = elip.e2; 
+
+    // Cálculo de TN
+    var TN = (a - b) / (a + b);
+
+    var A0 = 1 - TN + (5 * (Math.pow(TN, 2) - Math.pow(TN, 3)) / 4) + (81 * (Math.pow(TN, 4) - Math.pow(TN, 5)) / 64);
+    var A2 = (3 * (TN - Math.pow(TN, 2) + (7 * (Math.pow(TN, 3) - Math.pow(TN, 4)) / 8) + (55 * Math.pow(TN, 5) / 64))) / 2;
+    var A4 = (15 * ((Math.pow(TN, 2) - Math.pow(TN, 3)) / 16) + (3 * (Math.pow(TN, 4) - Math.pow(TN, 5)) / 64));
+    var A6 = (35 * (Math.pow(TN, 3) - (Math.pow(TN, 4) / 48)) + (11 * Math.pow(TN, 5) / 768));
+    var A8 = (-135 * (Math.pow(TN, 4) - Math.pow(TN, 5))) / 512;
+
+    // Calcular la zona UTM a partir de la longitud en grados
+    let ZONA = Math.floor((c_c.lambda + 180) / 6) + 1;
+    // Meridiano central en grados -> luego a radianes
+    let lambda0_deg = (6 * ZONA - 183);
+    let lambda0 = lambda0_deg * Math.PI / 180;
+
+    // Parámetros auxiliares
+    let SP = Math.sin(phi);
+    let CP = Math.cos(phi);
+    let TP = Math.tan(phi);
+    let T = TP * TP;
+
+   
+    let es2 = elip.es2;
+    let C = es2 * (CP*CP);
+
+    let D_lambda = lambda - lambda0;
+    let N = a / Math.sqrt(1 - e2 * SP*SP);
+
+    // Calcular M (Arco meridiano)
+    let M = a*(A0*phi
+             - A2*Math.sin(2*phi)
+             + A4*Math.sin(4*phi)
+             - A6*Math.sin(6*phi)
+             + A8*Math.sin(8*phi));
+
+   
+    let A = CP * D_lambda;
+
+    // Expansiones para ESTE
+    let E1 = A;
+    let E2 = (Math.pow(A,3)/6)*(1 - T + C);
+    let E3 = (Math.pow(A,5)/120)*(5 - 18*T + T*T + 72*C - 58*es2);
+    let ESTE = origen.falso_este + origen.k * N * (E1 + E2 + E3);
+
+    // Expansiones para NORTE
+    let N1 = (Math.pow(A,2)/2)*TP;
+    let N2 = (Math.pow(A,4)/24)*TP*(5 - T + 9*C + 4*C*C);
+    let N3 = (Math.pow(A,6)/720)*TP*(61 - 58*T + T*T + 600*C - 330*es2);
+
+    let NORTE = origen.falso_norte + origen.k*(M + N*(N1+N2+N3));
+
+    var c_p = new coord_planas(NORTE, ESTE, c_c.h);
+
+    console.log(c_p)
+
+    return c_p
+}
+
+
+module.exports = {planas_cartesianas_a_curvilienas,geocentricas_a_curvilineas, curvilienas_a_geocentricas,planas_a_curvilineas, curvilienas_a_planas,curvilienas_a_planas_cartesianas }
 
 //seccion de pruebas
 
@@ -441,7 +437,7 @@ async function curvilienas_a_planas_cartesianas(coord_curvi, sist_refe, id_pc) {
 // var on = new coord_planas(2033154.021, 4966724.022);
 // origen_nacional_a_curvilienas(on, 2);
 
-var cc = new coord_curvilineas(4, -74, 0);
+// var cc = new coord_curvilineas(4, -74, 0);
 // curvilienas_a_planas_cartesianas(cc, 'MAGNA-SIRGAS', 1106);
 // curvilienas_a_geocentricas(cc, 'MAGNA-SIRGAS')
 

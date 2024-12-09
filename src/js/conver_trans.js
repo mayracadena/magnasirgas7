@@ -1,13 +1,19 @@
 const elipsoide_referencia = require("../class/elipsoide_referencia.js");
-const CTM12 = require("../class/CTM12.js");
-const coord_utm = require("../class/UTM.js");
 const coord_planas_cartesianas = require("../class/coord_planas_cartesianas.js");
 const coord_planas = require("../class/coord_planas.js");
 const coord_curvilineas = require("../class/coord_curvilineas.js");
 const coord_geocentricas = require("../class/coord_geocentricas.js");
 const conexion = require('../db/conexion.js');
 
-const { utm_a_curvilineas, origen_nacional_a_curvilienas, planas_cartesianas_a_curvilienas, geocentricas_a_curvilineas, gauss_kruger_a_curvilineas, curvilienas_a_curvilienas, curvilienas_a_planas_cartesianas, curvilienas_a_origen_nacional, curvilineas_a_utm, curvilineas_a_geocentricas, curvilineas_a_gauss_kruger, origen_nacional_a_origen_nacional } = require('../controller/conversion');
+
+//importacion de la libreria proj4
+// const { utm_a_curvilineas, origen_nacional_a_curvilienas, planas_cartesianas_a_curvilienas, geocentricas_a_curvilineas, gauss_kruger_a_curvilineas, curvilienas_a_curvilienas, curvilienas_a_planas_cartesianas, curvilienas_a_origen_nacional, curvilineas_a_utm, curvilineas_a_geocentricas, curvilineas_a_gauss_kruger, origen_nacional_a_origen_nacional } = require('../controller/conversion');
+
+//importación de modulos matemáticos
+const {planas_cartesianas_a_curvilienas,geocentricas_a_curvilineas, curvilienas_a_geocentricas,planas_a_curvilineas, curvilienas_a_planas,curvilienas_a_planas_cartesianas } = require('../controller/conversion_coordenadas.js');
+
+const map = require('../js/mapa_colombia.js');
+
 
 
 
@@ -327,8 +333,8 @@ document.getElementById('departamento-planas-destino').addEventListener("change"
   //seleccionar a todos los departamentos
   var con = new conexion();
   var id_departamento = document.getElementById('departamento-planas-destino').value;
-  // var query_departamentos = "select id, nombre from municipio where fk_departamento = ?";
-  // var result_municipio = await con.getAll(query_departamentos, id_departamento);
+  //  var query_departamentos = "select id, nombre from municipio where fk_departamento = ?";
+  //  var result_municipio = await con.getAll(query_departamentos, id_departamento);
 
   console.log(id_departamento)
 
@@ -401,54 +407,51 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
       var c_cc = new coord_curvilineas(lat_par, long_par, altura);
 
+      map.agregarPuntoSecuencial(c_cc.phi, c_cc.lambda);
+
 
       //seccion de envio de datos de elipsoidales sexagesimal
       if (activeTabLlegadaId == 'elipsoidal-tab-destino') {
-        let coord_respuesta = await curvilienas_a_curvilienas(c_cc, sistemaPartidaActivo.id, sistemaLlegadaActivo.id);
 
-
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda);
-
-        if (c_cc_r.phi < 0) {
+        console.log(c_cc)
+      
+        if (c_cc.phi < 0) {
           document.getElementById('latitud-hemisferio-destino').value = 'S'
         } else {
           document.getElementById('latitud-hemisferio-destino').value = 'N'
         }
-        if (c_cc_r.lambda < 0) {
+        if (c_cc.lambda < 0) {
           document.getElementById('longitud-hemisferio-destino').value = 'W'
         } else {
           document.getElementById('longitud-hemisferio-destino').value = 'E'
         }
 
-        document.getElementById('latitud-grados-destino').value = decimal_a_GMS(c_cc_r.phi).grados
-        document.getElementById('latitud-minutos-destino').value = decimal_a_GMS(c_cc_r.phi).minutos
-        document.getElementById('latitud-segundos-destino').value = decimal_a_GMS(c_cc_r.phi).segundos
-        document.getElementById('longitud-grados-destino').value = decimal_a_GMS(c_cc_r.lambda).grados
-        document.getElementById('longitud-minutos-destino').value = decimal_a_GMS(c_cc_r.lambda).minutos
-        document.getElementById('longitud-segundos-destino').value = decimal_a_GMS(c_cc_r.lambda).segundos
+        document.getElementById('latitud-grados-destino').value = decimal_a_GMS(c_cc.phi).grados
+        document.getElementById('latitud-minutos-destino').value = decimal_a_GMS(c_cc.phi).minutos
+        document.getElementById('latitud-segundos-destino').value = decimal_a_GMS(c_cc.phi).segundos
+        document.getElementById('longitud-grados-destino').value = decimal_a_GMS(c_cc.lambda).grados
+        document.getElementById('longitud-minutos-destino').value = decimal_a_GMS(c_cc.lambda).minutos
+        document.getElementById('longitud-segundos-destino').value = decimal_a_GMS(c_cc.lambda).segundos
 
 
       } else if (activeTabLlegadaId == 'elipsoidal-decimal-tab-destino') {
-        let coord_respuesta = await curvilienas_a_curvilienas(c_cc, sistemaPartidaActivo.id, sistemaLlegadaActivo.id);
-
-
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda);
-
-        if (c_cc_r.phi < 0) {
+        
+        
+        if (c_cc.phi < 0) {
           document.getElementById('latitud-hemisferio-destino').value = 'S'
         } else {
           document.getElementById('latitud-hemisferio-destino').value = 'N'
         }
-        if (c_cc_r.lambda < 0) {
+        if (c_cc.lambda < 0) {
           document.getElementById('longitud-hemisferio-destino').value = 'W'
         } else {
           document.getElementById('longitud-hemisferio-destino').value = 'E'
         }
 
-        document.getElementById('latitud-decimal-destino').value = c_cc_r.phi;
-        document.getElementById('longitud-decimal-destino').value = c_cc_r.lambda;
+        document.getElementById('latitud-decimal-destino').value = c_cc.phi;
+        document.getElementById('longitud-decimal-destino').value = c_cc.lambda;
 
-
+        
 
       } else if (activeTabLlegadaId == 'origen-nacional-tab-destino') {
         let coord_respuesta = await curvilienas_a_origen_nacional(c_cc, sistemaPartidaActivo.id, sistemaLlegadaActivo.id);
@@ -456,10 +459,11 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
         var c_on = new coord_planas(coord_respuesta.norte, coord_respuesta.este);
 
-
-
         document.getElementById('norte-destino').value = c_on.norte;
         document.getElementById('este-destino').value = c_on.este;
+
+        
+
       } else if (activeTabLlegadaId == 'utm-tab-destino') {
         let coord_respuesta = await curvilineas_a_utm(c_cc, sistemaPartidaActivo.id, sistemaLlegadaActivo.id);
 

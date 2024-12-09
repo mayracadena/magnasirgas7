@@ -446,9 +446,9 @@
                       <input type="text" class="form-control" id="este-pc-destino">
                     </div>
                     <hr>
-                  
-                    <div id="div-origen-cartesiano-destino" >
-                      <div class="row"> 
+
+                    <div id="div-origen-cartesiano-destino">
+                      <div class="row">
                         <div class="form-group col-md-6">
                           <label for="departamento-planas-destino">Departamento: </label>
                           <select id="departamento-planas-destino" class="form-control">
@@ -464,7 +464,7 @@
                           </select>
                         </div>
                       </div>
-                      
+
                     </div>
 
 
@@ -555,14 +555,16 @@
 
       window.register = ol.proj.proj4.register;
       window.transform = ol.proj.transform;
+      
 
 
     </script>
+  
 
-    <script type="module" src="../controller/conversion.js"></script>
+    <script type="module" src="../controller/conversion_coordenadas.js"></script>
     <script type="module" src="../js/conver_trans.js"></script>
 
-    <script  src="../js/mapa_colombia.js" async></script>
+
 
 
     <%- include('./partials/pie.ejs'); %>

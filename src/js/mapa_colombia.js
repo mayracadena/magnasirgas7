@@ -35,6 +35,11 @@ const colores_departamentos = {
     "Vichada": { color: "rgba(145, 240, 67, 0.5)", border: "rgba(145, 240, 67, 1)" }
 };
 
+
+let map;
+
+if (!map) {
+
 const labelLayer = L.layerGroup();
 
 function style(feature) {
@@ -54,25 +59,25 @@ function label_nombreMunicipio(feature, layer) {
     const center = layer.getBounds().getCenter();
     const iconWidth = Math.max(50, nombreMunicipio.length * 7);
    
-    const label = L.marker(center, {
-      icon: L.divIcon({
-        className: 'municipio-label',
-        html: nombreMunicipio,
-        iconSize: [iconWidth, 20]
-      })
-    });
+    // const label = L.marker(center, {
+    //   icon: L.divIcon({
+    //     className: 'municipio-label',
+    //     html: nombreMunicipio,
+    //     iconSize: [iconWidth, 20]
+    //   })
+    // });
   
-    labelLayer.addLayer(label);
+    // labelLayer.addLayer(label);
 }
 
-const map = L.map('map').setView([4, -73], 5);
+ map = L.map('map').setView([4, -73], 5);
 
 L.tileLayer.provider('OpenStreetMap.Mapnik', {
     maxZoom: 18,
 }).addTo(map);
 
 // Cargar el archivo GeoJSON
-fetch('../data/Servicio-610.zip')
+fetch('../data/municipios_agosto_2023_simplify.geojson')
   .then(response => response.json())
   .then(geojsonData => {
     L.geoJSON(geojsonData, {
@@ -98,12 +103,12 @@ updateLabelVisibility();
 
 
 
-
+}
 // Variable global para contar puntos y almacenar sus coordenadas
 let puntoCounter = 0;
 let allPoints = []; // arreglo para almacenar todas las coordenadas
 
-function agregarPuntoSecuencial(map, lat, lng) {
+function agregarPuntoSecuencial( lat, lng) {
     puntoCounter += 1; // Incrementar el contador
     allPoints.push([lat, lng]); // Guardar el punto
 
@@ -118,3 +123,4 @@ function agregarPuntoSecuencial(map, lat, lng) {
     map.fitBounds(bounds);
 }
 
+module.exports = {agregarPuntoSecuencial}
