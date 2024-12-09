@@ -369,10 +369,10 @@ async function curvilienas_a_planas(coord_curvi, origen, sist_refe) {
     var TN = (a - b) / (a + b);
 
     var A0 = 1 - TN + (5 * (Math.pow(TN, 2) - Math.pow(TN, 3)) / 4) + (81 * (Math.pow(TN, 4) - Math.pow(TN, 5)) / 64);
-    var A2 = (3 * (TN - Math.pow(TN, 2) + (7 * (Math.pow(TN, 3) - Math.pow(TN, 4)) / 8) + (55 * Math.pow(TN, 5) / 64))) / 2;
-    var A4 = (15 * ((Math.pow(TN, 2) - Math.pow(TN, 3)) / 16) + (3 * (Math.pow(TN, 4) - Math.pow(TN, 5)) / 64));
-    var A6 = (35 * (Math.pow(TN, 3) - (Math.pow(TN, 4) / 48)) + (11 * Math.pow(TN, 5) / 768));
-    var A8 = (-135 * (Math.pow(TN, 4) - Math.pow(TN, 5))) / 512;
+    var A2 = 3 * (TN - Math.pow(TN, 2) + 7 * (Math.pow(TN, 3) - Math.pow(TN, 4)) / 8 + 55 * Math.pow(TN, 5) / 64) / 2;
+    var A4 = 15 * ((Math.pow(TN, 2) - Math.pow(TN, 3)) / 16 + (3 * (Math.pow(TN, 4) - Math.pow(TN, 5))) / 64);
+    var A6 = 35 * ((Math.pow(TN, 3) - (Math.pow(TN, 4))) / 48 + (11 * Math.pow(TN, 5) )/ 768);
+    var A8 = -315 * (Math.pow(TN, 4) - Math.pow(TN, 5))/ 512;
 
     // Calcular la zona UTM a partir de la longitud en grados
     let ZONA = Math.floor((c_c.lambda + 180) / 6) + 1;
@@ -418,7 +418,23 @@ async function curvilienas_a_planas(coord_curvi, origen, sist_refe) {
 
     var c_p = new coord_planas(NORTE, ESTE, c_c.h);
 
-    console.log(c_p)
+    // var N = elip.a/Math.sqrt(1-elip.e2*Math.pow(SP, 2));
+    // var DN = ((Math.pow(elip.a,2)-Math.pow(elip.b,2))/Math.pow(elip.b,2))*Math.pow(CP,2);
+
+    // var D_lambda = c_c.lambda-lambda0;
+
+    // var S = (A0*c_c.phi-A2*Math.sin(2*c_c.phi)+A4*Math.sin(4*c_c.phi)-A6*Math.sin(6*c_c.phi)+A8*Math.sin(8*c_c.phi))*elip.a;
+
+    // var NORTE = origen.falso_norte+origen.k*(S+N*(Math.pow(D_lambda,2)/2*SP*CP*Math.pow(D_lambda, 4)/24*SP*Math.pow(CP,3)*(5-Math.pow(TP,2)+9*DN+4*Math.pow(DN,2))));
+
+    // var ESTE = origen.falso_este + origen.k*(N*(D_lambda*CP*Math.pow(D_lambda,3)*Math.pow(CP,3)/6*(1-Math.pow(TP, 2)+DN)+Math.pow(D_lambda, 5)*Math.pow(CP, 5)/120*(5-18*Math.pow(TP, 2)+Math.pow(TP, 4))));
+
+    // var c_p = new coord_planas(NORTE, ESTE, c_c.h);
+
+    console.log(c_p);
+
+
+    console.log(A0, A2, A4, A6, A8)
 
     return c_p
 }
@@ -437,7 +453,7 @@ module.exports = {planas_cartesianas_a_curvilienas,geocentricas_a_curvilineas, c
 // var on = new coord_planas(2033154.021, 4966724.022);
 // origen_nacional_a_curvilienas(on, 2);
 
-// var cc = new coord_curvilineas(4, -74, 0);
+var cc = new coord_curvilineas(4, -74, 0);
 // curvilienas_a_planas_cartesianas(cc, 'MAGNA-SIRGAS', 1106);
 // curvilienas_a_geocentricas(cc, 'MAGNA-SIRGAS')
 
@@ -445,7 +461,7 @@ module.exports = {planas_cartesianas_a_curvilienas,geocentricas_a_curvilineas, c
 
 
 //ejemplo de planas a curvilineas
-// var o = new origen('18N', 0, -75, 0, 500000, 0.9996);
-// var p = new coord_planas(442194.970, 611011.330, 0);
-// var prueba_utm = planas_a_curvilineas(p, o, 18, 'N', 'MAGNA-SIRGAS');
-// var prueba2 = curvilienas_a_planas(cc, o, 'MAGNA-SIRGAS');
+var o = new origen('18N', 0, -75, 0, 500000, 0.9996);
+var p = new coord_planas(442194.970, 611011.330, 20);
+// planas_a_curvilineas(p, o, 'MAGNA-SIRGAS');
+var prueba2 = curvilienas_a_planas(cc, o, 'MAGNA-SIRGAS');
