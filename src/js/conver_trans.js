@@ -5,6 +5,7 @@ const coord_planas_cartesianas = require("../class/coord_planas_cartesianas.js")
 const coord_planas = require("../class/coord_planas.js");
 const coord_curvilineas = require("../class/coord_curvilineas.js");
 const coord_geocentricas = require("../class/coord_geocentricas.js");
+const conexion = require('../db/conexion.js');
 
 const { utm_a_curvilineas, origen_nacional_a_curvilienas, planas_cartesianas_a_curvilienas, geocentricas_a_curvilineas, gauss_kruger_a_curvilineas, curvilienas_a_curvilienas, curvilienas_a_planas_cartesianas, curvilienas_a_origen_nacional, curvilineas_a_utm, curvilineas_a_geocentricas, curvilineas_a_gauss_kruger, origen_nacional_a_origen_nacional } = require('../controller/conversion');
 
@@ -110,16 +111,16 @@ async function origen_gauss_kruger(longitud) {
 
 
 //captura cuando se escoge coordenadas geocentricas y se pone la opcion de altura elipsoidal
-document.getElementById('myTabPartida').addEventListener("click", function () {
+document.getElementById('myTabPartida').addEventListener("click", async function () {
 
   const activeTabPartida = document.querySelector("#myTabPartida .nav-link.active");
 
   const sistemaPartidaActivo = document.querySelector('input[name="sistemaPartida"]:checked');
+  const sistemaLlegadaActivo = document.querySelector('input[name="sistemaLlegada"]:checked');
+
   const activeTabLlegada = document.querySelector("#myTabDestino .nav-link.active");
   const activeTabPartidaId = activeTabPartida ? activeTabPartida.id : null;
   const activeTabLlegadaId = activeTabLlegada ? activeTabLlegada.id : null;
-
-
 
 
   if (activeTabLlegadaId == 'geocentrica-tab-destino') {
@@ -177,13 +178,19 @@ document.getElementById('myTabPartida').addEventListener("click", function () {
     altura_visible_gauss_kruger.hidden = true;
 
   }
+
+
+
+
 });
 
-document.getElementById('myTabDestino').addEventListener("click", function () {
+document.getElementById('myTabDestino').addEventListener("click", async function () {
 
   const activeTabPartida = document.querySelector("#myTabPartida .nav-link.active");
 
   const sistemaPartidaActivo = document.querySelector('input[name="sistemaPartida"]:checked');
+  const sistemaLlegadaActivo = document.querySelector('input[name="sistemaLlegada"]:checked');
+
   const activeTabLlegada = document.querySelector("#myTabDestino .nav-link.active");
   const activeTabPartidaId = activeTabPartida ? activeTabPartida.id : null;
   const activeTabLlegadaId = activeTabLlegada ? activeTabLlegada.id : null;
@@ -245,14 +252,90 @@ document.getElementById('myTabDestino').addEventListener("click", function () {
     altura_visible_gauss_kruger.hidden = true;
 
   }
+
+
+  /*
+si se encuentra activa planas cartesianas de destino se debe activar la opcion de seleccionar
+departamento, el municipio y el origen cartesiano
+
+*/
+  if (activeTabLlegadaId == 'plana-cartesiana-tab-destino') {
+    var con = new conexion();
+
+    console.log('dentro de planas cartesianas')
+
+    if (sistemaLlegadaActivo.id == 'magnaSIRGASLlegada') {
+
+      try {
+        await con.open();
+
+        //seleccionar a todos los departamentos
+        var query_departamentos = "select * from departamento";
+        var result_departamento = await con.getAll(query_departamentos);
+
+
+
+        var select_departamento_planas_destino = document.getElementById('departamento-planas-destino');
+        select_departamento_planas_destino.innerHTML = '';
+
+        result_departamento.forEach(i => {
+
+          var option_departamento = document.createElement('option');
+          option_departamento.value = i.id,
+            option_departamento.textContent = i.nombre;
+
+
+          select_departamento_planas_destino.appendChild(option_departamento);
+        });
+
+
+
+
+
+        //traer todos los datos del origen cartografico
+        var query_origen = "select o.id, d.nombre as departamento, m.nombre as municipio, c.nombre as corregimiento, o.detalle as detalle , o.descripcion as descripcion, s.nombre as sistema_referencia from departamento d inner join municipio m on d.id = m.fk_departamento right join origen_cartografico o on m.id = o.fk_municipio left join  corregimiento c on c.id = o.fk_corregimiento left join sistema_referencia s on s.id = o.fk_sistema where s.nombre = 'MAGNA-SIRGAS' ";
+
+        var result_origen = await con.getAll(query_origen);
+
+
+
+
+        // console.log('resultados de origenes cartograficos ', result_origen)
+
+
+      } catch (error) {
+        console.error("Ocurrió un error:", error);
+      } finally {
+        await con.close();
+      }
+    }
+
+
+
+
+
+  }
+
 });
 
 //fin de habilitacion de captura de altura elipsoidal
 
 
+//funcion para mostrar los municipios segun el departamento que se encuentre activo
+
+document.getElementById('departamento-planas-destino').addEventListener("change", async function () {
+  //seleccionar a todos los departamentos
+  var con = new conexion();
+  var id_departamento = document.getElementById('departamento-planas-destino').value;
+  // var query_departamentos = "select id, nombre from municipio where fk_departamento = ?";
+  // var result_municipio = await con.getAll(query_departamentos, id_departamento);
+
+  console.log(id_departamento)
 
 
+ 
 
+});
 
 
 
@@ -380,7 +463,7 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
       } else if (activeTabLlegadaId == 'utm-tab-destino') {
         let coord_respuesta = await curvilineas_a_utm(c_cc, sistemaPartidaActivo.id, sistemaLlegadaActivo.id);
 
-        var c_utm = new coord_utm(coord_respuesta.norte, coord_respuesta.este,altura, coord_respuesta.huso);
+        var c_utm = new coord_utm(coord_respuesta.norte, coord_respuesta.este, altura, coord_respuesta.huso);
         document.getElementById('norte-utm-destino').value = c_utm.norte;
         document.getElementById('este-utm-destino').value = c_utm.este;
         document.getElementById('huso-destino').value = c_utm.huso;
@@ -493,7 +576,7 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
         let coord_respuesta = await curvilineas_a_utm(c_cc, sistemaPartidaActivo.id, sistemaLlegadaActivo.id);
 
-        var c_utm = new coord_utm(coord_respuesta.norte, coord_respuesta.este,altura, coord_respuesta.huso);
+        var c_utm = new coord_utm(coord_respuesta.norte, coord_respuesta.este, altura, coord_respuesta.huso);
         document.getElementById('norte-utm-destino').value = c_utm.norte;
         document.getElementById('este-utm-destino').value = c_utm.este;
         document.getElementById('huso-destino').value = c_utm.huso;
@@ -721,11 +804,11 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
     else if (activeTabPartidaId == 'utm-tab-partida') {
 
       //captura de datos de UTM
-      var norte_utm_partida =parseFloat(document.getElementById('norte-utm-partida').value);
-      var este_utm_partida=parseFloat(document.getElementById('este-utm-partida').value);
+      var norte_utm_partida = parseFloat(document.getElementById('norte-utm-partida').value);
+      var este_utm_partida = parseFloat(document.getElementById('este-utm-partida').value);
       var huso_partida = parseInt(document.getElementById('huso-partida').value);
       var hemisferio_partida = document.getElementById('hemisferio-partida').value;
-      var altura =parseFloat(document.getElementById('altura-partida-utm').value) || 0;
+      var altura = parseFloat(document.getElementById('altura-partida-utm').value) || 0;
 
       var c_utm = new coord_utm(norte_utm_partida, este_utm_partida, altura, huso_partida);
 
@@ -736,7 +819,7 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
         let coord_respuesta = await utm_a_curvilineas(c_utm, hemisferio_partida, sistemaPartidaActivo.id, sistemaLlegadaActivo.id);
 
 
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda,coord_respuesta.h );
+        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda, coord_respuesta.h);
 
         if (c_cc_r.phi < 0) {
           document.getElementById('latitud-hemisferio-destino').value = 'S'
