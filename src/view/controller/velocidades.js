@@ -1,3 +1,12 @@
+/**
+ * The JavaScript code provided includes functions to convert between geocentric and ellipsoidal
+ * coordinates, calculate velocities based on grid data, and perform various geodetic calculations.
+ * @returns The code provided is a JavaScript code snippet that includes event listeners for a
+ * "Calculate" button and a "Clear" button. The code handles the conversion of coordinates between
+ * different formats (sexagesimal, decimal, and geocentric), performs calculations based on the
+ * selected coordinate type, and retrieves velocity data from a file to calculate velocities based on
+ * the input coordinates.
+ */
 document.addEventListener('DOMContentLoaded', function () {
     const calculateButton = document.getElementById('calcular');
     const clearButton = document.getElementById('limpiar');
