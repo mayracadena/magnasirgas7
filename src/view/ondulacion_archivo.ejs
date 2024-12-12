@@ -1,0 +1,366 @@
+<%- include('./partials/cabecero.ejs', {"titulo": "ITRF"}); %>
+<%- include('./partials/menu.ejs'); %>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cálculo Ondulación Geoidal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+      :root {
+      --main-bg-color: linear-gradient(135deg, #000000, #001f3f);
+      --primary-color: #ffffff;
+      --secondary-color: #001f3f;
+      --text-color: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--main-bg-color);
+      color: var(--text-color);
+      overflow: hidden;
+    }
+
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .main-content {
+      margin-left: 300px;
+      padding: 20px;
+    }
+
+    .title {
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+    }
+
+    /* Contenedor principal con Flexbox */
+    .content-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    /* Panel de coordenadas (izquierda) */
+    .panel {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      flex: 1;
+    }
+
+    .form-control {
+      background: rgba(253, 251, 251, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-color);
+    }
+
+    .form-control:focus {
+      background: rgba(251, 248, 248, 0.15);
+      color: var(--text-color);
+    }
+    .form-control::placeholder {
+    color: #ffffff; /* Cambia el color del placeholder a blanco */
+    opacity: 1;
+  }
+
+  .form-control:focus::placeholder {
+    color: #ffffff; /* Mantiene el color blanco al enfocarse */
+  }
+
+  /* Compatibilidad adicional */
+  :-ms-input-placeholder {
+    color: #ffffff;
+  }
+
+  ::-ms-input-placeholder {
+    color: #ffffff;
+  }
+    .btn {
+      border: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--secondary-color);
+    }
+
+    /* Sección derecha con el mapa y puntos base */
+    .right-section {
+      display: flex;
+      flex-direction: column;
+      flex: 2;
+    }
+
+        #map {
+      height: 400px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 10px;
+      border-radius: 15px; /* Esquinas redondeadas */
+      overflow: hidden; /* Asegura que el contenido dentro del mapa también respete las esquinas redondeadas */
+    }
+
+
+    .puntos-base-container {
+      max-height: 200px; /* Altura máxima del contenedor */
+      overflow-y: auto; /* Habilitar barra deslizante */
+      background: rgba(255, 255, 255, 0.05);
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      
+    }
+
+    /* Tabla de vista previa */
+    table.file-preview {
+        width: 100%; /* Permite que las columnas ocupen su tamaño natural */
+        table-layout: auto; /* Deja que las columnas se ajusten al contenido */
+        border-collapse: collapse; /* Combina bordes */
+        font-size: 14px; /* Tamaño del texto */
+    }
+  
+    table.file-preview th,
+    table.file-preview td {
+      text-align: center;
+      padding: 8px; /* Espaciado interno */
+      border: 1px solid rgba(255, 255, 255, 0.2); /* Bordes claros */
+      word-wrap: break-word; /* Ajusta texto largo */
+    }
+
+    table.file-preview th {
+      background-color: #f8f9fa; /* Fondo claro */
+      color: #000000; /* Texto oscuro */
+    }
+
+    table.file-preview td {
+      color: #ffffff;
+    }
+
+    table.file-preview tbody tr:nth-of-type(odd) {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    table.file-preview tbody tr:nth-of-type(even) {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="main-content">
+      <h1 class="title">Cálculo de Ondulación Geoidal</h1>
+    
+      <!-- Contenedor principal -->
+      <div class="content-container">
+        
+        <!-- Sección izquierda: módulos -->
+        <div class="panel left-panel">
+          <h4>Configuración y Carga</h4>
+          <form id="ondulacionForm">
+            <div class="mb-3">
+              <label for="tipo-coordenada" class="form-label">Seleccione el tipo de coordenada:</label>
+              <select class="form-control" id="tipo-coordenada">
+                <option value="">-- Seleccione un tipo --</option>
+                <option value="elipsoidal">Elipsoidal (decimal)</option>
+                <option value="elipsoidales-grados">Elipsoidales en grados</option>
+                <option value="utm">UTM (Este, Norte, Zona)</option>
+                <option value="geocentrica">Geocéntrica (X, Y, Z)</option>
+                <option value="plana-cartesiana">Plana Cartesiana (X, Y)</option>
+                <option value="gauss-kruger">Gauss Krüger (Este, Norte, Zona)</option>
+                <option value="origen-nacional">Origen Nacional (Este, Norte)</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="cargar-archivo" class="form-label">Seleccione un archivo CSV:</label>
+              <input type="file" class="form-control" id="cargar-archivo" accept=".csv">
+            </div>
+            <div class="text-center mt-3">
+              <button type="button" id="calcular" class="btn btn-primary me-2"><i class="bi bi-calculator"></i> Calcular</button>
+              <button type="button" id="limpiar" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Limpiar</button>
+            </div>
+          </form>
+        </div>
+    
+        <!-- Sección derecha: tabla -->
+        <div class="panel right-panel">
+          <h4>Datos Cargados</h4>
+          <div class="table-responsive" style="max-height: 400px; overflow:auto;">
+            <table class="file-preview" id="tabla-datos">
+              <thead>
+                <!-- Cabeceras dinámicas -->
+              </thead>
+              <tbody>
+                <!-- Datos cargados dinámicamente -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+ 
+  <script>
+    // Configuración de partículas
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 150 },
+        color: { value: '#00d4ff' },
+        shape: { type: 'circle' },
+        opacity: { value: 0.5 },
+        size: { value: 3 },
+        line_linked: {
+          enable: true,
+          distance: 200,
+          color: '#00d4ff',
+          opacity: 0.4,
+          width: 1
+        },
+        move: {
+          enable: true,
+          speed: 2
+        }
+      },
+      interactivity: {
+        events: {
+          onhover: { enable: true, mode: 'grab' },
+          onclick: { enable: true, mode: 'push' }
+        },
+        modes: {
+          grab: { distance: 200, line_linked: { opacity: 1 } }
+        }
+      },
+      retina_detect: true
+    });
+
+    function generarCabeceras(tipo) {
+      const thead = document.querySelector('#tabla-datos thead');
+      thead.innerHTML = '';
+
+      let headers = [];
+      switch (tipo) {
+        case 'elipsoidal':
+          headers = ['ID', 'Latitud', 'Longitud'];
+          break;
+        case 'elipsoidales-grados':
+          headers = ['ID', 'Latitud', 'Longitud'];
+          break;
+        case 'utm':
+          headers = ['ID', 'Este', 'Norte', 'Zona'];
+          break;
+        case 'geocentrica':
+          headers = ['ID', 'X', 'Y', 'Z'];
+          break;
+        case 'plana-cartesiana':
+          headers = ['ID', 'X', 'Y'];
+          break;
+        case 'gauss-kruger':
+          headers = ['ID', 'Este', 'Norte', 'Zona'];
+          break;
+        case 'origen-nacional':
+          headers = ['ID', 'Este', 'Norte'];
+          break;
+        default:
+          headers = ['ID'];
+          break;
+      }
+
+      const tr = document.createElement('tr');
+      headers.forEach(h => {
+        const th = document.createElement('th');
+        th.textContent = h;
+        tr.appendChild(th);
+      });
+      thead.appendChild(tr);
+    }
+
+    document.getElementById('tipo-coordenada').addEventListener('change', function () {
+      const tipo = this.value;
+      if (tipo) {
+        generarCabeceras(tipo);
+      }
+    });
+
+    document.getElementById('cargar-archivo').addEventListener('change', function (event) {
+      const tipoCoordenada = document.getElementById('tipo-coordenada').value;
+
+      if (!tipoCoordenada) {
+        alert('Por favor seleccione un tipo de coordenada antes de cargar el archivo.');
+        this.value = '';
+        return;
+      }
+
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const lines = e.target.result.split('\n').map(line => line.trim()).filter(line => line !== '');
+          const tableBody = document.querySelector('#tabla-datos tbody');
+          tableBody.innerHTML = ''; // Limpiar tabla antes de cargar nuevos datos
+
+          const dataLines = lines.slice(1); // Ignorar la primera línea (encabezado del archivo)
+          const columnsCount = document.querySelectorAll('#tabla-datos thead th').length;
+
+          dataLines.forEach((line, index) => {
+            const columns = line.split(',').map(col => col.trim());
+            if (columns.length === columnsCount) {
+              const tr = document.createElement('tr');
+              columns.forEach(col => {
+                const td = document.createElement('td');
+                td.textContent = col;
+                tr.appendChild(td);
+              });
+              tableBody.appendChild(tr);
+            }
+          });
+        };
+        reader.readAsText(file);
+      }
+    });
+  // Función para procesar el archivo cargado y calcular las ondulaciones
+  function procesarArchivo(datos) {
+      const resultados = [];
+
+      datos.forEach(row => {
+          const id = row[0];
+          const latitud = parseFloat(row[1]);
+          const longitud = parseFloat(row[2]);
+
+          calcularOndulacionGeoidal(latitud, longitud)
+              .then(ondulacion => {
+                  resultados.push({ id, latitud, longitud, ondulacion: ondulacion.toFixed(3) });
+
+                  if (resultados.length === datos.length) {
+                      generarArchivoCSV(resultados);
+                  }
+              })
+              .catch(err => console.error(`Error al calcular ondulación para ID ${id}:`, err));
+      });
+  }
+    document.getElementById('limpiar').addEventListener('click', function () {
+      document.querySelector('#tabla-datos thead').innerHTML = '';
+      document.querySelector('#tabla-datos tbody').innerHTML = '';
+      document.getElementById('cargar-archivo').value = '';
+      document.getElementById('tipo-coordenada').value = '';
+    });
+
+  
+
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+</body>
+</html>
+
+
+
