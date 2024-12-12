@@ -112,13 +112,13 @@
                       <label for="latitud-partida">Latitud:</label>
                       <div class="row">
                         <div class="col-md-3">
-                          <input type="text" class="form-control" placeholder="GG" id="latitud-grados-partida">
+                          <input type="number" class="form-control" placeholder="GG" id="latitud-grados-partida">
                         </div>
                         <div class="col-md-3">
-                          <input type="text" class="form-control" placeholder="MM" id="latitud-minutos-partida">
+                          <input type="number" class="form-control" placeholder="MM" id="latitud-minutos-partida">
                         </div>
                         <div class="col-md-3">
-                          <input type="text" class="form-control" placeholder="SS.DDDDD" id="latitud-segundos-partida">
+                          <input type="number" class="form-control" placeholder="SS.DDDDD" id="latitud-segundos-partida">
                         </div>
                         <div class="col-md-3">
                           <select class="form-control" id="latitud-hemisferio-partida">
@@ -135,13 +135,13 @@
                       <label for="longitud-partida">Longitud:</label>
                       <div class="row">
                         <div class="col-md-3">
-                          <input type="text" class="form-control" placeholder="GG" id="longitud-grados-partida">
+                          <input type="number" class="form-control" placeholder="GG" id="longitud-grados-partida">
                         </div>
                         <div class="col-md-3">
-                          <input type="text" class="form-control" placeholder="MM" id="longitud-minutos-partida">
+                          <input type="number" class="form-control" placeholder="MM" id="longitud-minutos-partida">
                         </div>
                         <div class="col-md-3">
-                          <input type="text" class="form-control" placeholder="SS.DDDDD" id="longitud-segundos-partida">
+                          <input type="number" class="form-control" placeholder="SS.DDDDD" id="longitud-segundos-partida">
                         </div>
                         <div class="col-md-3">
                           <select class="form-control" id="longitud-hemisferio-partida">
@@ -165,12 +165,12 @@
                     aria-labelledby="elipsoidal-decimal-tab-partida">
                     <div class="form-group mt-3">
                       <label for="latitud-decimal-partida">Latitud (decimal):</label>
-                      <input type="text" class="form-control" placeholder="Latitud (decimal)"
+                      <input type="number" class="form-control" placeholder="Latitud (decimal)"
                         id="latitud-decimal-partida">
                     </div>
                     <div class="form-group mt-3">
                       <label for="longitud-decimal-partida">Longitud (decimal):</label>
-                      <input type="text" class="form-control" placeholder="Longitud (decimal)"
+                      <input type="number" class="form-control" placeholder="Longitud (decimal)"
                         id="longitud-decimal-partida">
                     </div>
                     <div class="form-group mt-3" id="div-altura-partida-elipsoidal-decimal" hidden>
@@ -186,11 +186,11 @@
                     aria-labelledby="origen-nacional-tab-partida">
                     <div class="form-group mt-3">
                       <label for="norte-partida">Norte (m):</label>
-                      <input type="text" class="form-control" id="norte-partida">
+                      <input type="number" class="form-control" id="norte-partida">
                     </div>
                     <div class="form-group mt-3">
                       <label for="este-partida">Este (m):</label>
-                      <input type="text" class="form-control" id="este-partida">
+                      <input type="number" class="form-control" id="este-partida">
                     </div>
                     <div class="form-group mt-3" id="div-altura-partida-origen-nacional" hidden>
                       <label for="altura-partida">Altura elipsoidal:</label>
@@ -205,15 +205,15 @@
                     aria-labelledby="geocentrica-tab-partida">
                     <div class="form-group mt-3">
                       <label for="x-partida">X (m):</label>
-                      <input type="text" class="form-control" id="x-partida">
+                      <input type="number" class="form-control" id="x-partida">
                     </div>
                     <div class="form-group mt-3">
                       <label for="y-partida">Y (m):</label>
-                      <input type="text" class="form-control" id="y-partida">
+                      <input type="number" class="form-control" id="y-partida">
                     </div>
                     <div class="form-group mt-3">
                       <label for="z-partida">Z (m):</label>
-                      <input type="text" class="form-control" id="z-partida">
+                      <input type="number" class="form-control" id="z-partida">
                     </div>
                   </div>
                   <!-- Plana Cartesiana -->
@@ -221,17 +221,75 @@
                     aria-labelledby="plana-cartesiana-tab-partida">
                     <div class="form-group mt-3">
                       <label for="norte-pc-partida">Norte (m):</label>
-                      <input type="text" class="form-control" id="norte-pc-partida">
+                      <input type="number" class="form-control" id="norte-pc-partida">
                     </div>
                     <div class="form-group mt-3">
                       <label for="este-pc-partida">Este (m):</label>
-                      <input type="text" class="form-control" id="este-pc-partida">
+                      <input type="number" class="form-control" id="este-pc-partida">
                     </div>
                     <div class="form-group mt-3" id="div-altura-partida-plana-cartesiana" hidden>
                       <label for="altura-partida">Altura elipsoidal:</label>
                       <div class="col-md-6">
                         <input type="number" placeholder="mm.mmm" class="form-control"
                           id="altura-partida-plana-cartesiana">
+                      </div>
+                    </div>
+                    <hr>
+
+                    <div id="div-origen-cartesiano-partida">
+                      <div class="row">
+                        <div class="form-group col-md-6">
+                          <label for="departamento-planas-partida">Departamento: </label>
+                          <select id="departamento-planas-partida" class="form-control">
+                            <option value="defecto" disabled>Seleccione Municipio</option>
+                            <!-- se llena con informacion de la base de datos  -->
+                          </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label for="municipio-planas-partida">Municipio: </label>
+                          <select id="municipio-planas-partida" class="form-control" placeholder="Seleccione Municipio">
+                            <option value="defecto">Seleccione Municipio</option>
+                            <!-- se llena con informacion de la base ed datos  -->
+                          </select>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="form-group col-md-8">
+                          <label for="detalle-planas-partida">Origenes cartesianos disponibles: </label>
+                          <select id="detalle-planas-partida" class="form-control" placeholder="Seleccione Municipio">
+                            <option value="defecto">Seleccione año, municipio y/o corregimiento</option>
+                            <!-- se llena con informacion de la base ed datos  -->
+                          </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                          <br>
+                          <!-- Button trigger modal -->
+                          <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#informacion_origen_partida" >
+                            Mas información
+                          </button>
+
+                          <!-- Modal -->
+                          <div class="modal fade" id="informacion_origen_partida" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h1 class="modal-title fs-5" id="informacion_origen_Label_partida"></h1>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body" id="modal-body-content-partida">
+                                  
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+                                  
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div>
@@ -243,23 +301,30 @@
                   <div class="tab-pane fade" id="utm-partida" role="tabpanel" aria-labelledby="utm-tab-partida">
                     <div class="form-group mt-3">
                       <label for="norte-utm-partida">Norte (m):</label>
-                      <input type="text" class="form-control" id="norte-utm-partida">
+                      <input type="number" class="form-control" id="norte-utm-partida">
                     </div>
                     <div class="form-group mt-3">
                       <label for="este-utm-partida">Este (m):</label>
-                      <input type="text" class="form-control" id="este-utm-partida">
+                      <input type="number" class="form-control" id="este-utm-partida">
                     </div>
                     <div class="form-group mt-3">
-                      <label for="huso-partida">Huso:</label>
-                      <input type="text" class="form-control" id="huso-partida">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <label for="huso-partida">Huso:</label>
+                          <input type="number" class="form-control" id="huso-partida">
+                        </div>
+                        <div class="col-md-6">
+                          <label for="hemisferio-partida">Hemisferio:</label>
+                          <select class="form-control" id="hemisferio-partida">
+                            <option value="N">N</option>
+                            <option value="S">S</option>
+                          </select>
+                        </div>
+                      </div>
+                      
+                      
                     </div>
-                    <div class="form-group mt-3">
-                      <label for="hemisferio-partida">Hemisferio:</label>
-                      <select class="form-control" id="hemisferio-partida">
-                        <option value="N">N</option>
-                        <option value="S">S</option>
-                      </select>
-                    </div>
+                   
                     <div class="form-group mt-3" id="div-altura-partida-utm" hidden>
                       <label for="altura-partida">Altura elipsoidal:</label>
                       <div class="col-md-6">
@@ -272,20 +337,20 @@
                     aria-labelledby="gauss-kruger-tab-partida">
                     <div class="form-group mt-3">
                       <label for="norte-gk-partida">Norte (m):</label>
-                      <input type="text" class="form-control" id="norte-gk-partida">
+                      <input type="number" class="form-control" id="norte-gk-partida">
                     </div>
                     <div class="form-group mt-3">
                       <label for="este-gk-partida">Este (m):</label>
-                      <input type="text" class="form-control" id="este-gk-partida">
+                      <input type="number" class="form-control" id="este-gk-partida">
                     </div>
                     <div class="form-group mt-3">
                       <label for="origen-gauss-partida">Origen Gauss:</label>
                       <select class="form-control" id="origen-gauss-partida">
-                        <option value="Bogotá">Bogotá</option>
-                        <option value="Este Central">Este Central</option>
-                        <option value="Este Este">Este Este</option>
+                        <option value="Central">Central</option>
+                        <option value="Este">Este Central</option>
+                        <option value="Este-este">Este Este</option>
                         <option value="Oeste">Oeste</option>
-                        <option value="Oeste Oeste">Oeste Oeste</option>
+                        <option value="Oeste-oeste">Oeste Oeste</option>
                         <option value="Insular">Insular</option>
                       </select>
                     </div>
@@ -354,13 +419,13 @@
                       <label for="latitud-destino">Latitud:</label>
                       <div class="row">
                         <div class="col-md-3">
-                          <input type="text" class="form-control" placeholder="GG" id="latitud-grados-destino">
+                          <input type="number" class="form-control" placeholder="GG" id="latitud-grados-destino">
                         </div>
                         <div class="col-md-3">
-                          <input type="text" class="form-control" placeholder="MM" id="latitud-minutos-destino">
+                          <input type="number" class="form-control" placeholder="MM" id="latitud-minutos-destino">
                         </div>
                         <div class="col-md-3">
-                          <input type="text" class="form-control" placeholder="SS.DDDDD" id="latitud-segundos-destino">
+                          <input type="number" class="form-control" placeholder="SS.DDDDD" id="latitud-segundos-destino">
                         </div>
                         <div class="col-md-3">
                           <select class="form-control" id="latitud-hemisferio-destino">
@@ -375,35 +440,52 @@
                       <label for="longitud-destino">Longitud:</label>
                       <div class="row">
                         <div class="col-md-3">
-                          <input type="text" class="form-control" placeholder="GG" id="longitud-grados-destino">
+                          <input type="number" class="form-control" placeholder="GG" id="longitud-grados-destino">
                         </div>
                         <div class="col-md-3">
-                          <input type="text" class="form-control" placeholder="MM" id="longitud-minutos-destino">
+                          <input type="number" class="form-control" placeholder="MM" id="longitud-minutos-destino">
                         </div>
                         <div class="col-md-3">
-                          <input type="text" class="form-control" placeholder="SS.DDDDD" id="longitud-segundos-destino">
+                          <input type="number" class="form-control" placeholder="SS.DDDDD" id="longitud-segundos-destino">
                         </div>
                         <div class="col-md-3">
                           <select class="form-control" id="longitud-hemisferio-destino">
-                            <option value="E">E</option>
                             <option value="W">W</option>
+                            <option value="E">E</option>
+                            
                           </select>
                         </div>
                       </div>
                     </div>
+                    <div class="form-group mt-3" id="div-altura-destino-elipsoidal" hidden>
+                      <label for="altura-destino">Altura elipsoidal:</label>
+                      <div class="col-md-6">
+                        <input type="number" placeholder="mm.mmm" class="form-control" id="altura-destino-elipsoidal">
+                      </div>
+                    </div>
+
+
+
                   </div>
                   <!-- Elipsoidal Decimal -->
                   <div class="tab-pane fade" id="elipsoidal-decimal-destino" role="tabpanel"
                     aria-labelledby="elipsoidal-decimal-tab-destino">
                     <div class="form-group mt-3">
                       <label for="latitud-decimal-destino">Latitud (decimal):</label>
-                      <input type="text" class="form-control" placeholder="Latitud (decimal)"
+                      <input type="number" class="form-control" placeholder="Latitud (decimal)"
                         id="latitud-decimal-destino">
                     </div>
                     <div class="form-group mt-3">
                       <label for="longitud-decimal-destino">Longitud (decimal):</label>
-                      <input type="text" class="form-control" placeholder="Longitud (decimal)"
+                      <input type="number" class="form-control" placeholder="Longitud (decimal)"
                         id="longitud-decimal-destino">
+                    </div>
+                    <div class="form-group mt-3" id="div-altura-destino-elipsoidal-decimal" hidden>
+                      <label for="altura-destino">Altura elipsoidal:</label>
+                      <div class="col-md-6">
+                        <input type="number" placeholder="mm.mmm" class="form-control"
+                          id="altura-destino-elipsoidal-decimal">
+                      </div>
                     </div>
                   </div>
                   <!-- Origen Nacional -->
@@ -411,11 +493,18 @@
                     aria-labelledby="origen-nacional-tab-destino">
                     <div class="form-group mt-3">
                       <label for="norte-destino">Norte (m):</label>
-                      <input type="text" class="form-control" id="norte-destino">
+                      <input type="number" class="form-control" id="norte-destino">
                     </div>
                     <div class="form-group mt-3">
                       <label for="este-destino">Este (m):</label>
-                      <input type="text" class="form-control" id="este-destino">
+                      <input type="number" class="form-control" id="este-destino">
+                    </div>
+                    <div class="form-group mt-3" id="div-altura-destino-origen-nacional" hidden>
+                      <label for="altura-destino">Altura elipsoidal:</label>
+                      <div class="col-md-6">
+                        <input type="number" placeholder="mm.mmm" class="form-control"
+                          id="altura-destino-origen-nacional">
+                      </div>
                     </div>
                   </div>
                   <!-- Geocéntrica -->
@@ -423,15 +512,15 @@
                     aria-labelledby="geocentrica-tab-destino">
                     <div class="form-group mt-3">
                       <label for="x-destino">X (m):</label>
-                      <input type="text" class="form-control" id="x-destino">
+                      <input type="number" class="form-control" id="x-destino">
                     </div>
                     <div class="form-group mt-3">
                       <label for="y-destino">Y (m):</label>
-                      <input type="text" class="form-control" id="y-destino">
+                      <input type="number" class="form-control" id="y-destino">
                     </div>
                     <div class="form-group mt-3">
                       <label for="z-destino">Z (m):</label>
-                      <input type="text" class="form-control" id="z-destino">
+                      <input type="number" class="form-control" id="z-destino">
                     </div>
                   </div>
                   <!-- Plana Cartesiana -->
@@ -439,11 +528,18 @@
                     aria-labelledby="plana-cartesiana-tab-destino">
                     <div class="form-group mt-3">
                       <label for="norte-pc-destino">Norte (m):</label>
-                      <input type="text" class="form-control" id="norte-pc-destino">
+                      <input type="number" class="form-control" id="norte-pc-destino">
                     </div>
                     <div class="form-group mt-3">
                       <label for="este-pc-destino">Este (m):</label>
-                      <input type="text" class="form-control" id="este-pc-destino">
+                      <input type="number" class="form-control" id="este-pc-destino">
+                    </div>
+                    <div class="form-group mt-3" id="div-altura-destino-plana-cartesiana" hidden>
+                      <label for="altura-destino">Altura elipsoidal:</label>
+                      <div class="col-md-6">
+                        <input type="number" placeholder="mm.mmm" class="form-control"
+                          id="altura-destino-plana-cartesiana">
+                      </div>
                     </div>
                     <hr>
 
@@ -452,19 +548,56 @@
                         <div class="form-group col-md-6">
                           <label for="departamento-planas-destino">Departamento: </label>
                           <select id="departamento-planas-destino" class="form-control">
-                            <option value="" disabled>Seleccione Departamento</option>
+                            <option value="defecto" disabled>Seleccione Municipio</option>
                             <!-- se llena con informacion de la base de datos  -->
                           </select>
                         </div>
                         <div class="form-group col-md-6">
                           <label for="municipio-planas-destino">Municipio: </label>
                           <select id="municipio-planas-destino" class="form-control" placeholder="Seleccione Municipio">
-                            <option value="defecto" disabled>Seleccione Municipio</option>
+                            <option value="defecto">Seleccione Municipio</option>
                             <!-- se llena con informacion de la base ed datos  -->
                           </select>
                         </div>
                       </div>
+                      <div class="row">
+                        <div class="form-group col-md-8">
+                          <label for="detalle-planas-destino">Origenes cartesianos disponibles: </label>
+                          <select id="detalle-planas-destino" class="form-control" placeholder="Seleccione Municipio">
+                            <option value="defecto">Seleccione año, municipio y/o corregimiento</option>
+                            <!-- se llena con informacion de la base ed datos  -->
+                          </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                          <br>
+                          <!-- Button trigger modal -->
+                          <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#informacion_origen" >
+                            Mas información
+                          </button>
 
+                          <!-- Modal -->
+                          <div class="modal fade" id="informacion_origen" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h1 class="modal-title fs-5" id="informacion_origen_Label"></h1>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body" id="modal-body-content">
+                                  
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+                                  
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
 
@@ -474,22 +607,22 @@
                   <div class="tab-pane fade" id="utm-destino" role="tabpanel" aria-labelledby="utm-tab-destino">
                     <div class="form-group mt-3">
                       <label for="norte-utm-destino">Norte (m):</label>
-                      <input type="text" class="form-control" id="norte-utm-destino">
+                      <input type="number" class="form-control" id="norte-utm-destino">
                     </div>
                     <div class="form-group mt-3">
                       <label for="este-utm-destino">Este (m):</label>
-                      <input type="text" class="form-control" id="este-utm-destino">
+                      <input type="number" class="form-control" id="este-utm-destino">
                     </div>
                     <div class="form-group mt-3">
                       <label for="huso-destino">Huso:</label>
                       <input type="text" class="form-control" id="huso-destino">
                     </div>
-                    <div class="form-group mt-3">
-                      <label for="hemisferio-destino">Hemisferio:</label>
-                      <select class="form-control" id="hemisferio-destino">
-                        <option value="N">N</option>
-                        <option value="S">S</option>
-                      </select>
+                  
+                    <div class="form-group mt-3" id="div-altura-destino-utm" hidden>
+                      <label for="altura-destino">Altura elipsoidal:</label>
+                      <div class="col-md-6">
+                        <input type="number" placeholder="mm.mmm" class="form-control" id="altura-destino-utm">
+                      </div>
                     </div>
                   </div>
                   <!-- Gauss Krüger -->
@@ -497,22 +630,29 @@
                     aria-labelledby="gauss-kruger-tab-destino">
                     <div class="form-group mt-3">
                       <label for="norte-gk-destino">Norte (m):</label>
-                      <input type="text" class="form-control" id="norte-gk-destino">
+                      <input type="number" class="form-control" id="norte-gk-destino">
                     </div>
                     <div class="form-group mt-3">
                       <label for="este-gk-destino">Este (m):</label>
-                      <input type="text" class="form-control" id="este-gk-destino">
+                      <input type="number" class="form-control" id="este-gk-destino">
                     </div>
                     <div class="form-group mt-3">
                       <label for="origen-gauss-destino">Origen Gauss:</label>
+
                       <select class="form-control" id="origen-gauss-destino">
-                        <option value="Bogotá">Bogotá</option>
-                        <option value="Este Central">Este Central</option>
-                        <option value="Este Este">Este Este</option>
+                        <option value="Central">Central</option>
+                        <option value="Este">Este Central</option>
+                        <option value="Este-este">Este Este</option>
                         <option value="Oeste">Oeste</option>
-                        <option value="Oeste Oeste">Oeste Oeste</option>
+                        <option value="Oeste-oeste">Oeste Oeste</option>
                         <option value="Insular">Insular</option>
                       </select>
+                    </div>
+                    <div class="form-group mt-3" id="div-altura-destino-gauss-kruger" hidden>
+                      <label for="altura-destino">Altura elipsoidal:</label>
+                      <div class="col-md-6">
+                        <input type="number" placeholder="mm.mmm" class="form-control" id="altura-destino-gauss-kruger">
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -555,11 +695,11 @@
 
       window.register = ol.proj.proj4.register;
       window.transform = ol.proj.transform;
-      
+
 
 
     </script>
-  
+
 
     <script type="module" src="../controller/conversion_coordenadas.js"></script>
     <script type="module" src="../js/conver_trans.js"></script>

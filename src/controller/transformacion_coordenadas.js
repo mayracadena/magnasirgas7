@@ -188,17 +188,17 @@ function transformation3D(coordinate, region, sense) {
     let Y = matrixArrival.getElementAt(1,0);
     let Z = matrixArrival.getElementAt(2,0);
 
-    return new Cartesian3DCoordinate(null, X, Y, Z);
+    return new coord_geocentricas(X, Y, Z);
 }
 
 // Ejemplo de uso (tendrás que ajustar los valores reales):
-let centralCoord = new Cartesian3DCoordinate(null, 1738580.767, -6120500.388, 491473.3064);
+let centralCoord = new coord_geocentricas(1738580.767, -6120500.388, 491473.3064);
 let translationParams = {dx:302.529, dy:317.979, dz:-319.08}; // ejemplo
 let rotationParams = {X:1.361566e-05, Y:-2.17446e-06, Z:-1.362418e-05};     // ejemplo
 let parametersMB = new ParametersMB(translationParams, -2.19998e-06, rotationParams);
 let region = new Region(centralCoord, parametersMB);
 
-let coord = new Cartesian3DCoordinate(null, 1860274.5599, -6084683.9153, 441945.1052);
+let coord = new coord_geocentricas( 1860274.5599, -6084683.9153, 441945.1052);
 let resultado = transformation3D(coord, region, true);
 console.log(resultado);
 
