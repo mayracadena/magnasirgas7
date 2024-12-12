@@ -1,6 +1,7 @@
 <%- include('./partials/cabecero.ejs', {"titulo": "ITRF"}); %>
 <%- include('./partials/menu.ejs'); %>
 
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -144,6 +145,14 @@
       <h1 class="title">Cálculo de Ondulación Geoidal</h1>
       <div class="content-container">
         <!-- Sección izquierda: Configuración y Carga -->
+=======
+   
+    
+      <!-- Contenedor principal -->
+      <div class="content-container">
+        <h1 class="title">Cálculo de Ondulación Geoidal</h1>
+        <!-- Sección izquierda: módulos -->
+>>>>>>> bf3408dc943542ebd689d6fbe2d5daa1035a8811
         <div class="panel left-panel">
           <h4>Configuración y Carga</h4>
           <form id="ondulacionForm">
@@ -188,6 +197,7 @@
       </div>
     </div>
     
+<<<<<<< HEAD
     <script src="controller/ondulacion_masivo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -230,3 +240,129 @@
 
 
 
+=======
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+ 
+  <script>
+    // Configuración de partículas
+ 
+    function generarCabeceras(tipo) {
+      const thead = document.querySelector('#tabla-datos thead');
+      thead.innerHTML = '';
+
+      let headers = [];
+      switch (tipo) {
+        case 'elipsoidal':
+          headers = ['ID', 'Latitud', 'Longitud'];
+          break;
+        case 'elipsoidales-grados':
+          headers = ['ID', 'Latitud', 'Longitud'];
+          break;
+        case 'utm':
+          headers = ['ID', 'Este', 'Norte', 'Zona'];
+          break;
+        case 'geocentrica':
+          headers = ['ID', 'X', 'Y', 'Z'];
+          break;
+        case 'plana-cartesiana':
+          headers = ['ID', 'X', 'Y'];
+          break;
+        case 'gauss-kruger':
+          headers = ['ID', 'Este', 'Norte', 'Zona'];
+          break;
+        case 'origen-nacional':
+          headers = ['ID', 'Este', 'Norte'];
+          break;
+        default:
+          headers = ['ID'];
+          break;
+      }
+
+      const tr = document.createElement('tr');
+      headers.forEach(h => {
+        const th = document.createElement('th');
+        th.textContent = h;
+        tr.appendChild(th);
+      });
+      thead.appendChild(tr);
+    }
+
+    document.getElementById('tipo-coordenada').addEventListener('change', function () {
+      const tipo = this.value;
+      if (tipo) {
+        generarCabeceras(tipo);
+      }
+    });
+
+    document.getElementById('cargar-archivo').addEventListener('change', function (event) {
+      const tipoCoordenada = document.getElementById('tipo-coordenada').value;
+
+      if (!tipoCoordenada) {
+        alert('Por favor seleccione un tipo de coordenada antes de cargar el archivo.');
+        this.value = '';
+        return;
+      }
+
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const lines = e.target.result.split('\n').map(line => line.trim()).filter(line => line !== '');
+          const tableBody = document.querySelector('#tabla-datos tbody');
+          tableBody.innerHTML = ''; // Limpiar tabla antes de cargar nuevos datos
+
+          const dataLines = lines.slice(1); // Ignorar la primera línea (encabezado del archivo)
+          const columnsCount = document.querySelectorAll('#tabla-datos thead th').length;
+
+          dataLines.forEach((line, index) => {
+            const columns = line.split(',').map(col => col.trim());
+            if (columns.length === columnsCount) {
+              const tr = document.createElement('tr');
+              columns.forEach(col => {
+                const td = document.createElement('td');
+                td.textContent = col;
+                tr.appendChild(td);
+              });
+              tableBody.appendChild(tr);
+            }
+          });
+        };
+        reader.readAsText(file);
+      }
+    });
+  // Función para procesar el archivo cargado y calcular las ondulaciones
+  function procesarArchivo(datos) {
+      const resultados = [];
+
+      datos.forEach(row => {
+          const id = row[0];
+          const latitud = parseFloat(row[1]);
+          const longitud = parseFloat(row[2]);
+
+          calcularOndulacionGeoidal(latitud, longitud)
+              .then(ondulacion => {
+                  resultados.push({ id, latitud, longitud, ondulacion: ondulacion.toFixed(3) });
+
+                  if (resultados.length === datos.length) {
+                      generarArchivoCSV(resultados);
+                  }
+              })
+              .catch(err => console.error(`Error al calcular ondulación para ID ${id}:`, err));
+      });
+  }
+    document.getElementById('limpiar').addEventListener('click', function () {
+      document.querySelector('#tabla-datos thead').innerHTML = '';
+      document.querySelector('#tabla-datos tbody').innerHTML = '';
+      document.getElementById('cargar-archivo').value = '';
+      document.getElementById('tipo-coordenada').value = '';
+    });
+
+  
+
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+  <%- include('./partials/pie.ejs'); %>
+>>>>>>> bf3408dc943542ebd689d6fbe2d5daa1035a8811

@@ -4,14 +4,15 @@ const {problema_directo_Vicenty, problema_inverso_Vicenty} = require('../control
 
 
 //aca escucho el submit cuando envio los datos del calc_inver_direct.ejs
-document.getElementById('cal_directo').addEventListener('submit', function(event) {
+ document.getElementById('cal_directo').addEventListener('submit', async function(event) {
     event.preventDefault(); // Evita que el formulario se envíe de la manera tradicional
-
+    
     // Capturamos latitud
     var lat_gg = parseInt(document.getElementById('lat_gg_d').value);
     var lat_mm = parseInt(document.getElementById('lat_mm_d').value);
     var lat_ss =  parseFloat(document.getElementById('lat_ss_d').value);
     var hemisferio = document.getElementById('hemisferio').value;
+    
     //capturamos longitud
     var long_gg = parseInt(document.getElementById('long_gg_d').value);
     var long_mm = parseInt(document.getElementById('long_mm_d').value);
@@ -33,8 +34,10 @@ document.getElementById('cal_directo').addEventListener('submit', function(event
         latitud = latitud*-1;
     }
 
-    var resultado = problema_directo_Vicenty(latitud, -longitud, azimut12,dist);
+    var resultado = await problema_directo_Vicenty(latitud, -longitud, azimut12,dist);
+    console.log(resultado)
     console.log(resultado.phi2, resultado.lambda2, resultado.a21);
+    console.log(latitud, -longitud, azimut12);
     //convertir la informacion en grados minutos y segundos
     var res_lat = decimal_a_GMS(resultado.phi2);
     var res_long = decimal_a_GMS(resultado.lambda2);
@@ -62,7 +65,7 @@ document.getElementById('cal_directo').addEventListener('submit', function(event
 });
 
 //calculo del problema geodesico inverso
-document.getElementById('cal_inverso').addEventListener('submit', function(event) {
+document.getElementById('cal_inverso').addEventListener('submit', async function(event) {
     event.preventDefault(); // Evita que el formulario se envíe de la manera tradicional
 
     //captura de latitud 1
@@ -98,7 +101,7 @@ document.getElementById('cal_inverso').addEventListener('submit', function(event
         latitud2 = latitud2*-1;
     }
     //llamamos la función que realiza 
-    var resultado = problema_inverso_Vicenty(latitud,-longitud,latitud2,-longitud2);
+    var resultado = await problema_inverso_Vicenty(latitud,-longitud,latitud2,-longitud2);
     //convertirmos la información de los azimutes en gms
     var res_az12 = decimal_a_GMS(resultado.a12);
     var res_az21 = decimal_a_GMS(resultado.a21);

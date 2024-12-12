@@ -1,7 +1,8 @@
 class coord_planas{
-    constructor(norte, este){
+    constructor(norte, este, h){
         this._norte = norte;
         this._este = este;
+        this._h = h;
        
     }
 
@@ -24,7 +25,15 @@ class coord_planas{
     set este(value) {
         this._este = value;
     }
+    // Getter para h
+    get h() {
+        return this._h;
+    }
 
+    // Setter para h
+    set h(value) {
+        this._h = value;
+    }
     
 
 }
