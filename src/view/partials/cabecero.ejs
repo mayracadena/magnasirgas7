@@ -1,40 +1,20 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
   <meta charset="UTF-8">
-  <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-  <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'"> -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= titulo%></title>
 
-  <!-- se utiliza framework de boostrap para los estilos -->
-  <link rel="stylesheet" href="../scss/custom.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.css">
   <link rel="stylesheet" href="../scss/estilos.css">
   <link rel="stylesheet" href="../../node_modules/bootstrap-icons/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="../scss/estilos.css">
-
   <link rel="stylesheet" href="../scss/slide.css">
   <link rel="stylesheet" href="../scss/simple-sidebar.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../node_modules/leaflet/dist/leaflet.css">
 
-  <title>
-    <%= titulo %>
-  </title>
   
-  <style>
-    /* Estilo para el logotipo */
-    .logo-container {
-      text-align: center;
-      margin: 20px 0;
-    }
-
-    .logo-container img {
-      max-width: 150px;
-      height: auto;
-    }
-  </style>
 </head>
-
 <body>
-
+  <!-- Fondo de partículas -->
+  <div id="particles-js"></div>

@@ -1,6 +1,7 @@
-<%- include('./partials/cabecero.ejs', {"titulo": "Cambio de época" }); %>
+<%- include('./partials/cabecero.ejs', {"titulo": "Cambio de época"}); %>
 <%- include('./partials/menu.ejs'); %>
 
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -68,22 +69,14 @@
       color: var(--text-color);
     }
     .form-control::placeholder {
-    color: #ffffff; /* Cambia el color del placeholder a blanco */
-    opacity: 1;
-  }
+      color: #ffffff;
+      opacity: 1;
+    }
   
-  .form-control:focus::placeholder {
-    color: #ffffff; /* Mantiene el color blanco al enfocarse */
-  }
+    .form-control:focus::placeholder {
+      color: #ffffff;
+    }
   
-  /* Compatibilidad adicional */
-  :-ms-input-placeholder {
-    color: #ffffff;
-  }
-  
-  ::-ms-input-placeholder {
-    color: #ffffff;
-  }
     .btn {
       border: none;
       transition: all 0.3s ease;
@@ -92,20 +85,40 @@
     .btn-primary:hover {
       background-color: var(--secondary-color);
     }
-  
-    /* Sección derecha con el mapa y puntos base */
-    .right-section {
-      display: flex;
-      flex-direction: column;
-      flex: 2;
+
+    /* Estilos para el contenedor de logs */
+    .logs-container {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      margin-top: 20px;
+      padding: 15px;
+      max-height: 300px; /* Puedes ajustar esta altura */
+      overflow-y: auto;
     }
+
+    .logs-container h5 {
+      margin-bottom: 10px;
+      color: #00d4ff; /* Color primario para destacar el título */
+    }
+
+    #logsContent p {
+      margin: 0 0 5px 0; /* Espacio entre mensajes */
+      padding: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      font-size: 14px;
+      word-wrap: break-word;
+    }
+  
   </style>
   
 </head>
 <body>
   <div id="particles-js"></div>
+=======
+>>>>>>> bf3408dc943542ebd689d6fbe2d5daa1035a8811
 
-  <div class="main-content">
       <div class="panel">
           <div class="card-header">
               <h2>Cambio de Época</h2>
@@ -174,7 +187,7 @@
           </div>
       </div>
    
-      <!-- Nuevo contenedor para los logs -->
+      <!-- Contenedor de Logs Mejorado -->
       <div class="logs-container" id="logs">
         <h5>Proceso de Cambio de Época - Logs</h5>
         <div id="logsContent"></div>
@@ -183,6 +196,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="controller/Cambio_epoca.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+<<<<<<< HEAD
   <script>
     particlesJS('particles-js', {
       particles: {
@@ -217,7 +231,9 @@
   </script>
 </body>
 </html>
+=======
+  
 
+  <%- include('./partials/pie.ejs'); %>
 
-
-
+>>>>>>> bf3408dc943542ebd689d6fbe2d5daa1035a8811

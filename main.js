@@ -19,14 +19,14 @@ const createWindow = () => {
     },
     icon: "./src/img/logo.ico",
   });
-  
+
   // Establecer Content Security Policy para mejorar la seguridad
   win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
     callback({
       responseHeaders: {
         ...details.responseHeaders,
         'Content-Security-Policy': [
-          "default-src 'self'; script-src 'self' 'unsafe-inline'; media-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline';"
+          "default-src 'self'; script-src 'self' 'unsafe-inline'; media-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline';",
         ],
       },
     });
@@ -41,8 +41,11 @@ const createWindow = () => {
     })
   );
 
-  // Abre las herramientas de desarrollo si estás en modo de desarrollo
-  win.webContents.openDevTools();
+  
+  // Abre las herramientas de desarrollo solo si estás en modo de desarrollo
+  if (process.env.NODE_ENV === "development") {
+    win.webContents.openDevTools();
+  }
 };
 
 app.whenReady().then(() => {

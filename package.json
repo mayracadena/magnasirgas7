@@ -6,24 +6,60 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "build": "electron-packager . --all"
+    "build": "electron-packager . --all",
+    "pack": "build --dir",
+    "dist": "build"
+
   },
   "author": "Mayra Yesenia Cadena Blanco",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^29.4.6"
+    "electron": "^29.4.6",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "enupal-electronv1",
+    "asar": true,
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "win": {
+      "target": "NSIS",
+      "icon": "build/icon.ico"
+    }
   },
   "dependencies": {
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "decimal.js": "^10.4.3",
     "ejs-electron": "^3.0.0",
+    "electron-packager": "^17.1.2",
     "electron-reload": "^2.0.0-alpha.1",
     "express": "^4.21.1",
     "leaflet": "^1.9.4",
+    "leaflet-providers": "^2.0.0",
     "ol": "^9.2.4",
-    "proj4": "^2.14.0",
+    "proj4": "^2.6.2",
     "proj4leaflet": "^1.0.2",
+    "rbush": "^4.0.1",
+    "shpjs": "^6.1.0",
     "sqlite3": "^5.1.7",
     "topojson-client": "^3.1.0"
   }
