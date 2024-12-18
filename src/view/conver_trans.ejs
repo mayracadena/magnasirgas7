@@ -60,7 +60,7 @@
         <!-- Fila para Tipo de Coordenada de Partida y Destino -->
         <div class="row mt-3">
           <!-- Columna para Tipo de Coordenada de Partida -->
-          <div class="col-md-4">
+          <div class="col-md-6">
             <div class="card">
               <div class="card-header">
                 Tipo de Coordenada de Partida
@@ -240,14 +240,14 @@
                       <div class="row">
                         <div class="form-group col-md-6">
                           <label for="departamento-planas-partida">Departamento: </label>
-                          <select id="departamento-planas-partida" class="form-control">
+                          <select id="departamento-planas-partida" class="input-group-text">
                             <option value="defecto" disabled>Seleccione Municipio</option>
                             <!-- se llena con informacion de la base de datos  -->
                           </select>
                         </div>
                         <div class="form-group col-md-6">
                           <label for="municipio-planas-partida">Municipio: </label>
-                          <select id="municipio-planas-partida" class="form-control" placeholder="Seleccione Municipio">
+                          <select id="municipio-planas-partida" class="input-group-text" placeholder="Seleccione Municipio">
                             <option value="defecto">Seleccione Municipio</option>
                             <!-- se llena con informacion de la base ed datos  -->
                           </select>
@@ -256,7 +256,7 @@
                       <div class="row">
                         <div class="form-group col-md-8">
                           <label for="detalle-planas-partida">Origenes cartesianos disponibles: </label>
-                          <select id="detalle-planas-partida" class="form-control" placeholder="Seleccione Municipio">
+                          <select id="detalle-planas-partida" class="input-group-text" placeholder="Seleccione Municipio">
                             <option value="defecto">Seleccione año, municipio y/o corregimiento</option>
                             <!-- se llena con informacion de la base ed datos  -->
                           </select>
@@ -367,7 +367,7 @@
           </div>
 
           <!-- Columna para Tipo de Coordenada de Destino -->
-          <div class="col-md-4">
+          <div class="col-md-6">
             <div class="card">
               <div class="card-header">
                 Tipo de Coordenada de Destino
@@ -547,14 +547,14 @@
                       <div class="row">
                         <div class="form-group col-md-6">
                           <label for="departamento-planas-destino">Departamento: </label>
-                          <select id="departamento-planas-destino" class="form-control">
+                          <select id="departamento-planas-destino" class="input-group-text">
                             <option value="defecto" disabled>Seleccione Municipio</option>
                             <!-- se llena con informacion de la base de datos  -->
                           </select>
                         </div>
                         <div class="form-group col-md-6">
                           <label for="municipio-planas-destino">Municipio: </label>
-                          <select id="municipio-planas-destino" class="form-control" placeholder="Seleccione Municipio">
+                          <select id="municipio-planas-destino" class="input-group-text" placeholder="Seleccione Municipio">
                             <option value="defecto">Seleccione Municipio</option>
                             <!-- se llena con informacion de la base ed datos  -->
                           </select>
@@ -563,7 +563,7 @@
                       <div class="row">
                         <div class="form-group col-md-8">
                           <label for="detalle-planas-destino">Origenes cartesianos disponibles: </label>
-                          <select id="detalle-planas-destino" class="form-control" placeholder="Seleccione Municipio">
+                          <select id="detalle-planas-destino" class="input-group-text" placeholder="Seleccione Municipio">
                             <option value="defecto">Seleccione año, municipio y/o corregimiento</option>
                             <!-- se llena con informacion de la base ed datos  -->
                           </select>
@@ -659,7 +659,7 @@
               </div>
             </div>
           </div>
-          <div id="map" class="col-md-4" ></div>
+          
         </div>
         
       </div>
@@ -673,10 +673,10 @@
         </div>
       </div>
       <br><br>
-     
+      <div id="map" type class="container-fluid" style="width:80%; height: 600px; position: relative;"></div>
     </div>
 
-
+    
 
     <script src="../../node_modules/leaflet/dist/leaflet.js"></script>
     <script src="../../node_modules/proj4/dist/proj4.js"></script>
