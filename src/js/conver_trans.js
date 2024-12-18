@@ -251,7 +251,19 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
 
 
-      } else if (activeTabLlegadaId == 'plana-cartesiana-tab-partida') {
+      } else if (activeTabLlegadaId == 'plana-cartesiana-tab-destino') {
+
+        var origen_cartesiano = document.getElementById('detalle-planas-destino').value;
+        console.log('id de planas cartesianas', origen_cartesiano)
+        if(origen_cartesiano == 'defecto'){
+          alert('Debes escoger un origen cartesiano');
+        }else{
+          let coord_respuesta = await curvilineas_a_planas_cartesianas(c_cc, sist_refe, origen_cartesiano);
+          var c_p = new coord_planas(coord_respuesta.norte, coord_respuesta.este, coord_respuesta.h);
+          document.getElementById('norte-pc-destino').value = c_p.norte;
+          document.getElementById('este-pc-destino').value = c_p.este;
+          document.getElementById('altura-destino-plana-cartesiana').value = c_p.h;
+        }
 
 
         //llenar este apartado
