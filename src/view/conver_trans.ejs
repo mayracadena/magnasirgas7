@@ -1,7 +1,7 @@
 <%- include('./partials/cabecero.ejs', {"titulo": "Conversión y transformación de coordenadas" }); %>
   <%- include('./partials/menu.ejs'); %>
 
-  
+
 
     <!-- Fila para Sistema de Referencia de Partida y Llegada -->
     <div class="card shadow">
@@ -118,11 +118,10 @@
                           <input type="number" class="form-control" placeholder="MM" id="latitud-minutos-partida">
                         </div>
                         <div class="col-md-3">
-                          <input type="number" class="form-control" placeholder="SS.DDDDD"
-                            id="latitud-segundos-partida">
+                          <input type="number" class="form-control" placeholder="SS.DDDDD" id="latitud-segundos-partida">
                         </div>
                         <div class="col-md-3">
-                          <select class="input-group-text" id="latitud-hemisferio-partida">
+                          <select class="form-control" id="latitud-hemisferio-partida">
                             <option value="N">N</option>
                             <option value="S">S</option>
                           </select>
@@ -142,11 +141,10 @@
                           <input type="number" class="form-control" placeholder="MM" id="longitud-minutos-partida">
                         </div>
                         <div class="col-md-3">
-                          <input type="number" class="form-control" placeholder="SS.DDDDD"
-                            id="longitud-segundos-partida">
+                          <input type="number" class="form-control" placeholder="SS.DDDDD" id="longitud-segundos-partida">
                         </div>
                         <div class="col-md-3">
-                          <select class="input-group-text" id="longitud-hemisferio-partida">
+                          <select class="form-control" id="longitud-hemisferio-partida">
                             <option value="W">W</option>
                             <option value="E">E</option>
                           </select>
@@ -242,14 +240,14 @@
                       <div class="row">
                         <div class="form-group col-md-6">
                           <label for="departamento-planas-partida">Departamento: </label>
-                          <select id="departamento-planas-partida"  class="input-group-text">
+                          <select id="departamento-planas-partida" class="input-group-text">
                             <option value="defecto" disabled>Seleccione Municipio</option>
                             <!-- se llena con informacion de la base de datos  -->
                           </select>
                         </div>
                         <div class="form-group col-md-6">
                           <label for="municipio-planas-partida">Municipio: </label>
-                          <select id="municipio-planas-partida"  class="input-group-text" placeholder="Seleccione Municipio">
+                          <select id="municipio-planas-partida" class="input-group-text" placeholder="Seleccione Municipio">
                             <option value="defecto">Seleccione Municipio</option>
                             <!-- se llena con informacion de la base ed datos  -->
                           </select>
@@ -267,13 +265,13 @@
                           <br>
                           <!-- Button trigger modal -->
                           <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#informacion_origen_partida">
+                            data-bs-target="#informacion_origen_partida" >
                             Mas información
                           </button>
 
                           <!-- Modal -->
-                          <div class="modal fade" id="informacion_origen_partida" tabindex="-1"
-                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal fade" id="informacion_origen_partida" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
                             <div class="modal-dialog">
                               <div class="modal-content">
                                 <div class="modal-header">
@@ -282,11 +280,11 @@
                                     aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body" id="modal-body-content-partida">
-
+                                  
                                 </div>
                                 <div class="modal-footer">
                                   <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
-
+                                  
                                 </div>
                               </div>
                             </div>
@@ -317,16 +315,16 @@
                         </div>
                         <div class="col-md-6">
                           <label for="hemisferio-partida">Hemisferio:</label>
-                          <select class="input-group-text" id="hemisferio-partida">
+                          <select class="form-control" id="hemisferio-partida">
                             <option value="N">N</option>
                             <option value="S">S</option>
                           </select>
                         </div>
                       </div>
-
-
+                      
+                      
                     </div>
-
+                   
                     <div class="form-group mt-3" id="div-altura-partida-utm" hidden>
                       <label for="altura-partida">Altura elipsoidal:</label>
                       <div class="col-md-6">
@@ -347,7 +345,7 @@
                     </div>
                     <div class="form-group mt-3">
                       <label for="origen-gauss-partida">Origen Gauss:</label>
-                      <select class="input-group-text" id="origen-gauss-partida">
+                      <select class="form-control" id="origen-gauss-partida">
                         <option value="Central">Central</option>
                         <option value="Este">Este Central</option>
                         <option value="Este-este">Este Este</option>
@@ -427,11 +425,10 @@
                           <input type="number" class="form-control" placeholder="MM" id="latitud-minutos-destino">
                         </div>
                         <div class="col-md-3">
-                          <input type="number" class="form-control" placeholder="SS.DDDDD"
-                            id="latitud-segundos-destino">
+                          <input type="number" class="form-control" placeholder="SS.DDDDD" id="latitud-segundos-destino">
                         </div>
                         <div class="col-md-3">
-                          <select class="input-group-text" id="latitud-hemisferio-destino">
+                          <select class="form-control" id="latitud-hemisferio-destino">
                             <option value="N">N</option>
                             <option value="S">S</option>
                           </select>
@@ -449,14 +446,13 @@
                           <input type="number" class="form-control" placeholder="MM" id="longitud-minutos-destino">
                         </div>
                         <div class="col-md-3">
-                          <input type="number" class="form-control" placeholder="SS.DDDDD"
-                            id="longitud-segundos-destino">
+                          <input type="number" class="form-control" placeholder="SS.DDDDD" id="longitud-segundos-destino">
                         </div>
                         <div class="col-md-3">
-                          <select class="input-group-text" id="longitud-hemisferio-destino">
+                          <select class="form-control" id="longitud-hemisferio-destino">
                             <option value="W">W</option>
                             <option value="E">E</option>
-
+                            
                           </select>
                         </div>
                       </div>
@@ -576,13 +572,13 @@
                           <br>
                           <!-- Button trigger modal -->
                           <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#informacion_origen">
+                            data-bs-target="#informacion_origen" >
                             Mas información
                           </button>
 
                           <!-- Modal -->
-                          <div class="modal fade" id="informacion_origen" tabindex="-1"
-                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal fade" id="informacion_origen" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
                             <div class="modal-dialog">
                               <div class="modal-content">
                                 <div class="modal-header">
@@ -591,11 +587,11 @@
                                     aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body" id="modal-body-content">
-
+                                  
                                 </div>
                                 <div class="modal-footer">
                                   <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
-
+                                  
                                 </div>
                               </div>
                             </div>
@@ -621,7 +617,7 @@
                       <label for="huso-destino">Huso:</label>
                       <input type="text" class="form-control" id="huso-destino">
                     </div>
-
+                  
                     <div class="form-group mt-3" id="div-altura-destino-utm" hidden>
                       <label for="altura-destino">Altura elipsoidal:</label>
                       <div class="col-md-6">
@@ -643,7 +639,7 @@
                     <div class="form-group mt-3">
                       <label for="origen-gauss-destino">Origen Gauss:</label>
 
-                      <select class="input-group-text" id="origen-gauss-destino">
+                      <select class="form-control" id="origen-gauss-destino">
                         <option value="Central">Central</option>
                         <option value="Este">Este Central</option>
                         <option value="Este-este">Este Este</option>
@@ -663,7 +659,9 @@
               </div>
             </div>
           </div>
+          
         </div>
+        
       </div>
 
 
@@ -677,9 +675,8 @@
       <br><br>
       <div id="map" type class="container-fluid" style="width:80%; height: 600px; position: relative;"></div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.5.0/math.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+
+    
 
     <script src="../../node_modules/leaflet/dist/leaflet.js"></script>
     <script src="../../node_modules/proj4/dist/proj4.js"></script>
@@ -694,7 +691,6 @@
     <script type="module" src="../../node_modules/ol/proj.js"></script>
     <script type="module" src="../../node_modules/ol/proj/proj4.js"></script>
 
-  
 
 
     <script>

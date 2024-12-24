@@ -9,6 +9,18 @@ const coord_geocentricas = require("../class/coord_geocentricas");
 const origen = require("../class/origen.js");
 
 
+// import elipsoide_referencia from "../class/elipsoide_referencia.js";
+// import CTM12 from "../class/CTM12.js";
+// import coord_utm from "../class/UTM.js";
+// import coord_planas_cartesianas from "../class/coord_planas_cartesianas.js";
+// import coord_planas from "../class/coord_planas.js";
+// import coord_curvilineas from "../class/coord_curvilineas.js";
+// import fs from 'fs';
+// import conexion from '../db/conexion.js';
+// import coord_geocentricas from "../class/coord_geocentricas.js";
+// import origen from '../class/origen.js'
+
+
 //funcion que llama el elipoide de referencia segun el datum escogido
 async function elipoide(sistema) {
     var con = new conexion();
@@ -86,11 +98,11 @@ async function planas_cartesianas_a_curvilineas(coordenadas_planas, id_pc) {
     var D_lambda = D_E / (N_phi * Math.cos(phi_rad) * (1 + (oc.plano_proyeccion / elip.a)));
 
     var lambda = (oc.longitud) + (D_lambda * (180 / Math.PI));
-    var phi = phi * 180 / Math.PI
+    var phi = phi_rad * 180 / Math.PI
 
-    var coord_curvilineas = new coord_curvilineas(parseFloat(phi.toFixed(7)), parseFloat(lambda.toFixed(7)), parseFloat(cp.h.toFixed(3)));
+    var cc= new coord_curvilineas(parseFloat(phi.toFixed(7)), parseFloat(lambda.toFixed(7)), parseFloat(cp.h.toFixed(3)));
 
-    return coord_curvilineas;
+    return cc;
 }
 
 
@@ -305,11 +317,11 @@ async function curvilineas_a_planas_cartesianas(coord_curvi, sist_refe, id_pc) {
     var loORad = oc.longitud * (Math.PI / 180);
     var laRad = cc.phi * (Math.PI / 180);
     var loRad = cc.lambda * (Math.PI / 180);
+    var pp = oc.plano_proyeccion;
 
     var deltaLa = laRad - laORad;
     var deltaLo = loRad - loORad;
-
-    var pp = oc.plano_proyeccion;
+    var laM = (laORad + laRad) / 2;    
 
     // Cálculos auxiliares
     var senLaRad = Math.sin(laRad);
@@ -321,9 +333,9 @@ async function curvilineas_a_planas_cartesianas(coord_curvi, sist_refe, id_pc) {
     var no = 1 - e2 * Math.pow(senLaORad, 2);
     var No = a / Math.sqrt(no);
 
-    var laM = (laORad + laRad) / 2;
-    var sinLaMRad = Math.sin(laM);
-    var n3 = 1 - e2 * Math.pow(sinLaMRad, 2);
+
+    var senLaMRad = Math.sin(laM);
+    var n3 = 1 - e2 * Math.pow(senLaMRad, 2);
 
     // Cálculo de M y Mo (curvaturas meridianas)
     var M = a * (1 - e2) / Math.pow(n3, 1.5);
@@ -331,7 +343,7 @@ async function curvilineas_a_planas_cartesianas(coord_curvi, sist_refe, id_pc) {
 
     // Cálculo de N1, N2, N3
     // Uso de laRad en lugar de laORad para la tangente
-    var N1 = Math.tan(laRad) * Math.pow(deltaLo * N * cosLaRad, 2);
+    var N1 = Math.tan(laORad) * Math.pow(deltaLo * N * cosLaRad, 2);
     var N2 = 1 + pp / M;
     var N3 = 2 * Mo * No;
 
@@ -343,9 +355,7 @@ async function curvilineas_a_planas_cartesianas(coord_curvi, sist_refe, id_pc) {
 
     // Crear la instancia final de coord_planas y retornarla
     var cp = new coord_planas(parseFloat(norte.toFixed(6)), parseFloat(este.toFixed(6)), parseFloat(cc.h.toFixed(3)));
-    console.log("elipsoidales a planas:");
-    console.log("Norte:", norte);
-    console.log("Este:", este);
+  
 
     return cp;
 }
