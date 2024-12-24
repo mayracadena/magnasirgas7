@@ -8,6 +8,7 @@ const conexion = require('../db/conexion');
 const coord_geocentricas = require("../class/coord_geocentricas");
 const origen = require("../class/origen.js");
 
+
 // import elipsoide_referencia from "../class/elipsoide_referencia.js";
 // import CTM12 from "../class/CTM12.js";
 // import coord_utm from "../class/UTM.js";
@@ -97,11 +98,11 @@ async function planas_cartesianas_a_curvilineas(coordenadas_planas, id_pc) {
     var D_lambda = D_E / (N_phi * Math.cos(phi_rad) * (1 + (oc.plano_proyeccion / elip.a)));
 
     var lambda = (oc.longitud) + (D_lambda * (180 / Math.PI));
-    var phi = phi * 180 / Math.PI
+    var phi = phi_rad * 180 / Math.PI
 
-    var coord_curvilineas = new coord_curvilineas(parseFloat(phi.toFixed(7)), parseFloat(lambda.toFixed(7)), parseFloat(cp.h.toFixed(3)));
+    var cc= new coord_curvilineas(parseFloat(phi.toFixed(7)), parseFloat(lambda.toFixed(7)), parseFloat(cp.h.toFixed(3)));
 
-    return coord_curvilineas;
+    return cc;
 }
 
 
