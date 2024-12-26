@@ -14,7 +14,7 @@
 /* Variables de raíz */
 :root {
     --main-bg-color: linear-gradient(135deg, #000000, #001f3f);
-    --primary-color: #00d4ff;
+    --primary-color: #ffffff;
     --secondary-color: #001f3f;
     --text-color: #ffffff;
 }
