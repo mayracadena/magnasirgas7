@@ -188,11 +188,11 @@
                   <label for="origen-gauss">Origen Gauss:</label>
                   <select class="form-control" id="origen-gauss">
                     <option value="Central">Central</option>
-                    <option value="Este">Este</option>
-                    <option value="Este-este">Este-este</option>
-                    <option value="Insular">Insular</option>
+                    <option value="Este">Este Central</option>
+                    <option value="Este-este">Este Este</option>
                     <option value="Oeste">Oeste</option>
-                    <option value="Oeste-oeste">Oeste-oeste</option>
+                    <option value="Oeste-oeste">Oeste Oeste</option>
+                    <option value="Insular">Insular</option>
                   </select>
                 </div>
               </div>
@@ -270,6 +270,6 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Custom Script -->
-  <script src="controller/velocidades.js"></script>
+  <script type="module" src="controller/velocidades.js"></script>
 
   <%- include('./partials/pie.ejs'); %>

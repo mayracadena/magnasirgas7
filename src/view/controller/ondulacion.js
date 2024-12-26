@@ -62,14 +62,11 @@ document.getElementById('calcular').addEventListener('click', async function (ev
     } else if (nav_a == 'origen-nacional-tab') {
         var norte_on = parseFloat(document.getElementById('norte').value);
         var este_on = parseFloat(document.getElementById('este').value);
-
-        console.log('dentro de origen nacional')
-
         var cp_on = new coord_planas(norte_on, este_on, 0);
         let on = await origen_nacional();
         var ccr = await planas_a_curvilineas(cp_on, on, 'MAGNA-SIRGAS');
         var cc = new coord_curvilineas(ccr.phi, ccr.lambda, 0);
-        console.log('coordenadas calculadas ', cc)
+        
 
         lat = cc.phi;
         lon = cc.lambda;
