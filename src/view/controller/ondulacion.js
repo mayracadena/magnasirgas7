@@ -1,3 +1,13 @@
+const coord_planas_cartesianas = require("../class/coord_planas_cartesianas.js");
+const coord_planas = require("../class/coord_planas.js");
+const coord_curvilineas = require("../class/coord_curvilineas.js");
+const coord_geocentricas = require("../class/coord_geocentricas.js");
+//importación de modulos matemáticos
+const { planas_cartesianas_a_curvilineas, geocentricas_a_curvilineas, curvilineas_a_geocentricas, planas_a_curvilineas, curvilineas_a_planas, curvilineas_a_planas_cartesianas } = require('../controller/conversion_coordenadas.js');
+const { origen_nacional, gauss_kruger, origen_UTM, origen_UTM_planas_a_curvilienas } = require('../controller/origen.js');
+const origen = require('../class/origen.js');
+
+
 document.getElementById('coordenadas-decimales').addEventListener('change', function() {
     const isChecked = this.checked;
     toggleCoordinateInput(isChecked);
@@ -15,15 +25,18 @@ function toggleCoordinateInput(isDecimal) {
     }
 }
 
-document.getElementById('calcular').addEventListener('click', function(event) {
+document.getElementById('calcular').addEventListener('click', async function(event) {
     event.preventDefault();
+    console.log('dentro de funcion ',document.querySelector("#myTab .nav-link.active").id);
+
+    var nav_a = document.querySelector("#myTab .nav-link.active").id;
 
     let lat, lon;
-    if (document.getElementById('coordenadas-decimales').checked) {
+    if (nav_a == 'elipsoidaldecimal-tab') {
         // Leer coordenadas decimales directamente
         lat = parseFloat(document.getElementById('latitud-decimal').value);
         lon = parseFloat(document.getElementById('longitud-decimal').value);
-    } else {
+    } else if(nav_a == 'elipsoidal-tab') {
         // Obtener valores de latitud y longitud en grados, minutos y segundos
         const latGrados = parseFloat(document.getElementById('latitud-grados').value);
         const latMinutos = parseFloat(document.getElementById('latitud-minutos').value);
@@ -45,6 +58,33 @@ document.getElementById('calcular').addEventListener('click', function(event) {
         if (lonHemisferio === 'W') {
             lon = -lon;
         }
+    }else if(nav_a == 'origen-nacional-tab'){
+        var norte_on = parseFloat(document.getElementById('norte').value);
+        var este_on = parseFloat(document.getElementById('este').value);
+
+        console.log('dentro de origen nacional')
+
+        var cp_on = new coord_planas(norte_on, este_on, 0);
+        let on = await origen_nacional();
+        var ccr = await planas_a_curvilineas(cp_on, on, 'MAGNA-SIRGAS');
+        var cc = new coord_curvilineas(ccr.phi, ccr.lambda, 0);
+        console.log('coordenadas calculadas ', cc)
+
+        lat = cc.phi;
+        lon = cc.lambda;
+
+        
+
+    }else if(nav_a == ''){
+
+    }else if(nav_a == ''){
+
+    }else if(nav_a == ''){
+
+    }else if(nav_a == ''){
+
+    }else if(nav_a == ''){
+
     }
 
     // Validar coordenadas

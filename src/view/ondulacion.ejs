@@ -1,39 +1,50 @@
 <%- include('./partials/cabecero.ejs', {"titulo": "Ondulacion Geoidal" }); %>
-<%- include('./partials/menu.ejs'); %>
+  <%- include('./partials/menu.ejs'); %>
 
 
     <div class="panel">
-        <div class="panel">
-            <h4>Cálculo Ondulación Punto Individual</h4>
-        </div>
-        <br>
-        <div class="card-body">
-            <form id="ondulacionForm">
-             <!-- Tipo de Coordenada Panel -->
+      <div class="panel">
+        <h4>Cálculo Ondulación Punto Individual</h4>
+      </div>
+      <br>
+      <div class="card-body">
+        <form id="ondulacionForm">
+          <!-- Tipo de Coordenada Panel -->
           <div class="panel">
             <h6>Tipo de Coordenada</h6>
             <ul class="nav nav-tabs" id="myTab" role="tablist">
               <!-- Tab Items -->
               <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="elipsoidal-tab" data-bs-toggle="tab" data-bs-target="#elipsoidal" type="button" role="tab" aria-controls="elipsoidal" aria-selected="true">Elipsoidal Sexagesimal</button>
+                <button class="nav-link active" id="elipsoidal-tab" data-bs-toggle="tab" data-bs-target="#elipsoidal"
+                  type="button" role="tab" aria-controls="elipsoidal" aria-selected="true">Elipsoidal
+                  Sexagesimal</button>
               </li>
               <li class="nav-item" role="presentation">
-                <button class="nav-link" id="elipsoidaldecimal-tab" data-bs-toggle="tab" data-bs-target="#coordenadas-decimales" type="button" role="tab" aria-controls="elipsoidaldecimal" aria-selected="false">Elipsoidal Decimal</button>
+                <button class="nav-link" id="elipsoidaldecimal-tab" data-bs-toggle="tab"
+                  data-bs-target="#coordenadas-decimales" type="button" role="tab" aria-controls="elipsoidaldecimal"
+                  aria-selected="false">Elipsoidal Decimal</button>
               </li>
               <li class="nav-item" role="presentation">
-                <button class="nav-link" id="origen-nacional-tab" data-bs-toggle="tab" data-bs-target="#origen-nacional" type="button" role="tab" aria-controls="origen-nacional" aria-selected="false">Origen Nacional</button>
+                <button class="nav-link" id="origen-nacional-tab" data-bs-toggle="tab" data-bs-target="#origen-nacional"
+                  type="button" role="tab" aria-controls="origen-nacional" aria-selected="false">Origen
+                  Nacional</button>
               </li>
               <li class="nav-item" role="presentation">
-                <button class="nav-link" id="geocentrica-tab" data-bs-toggle="tab" data-bs-target="#geocentrica" type="button" role="tab" aria-controls="geocentrica" aria-selected="false">Geocéntrica</button>
+                <button class="nav-link" id="geocentrica-tab" data-bs-toggle="tab" data-bs-target="#geocentrica"
+                  type="button" role="tab" aria-controls="geocentrica" aria-selected="false">Geocéntrica</button>
               </li>
               <li class="nav-item" role="presentation">
-                <button class="nav-link" id="plana-cartesiana-tab" data-bs-toggle="tab" data-bs-target="#plana-cartesiana" type="button" role="tab" aria-controls="plana-cartesiana" aria-selected="false">Plana Cartesiana</button>
+                <button class="nav-link" id="plana-cartesiana-tab" data-bs-toggle="tab"
+                  data-bs-target="#plana-cartesiana" type="button" role="tab" aria-controls="plana-cartesiana"
+                  aria-selected="false">Plana Cartesiana</button>
               </li>
               <li class="nav-item" role="presentation">
-                <button class="nav-link" id="utm-tab" data-bs-toggle="tab" data-bs-target="#utm" type="button" role="tab" aria-controls="utm" aria-selected="false">UTM</button>
+                <button class="nav-link" id="utm-tab" data-bs-toggle="tab" data-bs-target="#utm" type="button"
+                  role="tab" aria-controls="utm" aria-selected="false">UTM</button>
               </li>
               <li class="nav-item" role="presentation">
-                <button class="nav-link" id="gauss-kruger-tab" data-bs-toggle="tab" data-bs-target="#gauss-kruger" type="button" role="tab" aria-controls="gauss-kruger" aria-selected="false">Gauss Krüger</button>
+                <button class="nav-link" id="gauss-kruger-tab" data-bs-toggle="tab" data-bs-target="#gauss-kruger"
+                  type="button" role="tab" aria-controls="gauss-kruger" aria-selected="false">Gauss Krüger</button>
               </li>
             </ul>
             <div class="tab-content" id="myTabContent">
@@ -83,7 +94,8 @@
                 </div>
               </div>
               <!-- Elipsoidal Decimal Tab Pane -->
-              <div class="tab-pane fade" id="coordenadas-decimales" role="tabpanel" aria-labelledby="elipsoidaldecimal-tab">
+              <div class="tab-pane fade" id="coordenadas-decimales" role="tabpanel"
+                aria-labelledby="elipsoidaldecimal-tab">
                 <div class="form-group">
                   <label for="latitud-decimal">Latitud (decimal):</label>
                   <input type="text" class="form-control" placeholder="Latitud (decimal)" id="latitud-decimal">
@@ -129,7 +141,7 @@
                   <label for="este-pc">Este (m):</label>
                   <input type="text" class="form-control" id="este-pc">
                 </div>
-                <p></p> 
+                <p></p>
                 <h6>Origen Cartesiano</h6>
                 <div class="form-group">
                   <label for="departamento">Departamento:</label>
@@ -198,29 +210,29 @@
                 </div>
               </div>
             </div>
-          </div>  
+          </div>
           <br>
-                <div class="panel">
-                    <h4>Ondulación Geoidal (m)</h4>
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="ondulacion-geoidal">
-                    </div>
-                </div>
-                <div class="buttons text-center">
-                    <button id="calcular" class="btn btn-primary"><i class="bi bi-play-circle"></i> Calcular</button>
-                    <button id="limpiar" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Limpiar</button>
-                </div>
-            </form>
-        </div>
+          <div class="panel">
+            <h4>Ondulación Geoidal (m)</h4>
+            <div class="form-group">
+              <input type="text" class="form-control" id="ondulacion-geoidal">
+            </div>
+          </div>
+          <div class="buttons text-center">
+            <button id="calcular" class="btn btn-primary"><i class="bi bi-play-circle"></i> Calcular</button>
+            <button id="limpiar" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Limpiar</button>
+          </div>
+        </form>
+      </div>
     </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="controller/ondulacion.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/simple-kriging/0.3.0/simple-kriging.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="controller/ondulacion.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simple-kriging/0.3.0/simple-kriging.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
 
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="controller/ondulacion.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module"  src="controller/ondulacion.js"></script>
 
-<%- include('./partials/pie.ejs'); %>
+    <%- include('./partials/pie.ejs'); %>

@@ -116,7 +116,11 @@ function agregarPuntoSecuencial( lat, lng) {
     const marker = L.marker([lat, lng]).addTo(map);
 
     // Asignar popup con el nombre "Punto {contador}"
-    marker.bindPopup(`Punto ${puntoCounter} lat: ${lat.toFixed(3)} long: ${lng.toFixed(3)}`);
+    marker.bindPopup(`Punto ${puntoCounter} lat: ${lat.toFixed(3)} long: ${lng.toFixed(3)}`,
+  {
+    autoClose: false,
+    closeOnClick: false
+  }).openPopup();
 
     // Ajustar el mapa para mostrar todos los puntos
     const bounds = L.latLngBounds(allPoints);
