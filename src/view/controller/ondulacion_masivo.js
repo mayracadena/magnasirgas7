@@ -519,8 +519,9 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'utm':
                 var nutm = parseFloat(cells[2].textContent.trim());
                 var eutm = parseFloat(cells[1].textContent.trim());
-                var huso = parseInt(cells[3].textContent.trim());
-                var hemisferio = huso.charAt(huso.length - 1);
+                var huso_pre = cells[3].textContent.trim();
+                var huso = huso_pre.substring(0, 2); 
+                var hemisferio = huso_pre.charAt(huso_pre.length - 1);
 
                 var c_utm = new coord_planas(nutm, eutm, 0)
                 var origen_utm = await origen_UTM_planas_a_curvilienas(huso, hemisferio);
