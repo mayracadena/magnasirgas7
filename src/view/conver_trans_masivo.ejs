@@ -1,0 +1,455 @@
+<%- include('./partials/cabecero.ejs', {"titulo": "Transformación y Conversión de Coordenadas" }); %>
+<%- include('./partials/menu.ejs'); %>
+
+<style>
+  /* Ajustes para la interfaz compacta y esquinas redondeadas en el mapa */
+  h2.main-title {
+    text-align: center;
+    margin: 1rem 0;
+    font-weight: 600;
+    color: #fff; /* Ajusta si usas fondo oscuro */
+  }
+  .card {
+    margin-bottom: 0.5rem; /* Espacio mínimo entre tarjetas */
+  }
+  .card-header, .card-body {
+    padding: 0.5rem; /* Menor padding interno */
+  }
+  .form-check {
+    margin-bottom: 0.35rem; /* Separación menor entre radios */
+  }
+  .btn {
+    font-size: 0.85rem; /* Botones ligeramente más pequeños */
+  }
+  /* Esquinas redondeadas para el mapa */
+  #map {
+    border-radius: 10px; /* Ajusta el radio según tu preferencia */
+  }
+</style>
+
+<!-- Título principal -->
+<h4 class="main-title">Transformación y Conversión de Coordenadas</h4>
+
+<div class="container-fluid" style="max-width: 100vw; overflow-x: hidden;">
+  <div class="row">
+    
+    <!-- COLUMNA IZQUIERDA: CARGA CSV -->
+    <div class="col-md-3">
+      <!-- (1) CARGA DE CSV -->
+      <div class="card shadow">
+        <div class="card-header">
+          <strong>Carga de CSV</strong>
+        </div>
+        <div class="card-body">
+          <label for="archivo-coordenadas"><small>Seleccionar archivo CSV:</small></label>
+          <input 
+            type="file" 
+            class="form-control form-control-sm mb-2" 
+            id="archivo-coordenadas" 
+            accept=".csv"
+          >
+          <!-- Eliminado el botón "Procesar" -->
+          <div 
+            id="archivo-detalles" 
+            style="display: none; margin-top: 0.5rem;"
+          >
+            <p id="nombre-archivo" style="margin: 0;"></p>
+            <p id="tamaño-archivo" style="margin: 0;"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- (2) BOTONES (sin título "Acciones") -->
+      <div class="card shadow">
+        <!-- Se ha quitado la card-header -->
+        <div class="card-body d-flex flex-column align-items-stretch" style="gap: 0.5rem;">
+          <button 
+            class="btn btn-primary btn-sm" 
+            id="calcular_trans_cover"
+          >
+            Calcular
+          </button>
+          <button 
+            class="btn btn-secondary btn-sm" 
+            id="limpiarBtn"
+          >
+            Limpiar
+          </button>
+        </div>
+      </div>
+    </div><!-- /.col-md-3 -->
+
+    <!-- COLUMNA CENTRAL: REF. ORIGEN / DESTINO, TIPO COORD. ORIGEN / DESTINO -->
+    <div class="col-md-6">
+      <div class="row">
+        <!-- REF. ORIGEN + TIPO COORD. ORIGEN -->
+        <div class="col-md-6">
+          <!-- Ref. Origen -->
+          <div class="card shadow">
+            <div class="card-header">
+              <strong>Ref. Origen (CSV)</strong>
+            </div>
+            <div class="card-body">
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="sistemaRefOrigen"
+                  id="refOrigenMagna" 
+                  value="MAGNA-SIRGAS" 
+                  checked
+                >
+                <label class="form-check-label" for="refOrigenMagna">
+                  MAGNA-SIRGAS
+                </label>
+              </div>
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="sistemaRefOrigen"
+                  id="refOrigenBogota" 
+                  value="DatumBogota"
+                >
+                <label class="form-check-label" for="refOrigenBogota">
+                  Datum Bogotá
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tipo Coord. Origen -->
+          <div class="card shadow">
+            <div class="card-header">
+              <strong>Tipo Coord. Origen</strong>
+            </div>
+            <div class="card-body">
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="sistemaCoordOrigen"
+                  id="coordOrigenGeoc" 
+                  value="Geocentrica" 
+                  checked
+                >
+                <label class="form-check-label" for="coordOrigenGeoc">
+                  Geocéntrica
+                </label>
+              </div>
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="sistemaCoordOrigen"
+                  id="coordOrigenElipSex" 
+                  value="ElipsoidalSexagesimal"
+                >
+                <label class="form-check-label" for="coordOrigenElipSex">
+                  Elips. Sexagesimal
+                </label>
+              </div>
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="sistemaCoordOrigen"
+                  id="coordOrigenElipDec" 
+                  value="ElipsoidalDecimal"
+                >
+                <label class="form-check-label" for="coordOrigenElipDec">
+                  Elips. Decimal
+                </label>
+              </div>
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="sistemaCoordOrigen"
+                  id="coordOrigenPlana" 
+                  value="PlanaCartesiana"
+                >
+                <label class="form-check-label" for="coordOrigenPlana">
+                  Plana Cartesiana
+                </label>
+              </div>
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="sistemaCoordOrigen"
+                  id="coordOrigenUTM" 
+                  value="UTM"
+                >
+                <label class="form-check-label" for="coordOrigenUTM">
+                  UTM
+                </label>
+              </div>
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="sistemaCoordOrigen"
+                  id="coordOrigenGauss" 
+                  value="GaussKruger"
+                >
+                <label class="form-check-label" for="coordOrigenGauss">
+                  Gauss Krüger
+                </label>
+              </div>
+            </div>
+          </div>
+        </div><!-- /.col-md-6 -->
+
+        <!-- REF. DESTINO + TIPO COORD. DESTINO -->
+        <div class="col-md-6">
+          <!-- Ref. Destino -->
+          <div class="card shadow">
+            <div class="card-header">
+              <strong>Ref. Destino</strong>
+            </div>
+            <div class="card-body">
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="sistemaRefDestino"
+                  id="refDestinoMagna" 
+                  value="MAGNA-SIRGAS" 
+                  checked
+                >
+                <label class="form-check-label" for="refDestinoMagna">
+                  MAGNA-SIRGAS
+                </label>
+              </div>
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="sistemaRefDestino"
+                  id="refDestinoBogota" 
+                  value="DatumBogota"
+                >
+                <label class="form-check-label" for="refDestinoBogota">
+                  Datum Bogotá
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tipo Coord. Destino -->
+          <div class="card shadow">
+            <div class="card-header">
+              <strong>Tipo Coord. Destino</strong>
+            </div>
+            <div class="card-body">
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="sistemaCoordDestino"
+                  id="coordDestinoGeoc" 
+                  value="Geocentrica" 
+                  checked
+                >
+                <label class="form-check-label" for="coordDestinoGeoc">
+                  Geocéntrica
+                </label>
+              </div>
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="sistemaCoordDestino"
+                  id="coordDestinoElipSex" 
+                  value="ElipsoidalSexagesimal"
+                >
+                <label class="form-check-label" for="coordDestinoElipSex">
+                  Elips. Sexagesimal
+                </label>
+              </div>
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="sistemaCoordDestino"
+                  id="coordDestinoElipDec" 
+                  value="ElipsoidalDecimal"
+                >
+                <label class="form-check-label" for="coordDestinoElipDec">
+                  Elips. Decimal
+                </label>
+              </div>
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="sistemaCoordDestino"
+                  id="coordDestinoPlana" 
+                  value="PlanaCartesiana"
+                >
+                <label class="form-check-label" for="coordDestinoPlana">
+                  Plana Cartesiana
+                </label>
+              </div>
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="sistemaCoordDestino"
+                  id="coordDestinoUTM" 
+                  value="UTM"
+                >
+                <label class="form-check-label" for="coordDestinoUTM">
+                  UTM
+                </label>
+              </div>
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="sistemaCoordDestino"
+                  id="coordDestinoGauss" 
+                  value="GaussKruger"
+                >
+                <label class="form-check-label" for="coordDestinoGauss">
+                  Gauss Krüger
+                </label>
+              </div>
+            </div>
+          </div>
+        </div><!-- /.col-md-6 -->
+
+      </div><!-- /.row -->
+    </div><!-- /.col-md-6 -->
+
+    <!-- COLUMNA DERECHA: MAPA con esquinas redondeadas -->
+    <div class="col-md-3">
+      <div class="card shadow">
+        <div class="card-header">
+          <strong>Mapa</strong>
+        </div>
+        <div class="card-body p-0">
+          <div id="map" style="width: 100%; height: 300px;"></div>
+        </div>
+      </div>
+    </div><!-- /.col-md-3 -->
+
+  </div><!-- /.row -->
+</div><!-- /.container-fluid -->
+
+<!-- ===================== LIBRERÍAS EXTERNAS ===================== -->
+<script src="../../node_modules/leaflet/dist/leaflet.js"></script>
+<script src="../../node_modules/proj4/dist/proj4.js"></script>
+<script src="../../node_modules/proj4leaflet/src/proj4leaflet.js"></script>
+<script src="../lib/leaflet.shapefile/leaflet.shpfile.js"></script>
+<script src="../../node_modules/shpjs/dist/shp.js"></script>
+<script src="../../node_modules/topojson-client/dist/topojson-client.js"></script>
+<script src="../../node_modules/proj4leaflet/src/proj4leaflet.js"></script>
+<script src="../../node_modules/leaflet-providers/leaflet-providers.js"></script>
+<script src="../../node_modules/ol/dist/ol.js"></script>
+<script type="module" src="../../node_modules/ol/proj.js"></script>
+<script type="module" src="../../node_modules/ol/proj/proj4.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/simple-kriging/0.3.0/simple-kriging.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+<script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+
+<!-- ===================== SCRIPTS DE LA APLICACIÓN ===================== -->
+<script type="module" src="../controller/conversion_coordenadas.js"></script>
+<script type="module" src="../js/conver_trans.js"></script>
+
+<!-- ===================== SCRIPT PARA PROCESAR EL CSV (SIN BOTÓN PROCESAR) ===================== -->
+<script>
+  // Referencias
+  const archivoInput      = document.getElementById('archivo-coordenadas');
+  const archivoDetalles   = document.getElementById('archivo-detalles');
+  const nombreArchivo     = document.getElementById('nombre-archivo');
+  const tamañoArchivo     = document.getElementById('tamaño-archivo');
+
+  const refOrigenRadios   = document.getElementsByName('sistemaRefOrigen');
+  const refDestinoRadios  = document.getElementsByName('sistemaRefDestino');
+  const coordOrigenRadios = document.getElementsByName('sistemaCoordOrigen');
+  const coordDestinoRadios= document.getElementsByName('sistemaCoordDestino');
+
+  const calcularBtn       = document.getElementById('calcular_trans_cover');
+  const limpiarBtn        = document.getElementById('limpiarBtn');
+
+  // Almacena las líneas del CSV
+  let lineasCSV = [];
+
+  // Al cambiar el archivo en el input, se procesa automáticamente
+  archivoInput.addEventListener('change', () => {
+    const archivo = archivoInput.files[0];
+    if (!archivo) {
+      alert('Por favor, selecciona un archivo CSV.');
+      return;
+    }
+    // Mostrar detalles
+    archivoDetalles.style.display = 'block';
+    nombreArchivo.textContent = `Archivo: ${archivo.name}`;
+    tamañoArchivo.textContent = `Tamaño: ${(archivo.size / 1024).toFixed(2)} KB`;
+
+    // Leer
+    const reader = new FileReader();
+    reader.onload = e => {
+      const contenido = e.target.result;
+      console.log('Contenido CSV:\n', contenido);
+      // Guardar (o procesar) en lineasCSV
+      lineasCSV = contenido
+        .split('\n')
+        .map(l => l.trim())
+        .filter(l => l.length > 0);
+    };
+    reader.readAsText(archivo);
+  });
+
+  // Helper para obtener radio seleccionado
+  function getSelectedValue(radioNodeList) {
+    for (let radio of radioNodeList) {
+      if (radio.checked) return radio.value;
+    }
+    return null;
+  }
+
+  // Calcular/Transformar
+  calcularBtn.addEventListener('click', () => {
+    if (lineasCSV.length < 2) {
+      alert('No hay datos suficientes o el CSV está vacío.');
+      return;
+    }
+    const refOrigen   = getSelectedValue(refOrigenRadios);
+    const refDestino  = getSelectedValue(refDestinoRadios);
+    const coordOrigen = getSelectedValue(coordOrigenRadios);
+    const coordDestino= getSelectedValue(coordDestinoRadios);
+
+    alert(`Transformar ${lineasCSV.length - 1} filas
+      Ref.Origen: ${refOrigen}, Coord.Origen: ${coordOrigen}
+      Ref.Destino: ${refDestino}, Coord.Destino: ${coordDestino}`);
+    // Aquí tu lógica real de transformación...
+  });
+
+  // Limpiar
+  limpiarBtn.addEventListener('click', () => {
+    archivoDetalles.style.display = 'none';
+    nombreArchivo.textContent = '';
+    tamañoArchivo.textContent = '';
+    lineasCSV = [];
+
+    archivoInput.value = '';
+
+    // Reiniciamos radios a la primera opción
+    if (refOrigenRadios.length)    refOrigenRadios[0].checked    = true;
+    if (refDestinoRadios.length)   refDestinoRadios[0].checked   = true;
+    if (coordOrigenRadios.length)  coordOrigenRadios[0].checked  = true;
+    if (coordDestinoRadios.length) coordDestinoRadios[0].checked = true;
+
+    console.log('Interfaz limpiada.');
+  });
+
+  // Si usas OL / Leaflet (opcional)
+  window.register = ol.proj.proj4.register;
+  window.transform = ol.proj.transform;
+</script>
+
+<%- include('./partials/pie.ejs'); %>
+
