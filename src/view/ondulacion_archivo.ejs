@@ -1,7 +1,6 @@
 <%- include('./partials/cabecero.ejs', {"titulo": "ITRF"}); %>
 <%- include('./partials/menu.ejs'); %>
 
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -33,6 +32,7 @@
         z-index: -1;
       }
 
+      /* Margen original que deseas, pero lo sobreescribiremos al final si quieres centrarlo */
       .main-content {
         margin-left: 30px;
         padding: 20px;
@@ -137,21 +137,27 @@
       table.file-preview tbody tr:nth-of-type(even) {
         background-color: rgba(0, 0, 0, 0.1);
       }
+
+      /* =========== Override para centrar o alinear a tu preferencia =========== */
+      /* Ajusta el max-width según la resolución que desees */
+      @media (min-width: 0px) {
+        .main-content {
+          margin-left: 0 !important;
+          margin: 0 auto !important;
+          max-width: 1200px;
+        }
+      }
   </style>
 </head>
 <body>
     <div id="particles-js"></div>
     <div class="main-content">
+      <h4>Cálculo Ondulación Archivo</h4>
       
-        <h4>Cálculo Ondulación Archivo</h4>
-      
-      <div class="content-container">
-        <!-- Sección izquierda: Configuración y Carga -->
-
       <!-- Contenedor principal -->
       <div class="content-container">
         
-        <!-- Sección izquierda: módulos -->
+        <!-- Sección izquierda: Configuración y Carga -->
         <div class="panel left-panel">
           <h4>Configuración y Carga</h4>
           <form id="ondulacionForm">
@@ -173,8 +179,12 @@
               <input type="file" class="form-control" id="cargar-archivo" accept=".csv">
             </div>
             <div class="text-center mt-3">
-              <button type="button" id="calcular" class="btn btn-primary me-2"><i class="bi bi-calculator"></i> Calcular</button>
-              <button type="button" id="limpiar" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Limpiar</button>
+              <button type="button" id="calcular" class="btn btn-primary me-2">
+                <i class="bi bi-calculator"></i> Calcular
+              </button>
+              <button type="button" id="limpiar" class="btn btn-secondary">
+                <i class="bi bi-x-circle"></i> Limpiar
+              </button>
             </div>
           </form>
         </div>
@@ -193,8 +203,8 @@
             </table>
           </div>
         </div>
-      </div>
-    </div>
+      </div><!-- /.content-container -->
+    </div><!-- /.main-content -->
     
     <script src="controller/ondulacion_masivo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
@@ -235,95 +245,95 @@
 </body>
 </html>
 
-  <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
- 
-  <script>
-    // Configuración de partículas
- 
-    function generarCabeceras(tipo) {
-      const thead = document.querySelector('#tabla-datos thead');
-      thead.innerHTML = '';
+<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
 
-      let headers = [];
-      switch (tipo) {
-        case 'elipsoidal':
-          headers = ['ID', 'Latitud', 'Longitud'];
-          break;
-        case 'elipsoidales-grados':
-          headers = ['ID', 'Latitud', 'Longitud'];
-          break;
-        case 'utm':
-          headers = ['ID', 'Este', 'Norte', 'Zona'];
-          break;
-        case 'geocentrica':
-          headers = ['ID', 'X', 'Y', 'Z'];
-          break;
-        case 'plana-cartesiana':
-          headers = ['ID', 'X', 'Y'];
-          break;
-        case 'gauss-kruger':
-          headers = ['ID', 'Este', 'Norte', 'Zona'];
-          break;
-        case 'origen-nacional':
-          headers = ['ID', 'Este', 'Norte'];
-          break;
-        default:
-          headers = ['ID'];
-          break;
-      }
+<script>
+  // Configuración de partículas
+  function generarCabeceras(tipo) {
+    const thead = document.querySelector('#tabla-datos thead');
+    thead.innerHTML = '';
 
-      const tr = document.createElement('tr');
-      headers.forEach(h => {
-        const th = document.createElement('th');
-        th.textContent = h;
-        tr.appendChild(th);
-      });
-      thead.appendChild(tr);
+    let headers = [];
+    switch (tipo) {
+      case 'elipsoidal':
+        headers = ['ID', 'Latitud', 'Longitud'];
+        break;
+      case 'elipsoidales-grados':
+        headers = ['ID', 'Latitud', 'Longitud'];
+        break;
+      case 'utm':
+        headers = ['ID', 'Este', 'Norte', 'Zona'];
+        break;
+      case 'geocentrica':
+        headers = ['ID', 'X', 'Y', 'Z'];
+        break;
+      case 'plana-cartesiana':
+        headers = ['ID', 'X', 'Y'];
+        break;
+      case 'gauss-kruger':
+        headers = ['ID', 'Este', 'Norte', 'Zona'];
+        break;
+      case 'origen-nacional':
+        headers = ['ID', 'Este', 'Norte'];
+        break;
+      default:
+        headers = ['ID'];
+        break;
     }
 
-    document.getElementById('tipo-coordenada').addEventListener('change', function () {
-      const tipo = this.value;
-      if (tipo) {
-        generarCabeceras(tipo);
-      }
+    const tr = document.createElement('tr');
+    headers.forEach(h => {
+      const th = document.createElement('th');
+      th.textContent = h;
+      tr.appendChild(th);
     });
+    thead.appendChild(tr);
+  }
 
-    document.getElementById('cargar-archivo').addEventListener('change', function (event) {
-      const tipoCoordenada = document.getElementById('tipo-coordenada').value;
+  document.getElementById('tipo-coordenada').addEventListener('change', function () {
+    const tipo = this.value;
+    if (tipo) {
+      generarCabeceras(tipo);
+    }
+  });
 
-      if (!tipoCoordenada) {
-        alert('Por favor seleccione un tipo de coordenada antes de cargar el archivo.');
-        this.value = '';
-        return;
-      }
+  document.getElementById('cargar-archivo').addEventListener('change', function (event) {
+    const tipoCoordenada = document.getElementById('tipo-coordenada').value;
 
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const lines = e.target.result.split('\n').map(line => line.trim()).filter(line => line !== '');
-          const tableBody = document.querySelector('#tabla-datos tbody');
-          tableBody.innerHTML = ''; // Limpiar tabla antes de cargar nuevos datos
+    if (!tipoCoordenada) {
+      alert('Por favor seleccione un tipo de coordenada antes de cargar el archivo.');
+      this.value = '';
+      return;
+    }
 
-          const dataLines = lines.slice(1); // Ignorar la primera línea (encabezado del archivo)
-          const columnsCount = document.querySelectorAll('#tabla-datos thead th').length;
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const lines = e.target.result.split('\n').map(line => line.trim()).filter(line => line !== '');
+        const tableBody = document.querySelector('#tabla-datos tbody');
+        tableBody.innerHTML = ''; // Limpiar tabla antes de cargar nuevos datos
 
-          dataLines.forEach((line, index) => {
-            const columns = line.split(',').map(col => col.trim());
-            if (columns.length === columnsCount) {
-              const tr = document.createElement('tr');
-              columns.forEach(col => {
-                const td = document.createElement('td');
-                td.textContent = col;
-                tr.appendChild(td);
-              });
-              tableBody.appendChild(tr);
-            }
-          });
-        };
-        reader.readAsText(file);
-      }
-    });
+        const dataLines = lines.slice(1); // Ignorar la primera línea (encabezado del archivo)
+        const columnsCount = document.querySelectorAll('#tabla-datos thead th').length;
+
+        dataLines.forEach((line, index) => {
+          const columns = line.split(',').map(col => col.trim());
+          if (columns.length === columnsCount) {
+            const tr = document.createElement('tr');
+            columns.forEach(col => {
+              const td = document.createElement('td');
+              td.textContent = col;
+              tr.appendChild(td);
+            });
+            tableBody.appendChild(tr);
+          }
+        });
+      };
+      reader.readAsText(file);
+    }
+  });
+
   // Función para procesar el archivo cargado y calcular las ondulaciones
   function procesarArchivo(datos) {
       const resultados = [];
@@ -344,18 +354,14 @@
               .catch(err => console.error(`Error al calcular ondulación para ID ${id}:`, err));
       });
   }
-    document.getElementById('limpiar').addEventListener('click', function () {
-      document.querySelector('#tabla-datos thead').innerHTML = '';
-      document.querySelector('#tabla-datos tbody').innerHTML = '';
-      document.getElementById('cargar-archivo').value = '';
-      document.getElementById('tipo-coordenada').value = '';
-    });
 
-  
+  document.getElementById('limpiar').addEventListener('click', function () {
+    document.querySelector('#tabla-datos thead').innerHTML = '';
+    document.querySelector('#tabla-datos tbody').innerHTML = '';
+    document.getElementById('cargar-archivo').value = '';
+    document.getElementById('tipo-coordenada').value = '';
+  });
+</script>
 
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-
-  <%- include('./partials/pie.ejs'); %>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<%- include('./partials/pie.ejs'); %>

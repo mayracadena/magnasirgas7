@@ -33,7 +33,7 @@
     }
 
     .main-content {
-      margin-left: 300px;
+      margin-left: 300px; /* Se mantiene la línea original */
       padding: 20px;
     }
 
@@ -120,12 +120,21 @@
     table.file-preview tbody tr:nth-of-type(even) {
       background-color: rgba(0, 0, 0, 0.1);
     }
+
+    /* =========== Override para centrar y evitar gran desplazamiento a la derecha =========== */
+    @media (min-width: 0px) {
+      .main-content {
+        margin-left: 0 !important;  /* anula la línea original */
+        margin: 0 auto !important; /* centra horizontalmente */
+        max-width: 1200px;         /* límite de ancho, ajusta a gusto */
+      }
+    }
   </style>
 </head>
 <body>
   <div id="particles-js"></div>
   <div class="main-content">
-    <h1 class="title">Cambio de Época - Masivo</h1>
+    <h4 class="title">Cambio de Época - Masivo</h4>
     <div class="content-container">
       <!-- Panel Izquierdo -->
       <div class="panel left-panel">
