@@ -36,7 +36,7 @@
   
     /* Contenedor principal */
     .main-content {
-      margin-left: 300px;
+      margin-left: 300px; /* Se mantiene la línea original */
       padding: 80px;
     }
   
@@ -124,7 +124,7 @@
   
     /* Contenedor de la tabla con scroll horizontal y vertical */
     .file-preview-container {
-      max-height: 300px; /* Limita la altura */
+      max-height: 100px; /* Limita la altura */
       max-width: 100%; /* Limita el ancho */
       overflow-x: auto; /* Scroll horizontal */
       overflow-y: auto; /* Scroll vertical */
@@ -151,12 +151,19 @@
     }
 
     .text-muted {
-        color: #ffffff !important; /* Cambia a blanco */
-        opacity: 0.7; /* Reduce ligeramente la opacidad para mantener el efecto tenue */
+      color: #ffffff !important; /* Cambia a blanco */
+      opacity: 0.7; /* Reduce ligeramente la opacidad para mantener el efecto tenue */
+    }
+
+    /* =========== Override para centrar o reducir margen si se desea =========== */
+    @media (min-width: 0px) {
+      .main-content {
+        margin-left: 0 !important;  /* Anula la línea original */
+        margin: 0 auto !important;  /* Centra horizontalmente */
+        max-width: 3000px;          /* Ajusta ancho máximo si quieres */
       }
-    
+    }
   </style>
-  
 </head>
 <body>
   <!-- Fondo de partículas -->
@@ -166,52 +173,53 @@
       <div class="panel">
           <h4>Cálculo Ondulación Punto Individual</h4>
       </div>
-    <br>
-    <div class="row g-4">
-      <!-- Panel de Carga de Archivo -->
-      <div class="col-lg-4">
-        <div class="panel">
-          <h5>Cargar Archivo CSV</h5>
-          <p class="text-muted">Sube un archivo en formato CSV con las columnas <strong>ID, Altura Elipsoidal y Altura Geoidal</strong>.</p>
-          <input type="file" class="form-control mb-3" id="file-upload" accept=".csv">
-          <button type="button" class="btn btn-primary w-100" id="process-csv">Procesar Archivo</button>
-          <br>
-          <br>
-          <button type="button" class="btn btn-success w-100" id="calculate-leveling">Calcular Nivelación</button>
-          <button type="button" class="btn btn-secondary w-100 mt-2" id="clear-btn">Limpiar</button>
-        </div>
-      </div>
-
-      <!-- Vista previa de datos -->
-      <div class="col-lg-4">
-        <div class="panel">
-          <h5>Vista Previa del Archivo</h5>
-          <div class="file-preview-container">
-            <table class="table table-dark table-striped file-preview" id="file-preview-table" style="display: none;">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Latitud</th>
-                  <th>Longitud</th>
-                  <th>Altura Elipsoidal</th>
-                  <th>Altura Geoidal</th>
-                </tr>
-              </thead>
-              <tbody id="file-preview-body"></tbody>
-            </table>
-            <p class="text-muted" id="empty-preview" style="display: block;">No se ha cargado ningún archivo aún.</p>
+      <br>
+      <div class="row g-4">
+        <!-- Panel de Carga de Archivo -->
+        <div class="col-lg-4">
+          <div class="panel">
+            <h5>Cargar Archivo CSV</h5>
+            <p class="text-muted">Sube un archivo en formato CSV con las columnas <strong>ID, Altura Elipsoidal y Altura Geoidal</strong>.</p>
+            <input type="file" class="form-control mb-3" id="file-upload" accept=".csv">
+            <button type="button" class="btn btn-primary w-100" id="process-csv">Procesar Archivo</button>
+            <br>
+            <br>
+            <button type="button" class="btn btn-success w-100" id="calculate-leveling">Calcular Nivelación</button>
+            <button type="button" class="btn btn-secondary w-100 mt-2" id="clear-btn">Limpiar</button>
           </div>
         </div>
-      </div>
 
-      <!-- Panel del Mapa -->
-      <div class="col-lg-4">
-        <div class="panel">
-          <h5>Mapa de Puntos Base</h5>
-          <div id="map"></div>
-          <p class="text-muted mt-3">
-            Interactúa con el mapa para ubicar puntos base. Los puntos base se utilizan para calcular alturas niveladas.
-          </p>
+        <!-- Vista previa de datos -->
+        <div class="col-lg-4">
+          <div class="panel">
+            <h5>Vista Previa del Archivo</h5>
+            <div class="file-preview-container">
+              <table class="table table-dark table-striped file-preview" id="file-preview-table" style="display: none;">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Latitud</th>
+                    <th>Longitud</th>
+                    <th>Altura Elipsoidal</th>
+                    <th>Altura Geoidal</th>
+                  </tr>
+                </thead>
+                <tbody id="file-preview-body"></tbody>
+              </table>
+              <p class="text-muted" id="empty-preview" style="display: block;">No se ha cargado ningún archivo aún.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel del Mapa -->
+        <div class="col-lg-4">
+          <div class="panel">
+            <h5>Mapa de Puntos Base</h5>
+            <div id="map"></div>
+            <p class="text-muted mt-3">
+              Interactúa con el mapa para ubicar puntos base. Los puntos base se utilizan para calcular alturas niveladas.
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -258,4 +266,3 @@
   </script>
 </body>
 </html>
-
