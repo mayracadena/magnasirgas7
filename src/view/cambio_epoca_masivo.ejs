@@ -1,231 +1,303 @@
-<%- include('./partials/cabecero.ejs', {"titulo": "Cambio de época"}); %>
-<%- include('./partials/menu.ejs'); %>
+<%- include('./partials/cabecero.ejs', {"titulo": "Cambio de época - Masivo" }); %>
+  <%- include('./partials/menu.ejs'); %>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cambio de Época - Masivo</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-  <style>
-    :root {
-      --main-bg-color: linear-gradient(135deg, #000000, #001f3f);
-      --primary-color: #ffffff;
-      --secondary-color: #001f3f;
-      --text-color: #ffffff;
-    }
 
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--main-bg-color);
-      color: var(--text-color);
-      overflow: hidden;
-    }
+    <style>
+      :root {
+        --main-bg-color: linear-gradient(135deg, #000000, #001f3f);
+        --primary-color: #ffffff;
+        --secondary-color: #001f3f;
+        --text-color: #ffffff;
+      }
 
-    #particles-js {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-    }
+      body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--main-bg-color);
+        color: var(--text-color);
+        overflow: hidden;
+      }
 
-    .main-content {
-      margin-left: 300px; /* Se mantiene la línea original */
-      padding: 20px;
-    }
+      #particles-js {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
 
-    .title {
-      text-align: center;
-      color: var(--primary-color);
-      margin-bottom: 20px;
-    }
+      .main-content {
+        margin-left: 300px;
+        /* Se mantiene la línea original */
+        padding: 20px;
+      }
 
-    .content-container {
-      display: flex;
-      gap: 20px;
-    }
+      .title {
+        text-align: center;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+      }
 
-    .panel {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 20px;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      flex: 1;
-    }
+      .content-container {
+        display: flex;
+        gap: 20px;
+      }
 
-    .form-control {
-      background: rgba(253, 251, 251, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: var(--text-color);
-    }
+      .panel {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        flex: 1;
+      }
 
-    .form-control:focus {
-      background: rgba(251, 248, 248, 0.15);
-      color: var(--text-color);
-    }
+      .form-control {
+        background: rgba(253, 251, 251, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--text-color);
+      }
 
-    .form-control::placeholder {
-      color: #ffffff;
-      opacity: 1;
-    }
+      .form-control:focus {
+        background: rgba(251, 248, 248, 0.15);
+        color: var(--text-color);
+      }
 
-    .form-control:focus::placeholder {
-      color: #ffffff;
-    }
+      .form-control::placeholder {
+        color: #ffffff;
+        opacity: 1;
+      }
 
-    .btn {
-      border: none;
-      transition: all 0.3s ease;
-    }
+      .form-control:focus::placeholder {
+        color: #ffffff;
+      }
 
-    .btn-primary:hover {
-      background-color: var(--secondary-color);
-    }
+      .btn {
+        border: none;
+        transition: all 0.3s ease;
+      }
 
-    .right-panel {
-      flex: 2;
-    }
+      .btn-primary:hover {
+        background-color: var(--secondary-color);
+      }
 
-    table.file-preview {
+      .right-panel {
+        flex: 2;
+      }
+
+      table.file-preview {
         width: 100%;
         table-layout: auto;
         border-collapse: collapse;
         font-size: 14px;
-    }
-
-    table.file-preview th,
-    table.file-preview td {
-      text-align: center;
-      padding: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      word-wrap: break-word;
-    }
-
-    table.file-preview th {
-      background-color: #f8f9fa;
-      color: #000000;
-    }
-
-    table.file-preview td {
-      color: #ffffff;
-    }
-
-    table.file-preview tbody tr:nth-of-type(odd) {
-      background-color: rgba(255, 255, 255, 0.05);
-    }
-
-    table.file-preview tbody tr:nth-of-type(even) {
-      background-color: rgba(0, 0, 0, 0.1);
-    }
-
-    /* =========== Override para centrar y evitar gran desplazamiento a la derecha =========== */
-    @media (min-width: 0px) {
-      .main-content {
-        margin-left: 0 !important;  /* anula la línea original */
-        margin: 0 auto !important; /* centra horizontalmente */
-        max-width: 1200px;         /* límite de ancho, ajusta a gusto */
       }
-    }
-  </style>
-</head>
-<body>
-  <div id="particles-js"></div>
-  <div class="main-content">
-    <h4 class="title">Cambio de Época - Masivo</h4>
-    <div class="content-container">
-      <!-- Panel Izquierdo -->
-      <div class="panel left-panel">
-        <h4>Configuración y Carga</h4>
-        <form id="cambioEpocaForm">
-          <div class="mb-3">
-            <label for="tipo-coordenada" class="form-label">Seleccione el tipo de coordenada:</label>
-            <select class="form-control" id="tipo-coordenada">
-              <option value="">-- Seleccione un tipo --</option>
-              <option value="elipsoidal">Elipsoidal (decimal)</option>
-              <option value="elipsoidales-grados">Elipsoidales en grados</option>
-              <option value="utm">UTM (Este, Norte, Zona)</option>
-              <option value="geocentrica">Geocéntrica (X, Y, Z)</option>
-              <option value="plana-cartesiana">Plana Cartesiana (X, Y)</option>
-              <option value="gauss-kruger">Gauss Krüger (Este, Norte, Zona)</option>
-              <option value="origen-nacional">Origen Nacional (Este, Norte)</option>
-            </select>
+
+      table.file-preview th,
+      table.file-preview td {
+        text-align: center;
+        padding: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        word-wrap: break-word;
+      }
+
+      table.file-preview th {
+        background-color: #f8f9fa;
+        color: #000000;
+      }
+
+      table.file-preview td {
+        color: #ffffff;
+      }
+
+      table.file-preview tbody tr:nth-of-type(odd) {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      table.file-preview tbody tr:nth-of-type(even) {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+
+      /* =========== Override para centrar y evitar gran desplazamiento a la derecha =========== */
+      @media (min-width: 0px) {
+        .main-content {
+          margin-left: 0 !important;
+          /* anula la línea original */
+          margin: 0 auto !important;
+          /* centra horizontalmente */
+          max-width: 1200px;
+          /* límite de ancho, ajusta a gusto */
+        }
+      }
+    </style>
+    </head>
+
+    <body>
+      <div id="particles-js"></div>
+      <div class="main-content">
+        <h4 class="title">Cambio de Época - Masivo</h4>
+        <div class="content-container">
+          <!-- Panel Izquierdo -->
+          <div class="panel left-panel">
+            <h4>Configuración y Carga</h4>
+            <form id="cambioEpocaForm">
+              <div class="mb-3">
+                <label for="tipo-coordenada" class="form-label">Seleccione el tipo de coordenada:</label>
+                <select class="form-control" id="tipo-coordenada">
+                  <option value="">-- Seleccione un tipo --</option>
+                  <option value="elipsoidal">Elipsoidal (decimal)</option>
+                  <option value="elipsoidales-grados">Elipsoidales en grados</option>
+                  <option value="utm">UTM (Este, Norte, Zona)</option>
+                  <option value="geocentrica">Geocéntrica (X, Y, Z)</option>
+                  <option value="plana-cartesiana">Plana Cartesiana (X, Y)</option>
+                  <option value="gauss-kruger">Gauss Krüger (Este, Norte, Zona)</option>
+                  <option value="origen-nacional">Origen Nacional (Este, Norte)</option>
+                </select>
+              </div>
+
+              <div class="mb-3" id="origen-gauss-tab" hidden>
+                <label>Origen Gauss Krüger: </label>
+                <select class="form-control" id="origen-gauss">
+                  <option value="Central">Central</option>
+                  <option value="Este">Este Central</option>
+                  <option value="Este-este">Este Este</option>
+                  <option value="Oeste">Oeste</option>
+                  <option value="Oeste-oeste">Oeste Oeste</option>
+                  <option value="Insular">Insular</option>
+                </select>
+
+              </div>
+
+              <div class="mb-3" id="origen-cartesiano-tab" hidden>
+
+
+                <div class="form-group ">
+                  <label for="departamento">Departamento: </label>
+                  <select id="departamento" class="input-group-text">
+                    <option value="defecto" disabled>Seleccione Municipio</option>
+                    <!-- se llena con informacion de la base de datos  -->
+                  </select>
+                </div>
+                <div class="form-group ">
+                  <label for="municipio">Municipio: </label>
+                  <select id="municipio" class="input-group-text" placeholder="Seleccione Municipio">
+                    <option value="defecto">Seleccione Municipio</option>
+                    <!-- se llena con informacion de la base ed datos  -->
+                  </select>
+                </div>
+
+
+                <div class="form-group ">
+                  <label for="origenes-cartesianos">Origenes cartesianos disponibles: </label>
+                  <select id="origenes-cartesianos" class="input-group-text" placeholder="Seleccione Municipio">
+                    <option value="defecto">Seleccione año, municipio y/o corregimiento</option>
+                    <!-- se llena con informacion de la base ed datos  -->
+                  </select>
+                </div>
+                <div class="form-group ">
+                  <br>
+                  <!-- Button trigger modal -->
+                  <button type="button" class="btn btn-primary " data-bs-toggle="modal"
+                    data-bs-target="#informacion_origen">
+                    Mas información
+                  </button>
+
+                  <!-- Modal -->
+                  <div class="modal fade" id="informacion_origen" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true" style="color: #001f3f;">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h1 class="modal-title fs-5" id="informacion_origen_Label"></h1>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="modal-body-content">
+
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+
+
+              <div class="mb-3">
+                <label for="fecha-inicio" class="form-label">Fecha de Rastreo (Inicio):</label>
+                <input type="date" class="form-control" id="fecha-inicio">
+              </div>
+              <div class="mb-3">
+                <label for="fecha-destino" class="form-label">Fecha de Referencia (Destino):</label>
+                <input type="date" class="form-control" id="fecha-destino">
+              </div>
+
+              <div class="mb-3">
+                <label for="cargar-archivo" class="form-label">Seleccione un archivo CSV:</label>
+                <input type="file" class="form-control" id="cargar-archivo" accept=".csv">
+              </div>
+
+              <div class="text-center mt-3">
+                <button type="button" id="calcular" class="btn btn-primary me-2"><i class="bi bi-calculator"></i>
+                  Calcular</button>
+                <button type="button" id="limpiar" class="btn btn-secondary"><i class="bi bi-x-circle"></i>
+                  Limpiar</button>
+              </div>
+            </form>
           </div>
 
-          <div class="mb-3">
-            <label for="fecha-inicio" class="form-label">Fecha de Rastreo (Inicio):</label>
-            <input type="date" class="form-control" id="fecha-inicio">
+          <!-- Panel Derecho: Tabla de datos -->
+          <div class="panel right-panel">
+            <h4>Datos Cargados</h4>
+            <div class="table-responsive" style="max-height: 400px; overflow:auto;">
+              <table class="file-preview" id="tabla-datos">
+                <thead>
+                  <!-- Cabeceras dinámicas -->
+                </thead>
+                <tbody>
+                  <!-- Datos cargados dinámicamente -->
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="fecha-destino" class="form-label">Fecha de Referencia (Destino):</label>
-            <input type="date" class="form-control" id="fecha-destino">
-          </div>
-
-          <div class="mb-3">
-            <label for="cargar-archivo" class="form-label">Seleccione un archivo CSV:</label>
-            <input type="file" class="form-control" id="cargar-archivo" accept=".csv">
-          </div>
-
-          <div class="text-center mt-3">
-            <button type="button" id="calcular" class="btn btn-primary me-2"><i class="bi bi-calculator"></i> Calcular</button>
-            <button type="button" id="limpiar" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Limpiar</button>
-          </div>
-        </form>
-      </div>
-
-      <!-- Panel Derecho: Tabla de datos -->
-      <div class="panel right-panel">
-        <h4>Datos Cargados</h4>
-        <div class="table-responsive" style="max-height: 400px; overflow:auto;">
-          <table class="file-preview" id="tabla-datos">
-            <thead>
-              <!-- Cabeceras dinámicas -->
-            </thead>
-            <tbody>
-              <!-- Datos cargados dinámicamente -->
-            </tbody>
-          </table>
         </div>
       </div>
-    </div>
-  </div>
-  
-  <script src="controller/cambio_epoca_masivo.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    particlesJS('particles-js', {
-      particles: {
-        number: { value: 150 },
-        color: { value: '#00d4ff' },
-        shape: { type: 'circle' },
-        opacity: { value: 0.5 },
-        size: { value: 3 },
-        line_linked: {
-          enable: true,
-          distance: 200,
-          color: '#00d4ff',
-          opacity: 0.4,
-          width: 1
-        },
-        move: {
-          enable: true,
-          speed: 2
-        }
-      },
-      interactivity: {
-        events: {
-          onhover: { enable: true, mode: 'grab' },
-          onclick: { enable: true, mode: 'push' }
-        },
-        modes: {
-          grab: { distance: 200, line_linked: { opacity: 1 } }
-        }
-      },
-      retina_detect: true
-    });
-  </script>
-</body>
-</html>
+
+      <script type="module" src="controller/cambio_epoca_masivo.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+
+      <script>
+        particlesJS('particles-js', {
+          particles: {
+            number: { value: 150 },
+            color: { value: '#00d4ff' },
+            shape: { type: 'circle' },
+            opacity: { value: 0.5 },
+            size: { value: 3 },
+            line_linked: {
+              enable: true,
+              distance: 200,
+              color: '#00d4ff',
+              opacity: 0.4,
+              width: 1
+            },
+            move: {
+              enable: true,
+              speed: 2
+            }
+          },
+          interactivity: {
+            events: {
+              onhover: { enable: true, mode: 'grab' },
+              onclick: { enable: true, mode: 'push' }
+            },
+            modes: {
+              grab: { distance: 200, line_linked: { opacity: 1 } }
+            }
+          },
+          retina_detect: true
+        });
+      </script>
+
+      <%- include('./partials/pie.ejs'); %>

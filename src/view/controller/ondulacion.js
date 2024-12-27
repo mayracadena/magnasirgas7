@@ -66,7 +66,7 @@ document.getElementById('calcular').addEventListener('click', async function (ev
         let on = await origen_nacional();
         var ccr = await planas_a_curvilineas(cp_on, on, 'MAGNA-SIRGAS');
         var cc = new coord_curvilineas(ccr.phi, ccr.lambda, 0);
-        
+
 
         lat = cc.phi;
         lon = cc.lambda;

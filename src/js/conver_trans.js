@@ -100,12 +100,25 @@ async function origen_gauss_kruger(longitud, sist_refe) {
 
 
 
+//cambiar mapa segun datum coordenadas elegido
+document.getElementById('datumBogotaLlegada').addEventListener('change', async function (event) {
+ 
+  if(document.getElementById('datumBogotaLlegada').checked){
+    map.mapaDatumBogota()
+  }
+
+});
 
 
+document.getElementById('magnaSIRGASLlegada').addEventListener('change', async function (event) {
+  if(document.getElementById('magnaSIRGASLlegada').checked){
+    
+    map.mapaDepartamentos()
+  }
 
+});
 
-
-
+//funcion donde se calculan todas las transformaciones y connversiones de coordenadas
 
 document.getElementById("calcular_trans_cover").addEventListener("click", async function () {
   const sistemaPartidaActivo = document.querySelector('input[name="sistemaPartida"]:checked');
@@ -120,6 +133,9 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
   const activeTabPartidaId = activeTabPartida ? activeTabPartida.id : null;
   const activeTabLlegadaId = activeTabLlegada ? activeTabLlegada.id : null;
 
+
+
+
   if (activeTabPartidaId) {
 
     console.log("Botón sistema partida:", sistemaPartidaActivo.id);
@@ -131,8 +147,12 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
     INICIO DE ENVIO DE COORDENADAS ELIPSOIDALES
     ----------------------------------------------
     */
+   
 
     var sist_refe = sistemaPartidaActivo.id == 'magnaSIRGASPartida' ? 'MAGNA-SIRGAS' : 'BOGOTÁ'
+
+    
+
 
     if (activeTabPartidaId == 'elipsoidal-tab-partida') {
       //captura de latitud
@@ -302,10 +322,10 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
       if (activeTabLlegadaId == 'elipsoidal-tab-destino') {
 
-        let coord_respuesta = await curvilienas_a_curvilienas(c_cc, sistemaPartidaActivo.id, sistemaLlegadaActivo.id);
+       
 
 
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda);
+        var c_cc_r = new coord_curvilineas(c_cc.phi, c_cc.lambda, c_cc.h);
 
         if (c_cc_r.phi < 0) {
           document.getElementById('latitud-hemisferio-destino').value = 'S'
@@ -1362,15 +1382,15 @@ document.getElementById('myTabPartida').addEventListener("click", async function
               var headModal = document.getElementById('informacion_origen_Label_partida')
               headModal.innerHTML = roc.detalle;
 
-              mensaje_detalle = `<label>Departamento: </label>${roc.departamento} <br>
-                     <label>Municipio: </label>${roc.municipio} <br>
+              mensaje_detalle = `Departamento: ${roc.departamento} <br>
+                     Municipio: ${roc.municipio} <br>
                      <h4>Elipsoidales</h4>
-                     <label>Latitud de origen: </label>${roc.latitud} grados<br>
-                     <label>Longitud de origen: </label>${roc.longitud} grados<br>
+                     Latitud de origen: ${roc.latitud} grados<br>
+                     Longitud de origen: ${roc.longitud} grados<br>
                      <h4>Planas</h4>
-                     <label>Falso norte: </label>${roc.norte} m<br>
-                     <label>Falso este: </label>${roc.este} m<br>
-                     <label>Plano de proyección: </label>${roc.plano_proyeccion} m<br>
+                     Falso norte: ${roc.norte} m<br>
+                     Falso este: ${roc.este} m<br>
+                     Plano de proyección: ${roc.plano_proyeccion} m<br>
                      <h4>Descripción</h4>
                      ${roc.descripcion}
 
@@ -1671,15 +1691,15 @@ departamento, el municipio y el origen cartesiano
               var headModal = document.getElementById('informacion_origen_Label')
               headModal.innerHTML = roc.detalle;
 
-              mensaje_detalle = `<label>Departamento: </label>${roc.departamento} <br>
-                     <label>Municipio: </label>${roc.municipio} <br>
+              mensaje_detalle = `Departamento: ${roc.departamento} <br>
+                     Municipio: ${roc.municipio} <br>
                      <h4>Elipsoidales</h4>
-                     <label>Latitud de origen: </label>${roc.latitud} grados<br>
-                     <label>Longitud de origen: </label>${roc.longitud} grados<br>
+                     Latitud de origen: ${roc.latitud} grados<br>
+                     Longitud de origen: ${roc.longitud} grados<br>
                      <h4>Planas</h4>
-                     <label>Falso norte: </label>${roc.norte} m<br>
-                     <label>Falso este: </label>${roc.este} m<br>
-                     <label>Plano de proyección: </label>${roc.plano_proyeccion} m<br>
+                     Falso norte: ${roc.norte} m<br>
+                     Falso este: ${roc.este} m<br>
+                     Plano de proyección: ${roc.plano_proyeccion} m<br>
                      <h4>Descripción</h4>
                      ${roc.descripcion}
 

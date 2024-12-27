@@ -1,15 +1,7 @@
-<%- include('./partials/cabecero.ejs', {"titulo": "ITRF"}); %>
-<%- include('./partials/menu.ejs'); %>
+<%- include('./partials/cabecero.ejs', {"titulo": "ITRF" }); %>
+  <%- include('./partials/menu.ejs'); %>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cálculo Ondulación Geoidal</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-  <style>
+    <style>
       :root {
         --main-bg-color: linear-gradient(135deg, #000000, #001f3f);
         --primary-color: #ffffff;
@@ -67,6 +59,7 @@
         background: rgba(251, 248, 248, 0.15);
         color: var(--text-color);
       }
+
       .form-control::placeholder {
         color: #ffffff;
         opacity: 1;
@@ -107,10 +100,10 @@
       }
 
       table.file-preview {
-          width: 100%;
-          table-layout: auto;
-          border-collapse: collapse;
-          font-size: 14px;
+        width: 100%;
+        table-layout: auto;
+        border-collapse: collapse;
+        font-size: 14px;
       }
 
       table.file-preview th,
@@ -147,221 +140,291 @@
           max-width: 1200px;
         }
       }
-  </style>
-</head>
-<body>
-    <div id="particles-js"></div>
-    <div class="main-content">
-      <h4>Cálculo Ondulación Archivo</h4>
-      
-      <!-- Contenedor principal -->
-      <div class="content-container">
-        
-        <!-- Sección izquierda: Configuración y Carga -->
-        <div class="panel left-panel">
-          <h4>Configuración y Carga</h4>
-          <form id="ondulacionForm">
-            <div class="mb-3">
-              <label for="tipo-coordenada" class="form-label">Seleccione el tipo de coordenada:</label>
-              <select class="form-control" id="tipo-coordenada">
-                <option value="">-- Seleccione un tipo --</option>
-                <option value="elipsoidal">Elipsoidal (decimal)</option>
-                <option value="elipsoidales-grados">Elipsoidales en grados</option>
-                <option value="utm">UTM (Este, Norte, Zona)</option>
-                <option value="geocentrica">Geocéntrica (X, Y, Z)</option>
-                <option value="plana-cartesiana">Plana Cartesiana (X, Y)</option>
-                <option value="gauss-kruger">Gauss Krüger (Este, Norte, Zona)</option>
-                <option value="origen-nacional">Origen Nacional (Este, Norte)</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="cargar-archivo" class="form-label">Seleccione un archivo CSV:</label>
-              <input type="file" class="form-control" id="cargar-archivo" accept=".csv">
-            </div>
-            <div class="text-center mt-3">
-              <button type="button" id="calcular" class="btn btn-primary me-2">
-                <i class="bi bi-calculator"></i> Calcular
-              </button>
-              <button type="button" id="limpiar" class="btn btn-secondary">
-                <i class="bi bi-x-circle"></i> Limpiar
-              </button>
-            </div>
-          </form>
-        </div>
+    </style>
+    </head>
 
-        <!-- Sección derecha: Tabla -->
-        <div class="panel right-panel">
-          <h4>Datos Cargados</h4>
-          <div class="table-responsive" style="max-height: 400px; overflow:auto;">
-            <table class="file-preview" id="tabla-datos">
-              <thead>
-                <!-- Cabeceras dinámicas se generan con JS -->
-              </thead>
-              <tbody>
-                <!-- Datos cargados dinámicamente con JS -->
-              </tbody>
-            </table>
+    <body>
+      <div id="particles-js"></div>
+      <div class="main-content">
+        <h4>Cálculo Ondulación Archivo</h4>
+
+        <!-- Contenedor principal -->
+        <div class="content-container">
+
+          <!-- Sección izquierda: Configuración y Carga -->
+          <div class="panel left-panel">
+            <h4>Configuración y Carga</h4>
+            <form id="ondulacionForm">
+              <div class="mb-3">
+                <label for="tipo-coordenada" class="form-label">Seleccione el tipo de coordenada:</label>
+                <select class="form-control" id="tipo-coordenada">
+                  <option value="">-- Seleccione un tipo --</option>
+                  <option value="elipsoidal">Elipsoidal (decimal)</option>
+                  <option value="elipsoidales-grados">Elipsoidales en grados</option>
+                  <option value="utm">UTM (Este, Norte, Zona)</option>
+                  <option value="geocentrica">Geocéntrica (X, Y, Z)</option>
+                  <option value="plana-cartesiana">Plana Cartesiana (X, Y)</option>
+                  <option value="gauss-kruger">Gauss Krüger (Este, Norte, Zona)</option>
+                  <option value="origen-nacional">Origen Nacional (Este, Norte)</option>
+                </select>
+              </div>
+
+              <div class="mb-3" id="origen-gauss-tab" hidden>
+                <label>Origen Gauss Krüger: </label>
+                <select class="form-control" id="origen-gauss">
+                  <option value="Central">Central</option>
+                  <option value="Este">Este Central</option>
+                  <option value="Este-este">Este Este</option>
+                  <option value="Oeste">Oeste</option>
+                  <option value="Oeste-oeste">Oeste Oeste</option>
+                  <option value="Insular">Insular</option>
+                </select>
+
+              </div>
+
+              <div class="mb-3" id="origen-cartesiano-tab" hidden>
+
+
+                <div class="form-group ">
+                  <label for="departamento">Departamento: </label>
+                  <select id="departamento" class="input-group-text">
+                    <option value="defecto" disabled>Seleccione Municipio</option>
+                    <!-- se llena con informacion de la base de datos  -->
+                  </select>
+                </div>
+                <div class="form-group ">
+                  <label for="municipio">Municipio: </label>
+                  <select id="municipio" class="input-group-text" placeholder="Seleccione Municipio">
+                    <option value="defecto">Seleccione Municipio</option>
+                    <!-- se llena con informacion de la base ed datos  -->
+                  </select>
+                </div>
+
+
+                <div class="form-group ">
+                  <label for="origenes-cartesianos">Origenes cartesianos disponibles: </label>
+                  <select id="origenes-cartesianos" class="input-group-text" placeholder="Seleccione Municipio">
+                    <option value="defecto">Seleccione año, municipio y/o corregimiento</option>
+                    <!-- se llena con informacion de la base ed datos  -->
+                  </select>
+                </div>
+                <div class="form-group ">
+                  <br>
+                  <!-- Button trigger modal -->
+                  <button type="button" class="btn btn-primary " data-bs-toggle="modal"
+                    data-bs-target="#informacion_origen">
+                    Mas información
+                  </button>
+
+                  <!-- Modal -->
+                  <div class="modal fade" id="informacion_origen" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true" style="color: #001f3f;">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h1 class="modal-title fs-5" id="informacion_origen_Label"></h1>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="modal-body-content">
+
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="mb-3">
+                <label for="cargar-archivo" class="form-label">Seleccione un archivo CSV:</label>
+                <input type="file" class="form-control" id="cargar-archivo" accept=".csv">
+              </div>
+              <div class="text-center mt-3">
+                <button type="button" id="calcular" class="btn btn-primary me-2">
+                  <i class="bi bi-calculator"></i> Calcular
+                </button>
+                <button type="button" id="limpiar" class="btn btn-secondary">
+                  <i class="bi bi-x-circle"></i> Limpiar
+                </button>
+              </div>
+            </form>
           </div>
-        </div>
-      </div><!-- /.content-container -->
-    </div><!-- /.main-content -->
-    
-    <script src="controller/ondulacion_masivo.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-      // Configuración de partículas
-      particlesJS('particles-js', {
-        particles: {
-          number: { value: 150 },
-          color: { value: '#00d4ff' },
-          shape: { type: 'circle' },
-          opacity: { value: 0.5 },
-          size: { value: 3 },
-          line_linked: {
-            enable: true,
-            distance: 200,
-            color: '#00d4ff',
-            opacity: 0.4,
-            width: 1
+
+          <!-- Sección derecha: Tabla -->
+          <div class="panel right-panel">
+            <h4>Datos Cargados</h4>
+            <div class="table-responsive" style="max-height: 400px; overflow:auto;">
+              <table class="file-preview" id="tabla-datos">
+                <thead>
+                  <!-- Cabeceras dinámicas se generan con JS -->
+                </thead>
+                <tbody>
+                  <!-- Datos cargados dinámicamente con JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div><!-- /.content-container -->
+      </div><!-- /.main-content -->
+
+      <script type="module" src="controller/ondulacion_masivo.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+      <script>
+        // Configuración de partículas
+        particlesJS('particles-js', {
+          particles: {
+            number: { value: 150 },
+            color: { value: '#00d4ff' },
+            shape: { type: 'circle' },
+            opacity: { value: 0.5 },
+            size: { value: 3 },
+            line_linked: {
+              enable: true,
+              distance: 200,
+              color: '#00d4ff',
+              opacity: 0.4,
+              width: 1
+            },
+            move: {
+              enable: true,
+              speed: 2
+            }
           },
-          move: {
-            enable: true,
-            speed: 2
-          }
-        },
-        interactivity: {
-          events: {
-            onhover: { enable: true, mode: 'grab' },
-            onclick: { enable: true, mode: 'push' }
+          interactivity: {
+            events: {
+              onhover: { enable: true, mode: 'grab' },
+              onclick: { enable: true, mode: 'push' }
+            },
+            modes: {
+              grab: { distance: 200, line_linked: { opacity: 1 } }
+            }
           },
-          modes: {
-            grab: { distance: 200, line_linked: { opacity: 1 } }
+          retina_detect: true
+        });
+      </script>
+
+
+      <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+
+      <script>
+        // Configuración de partículas
+        function generarCabeceras(tipo) {
+          const thead = document.querySelector('#tabla-datos thead');
+          thead.innerHTML = '';
+
+          let headers = [];
+          switch (tipo) {
+            case 'elipsoidal':
+              headers = ['ID', 'Latitud', 'Longitud'];
+              break;
+            case 'elipsoidales-grados':
+              headers = ['ID', 'Latitud', 'Longitud'];
+              break;
+            case 'utm':
+              headers = ['ID', 'Este', 'Norte', 'Zona'];
+              break;
+            case 'geocentrica':
+              headers = ['ID', 'X', 'Y', 'Z'];
+              break;
+            case 'plana-cartesiana':
+              headers = ['ID', 'X', 'Y'];
+              break;
+            case 'gauss-kruger':
+              headers = ['ID', 'Este', 'Norte', 'Zona'];
+              break;
+            case 'origen-nacional':
+              headers = ['ID', 'Este', 'Norte'];
+              break;
+            default:
+              headers = ['ID'];
+              break;
           }
-        },
-        retina_detect: true
-      });
-    </script>
-</body>
-</html>
 
-<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+          const tr = document.createElement('tr');
+          headers.forEach(h => {
+            const th = document.createElement('th');
+            th.textContent = h;
+            tr.appendChild(th);
+          });
+          thead.appendChild(tr);
+        }
 
-<script>
-  // Configuración de partículas
-  function generarCabeceras(tipo) {
-    const thead = document.querySelector('#tabla-datos thead');
-    thead.innerHTML = '';
-
-    let headers = [];
-    switch (tipo) {
-      case 'elipsoidal':
-        headers = ['ID', 'Latitud', 'Longitud'];
-        break;
-      case 'elipsoidales-grados':
-        headers = ['ID', 'Latitud', 'Longitud'];
-        break;
-      case 'utm':
-        headers = ['ID', 'Este', 'Norte', 'Zona'];
-        break;
-      case 'geocentrica':
-        headers = ['ID', 'X', 'Y', 'Z'];
-        break;
-      case 'plana-cartesiana':
-        headers = ['ID', 'X', 'Y'];
-        break;
-      case 'gauss-kruger':
-        headers = ['ID', 'Este', 'Norte', 'Zona'];
-        break;
-      case 'origen-nacional':
-        headers = ['ID', 'Este', 'Norte'];
-        break;
-      default:
-        headers = ['ID'];
-        break;
-    }
-
-    const tr = document.createElement('tr');
-    headers.forEach(h => {
-      const th = document.createElement('th');
-      th.textContent = h;
-      tr.appendChild(th);
-    });
-    thead.appendChild(tr);
-  }
-
-  document.getElementById('tipo-coordenada').addEventListener('change', function () {
-    const tipo = this.value;
-    if (tipo) {
-      generarCabeceras(tipo);
-    }
-  });
-
-  document.getElementById('cargar-archivo').addEventListener('change', function (event) {
-    const tipoCoordenada = document.getElementById('tipo-coordenada').value;
-
-    if (!tipoCoordenada) {
-      alert('Por favor seleccione un tipo de coordenada antes de cargar el archivo.');
-      this.value = '';
-      return;
-    }
-
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const lines = e.target.result.split('\n').map(line => line.trim()).filter(line => line !== '');
-        const tableBody = document.querySelector('#tabla-datos tbody');
-        tableBody.innerHTML = ''; // Limpiar tabla antes de cargar nuevos datos
-
-        const dataLines = lines.slice(1); // Ignorar la primera línea (encabezado del archivo)
-        const columnsCount = document.querySelectorAll('#tabla-datos thead th').length;
-
-        dataLines.forEach((line, index) => {
-          const columns = line.split(',').map(col => col.trim());
-          if (columns.length === columnsCount) {
-            const tr = document.createElement('tr');
-            columns.forEach(col => {
-              const td = document.createElement('td');
-              td.textContent = col;
-              tr.appendChild(td);
-            });
-            tableBody.appendChild(tr);
+        document.getElementById('tipo-coordenada').addEventListener('change', function () {
+          const tipo = this.value;
+          if (tipo) {
+            generarCabeceras(tipo);
           }
         });
-      };
-      reader.readAsText(file);
-    }
-  });
 
-  // Función para procesar el archivo cargado y calcular las ondulaciones
-  function procesarArchivo(datos) {
-      const resultados = [];
+        document.getElementById('cargar-archivo').addEventListener('change', function (event) {
+          const tipoCoordenada = document.getElementById('tipo-coordenada').value;
 
-      datos.forEach(row => {
-          const id = row[0];
-          const latitud = parseFloat(row[1]);
-          const longitud = parseFloat(row[2]);
+          if (!tipoCoordenada) {
+            alert('Por favor seleccione un tipo de coordenada antes de cargar el archivo.');
+            this.value = '';
+            return;
+          }
 
-          calcularOndulacionGeoidal(latitud, longitud)
+          const file = event.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              const lines = e.target.result.split('\n').map(line => line.trim()).filter(line => line !== '');
+              const tableBody = document.querySelector('#tabla-datos tbody');
+              tableBody.innerHTML = ''; // Limpiar tabla antes de cargar nuevos datos
+
+              const dataLines = lines.slice(1); // Ignorar la primera línea (encabezado del archivo)
+              const columnsCount = document.querySelectorAll('#tabla-datos thead th').length;
+
+              dataLines.forEach((line, index) => {
+                const columns = line.split(',').map(col => col.trim());
+                if (columns.length === columnsCount) {
+                  const tr = document.createElement('tr');
+                  columns.forEach(col => {
+                    const td = document.createElement('td');
+                    td.textContent = col;
+                    tr.appendChild(td);
+                  });
+                  tableBody.appendChild(tr);
+                }
+              });
+            };
+            reader.readAsText(file);
+          }
+        });
+
+        // Función para procesar el archivo cargado y calcular las ondulaciones
+        function procesarArchivo(datos) {
+          const resultados = [];
+
+          datos.forEach(row => {
+            const id = row[0];
+            const latitud = parseFloat(row[1]);
+            const longitud = parseFloat(row[2]);
+
+            calcularOndulacionGeoidal(latitud, longitud)
               .then(ondulacion => {
-                  resultados.push({ id, latitud, longitud, ondulacion: ondulacion.toFixed(3) });
+                resultados.push({ id, latitud, longitud, ondulacion: ondulacion.toFixed(3) });
 
-                  if (resultados.length === datos.length) {
-                      generarArchivoCSV(resultados);
-                  }
+                if (resultados.length === datos.length) {
+                  generarArchivoCSV(resultados);
+                }
               })
               .catch(err => console.error(`Error al calcular ondulación para ID ${id}:`, err));
-      });
-  }
+          });
+        }
 
-  document.getElementById('limpiar').addEventListener('click', function () {
-    document.querySelector('#tabla-datos thead').innerHTML = '';
-    document.querySelector('#tabla-datos tbody').innerHTML = '';
-    document.getElementById('cargar-archivo').value = '';
-    document.getElementById('tipo-coordenada').value = '';
-  });
-</script>
+        document.getElementById('limpiar').addEventListener('click', function () {
+          document.querySelector('#tabla-datos thead').innerHTML = '';
+          document.querySelector('#tabla-datos tbody').innerHTML = '';
+          document.getElementById('cargar-archivo').value = '';
+          document.getElementById('tipo-coordenada').value = '';
+        });
+      </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<%- include('./partials/pie.ejs'); %>
+
+      <%- include('./partials/pie.ejs'); %>

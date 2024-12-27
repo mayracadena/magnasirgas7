@@ -9,7 +9,6 @@
     "build": "electron-packager . --all",
     "pack": "build --dir",
     "dist": "build"
-
   },
   "author": "Mayra Yesenia Cadena Blanco",
   "license": "ISC",
@@ -46,6 +45,7 @@
     }
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "decimal.js": "^10.4.3",
