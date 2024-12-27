@@ -3,67 +3,63 @@
 
     <div class="panel">
       <div class="card-body">
-    <h4 class="main-title">Conversión y Transformación de Coordenadas</h4>
+        <h4 class="main-title">Conversión y Transformación de Coordenadas</h4>
         <!-- Fila para Sistema de Referencia de Partida y Llegada -->
         <div class="card shadow">
           <div class="container-fluid">
             <div class="row mt-3">
               <!-- Columna para Sistema de Referencia de Partida -->
-              <div class="col-md-6">
-                <div class="card">
-                  <div class="card-header">
-                    Sistema de Referencia de Partida
+              <div class="col-md-4">
+
+
+                Sistema de Referencia de Partida
+
+
+                <div class="form-group">
+                  <!-- Opciones de Sistema de Referencia de Partida -->
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sistemaPartida" id="magnaSIRGASPartida" checked>
+                    <label class="form-check-label" for="magnaSIRGASPartida">MAGNA-SIRGAS</label>
                   </div>
-                  <div class="card-body">
-                    <div class="form-group">
-                      <!-- Opciones de Sistema de Referencia de Partida -->
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sistemaPartida" id="magnaSIRGASPartida"
-                          checked>
-                        <label class="form-check-label" for="magnaSIRGASPartida">MAGNA-SIRGAS</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sistemaPartida" id="datumBogotaPartida">
-                        <label class="form-check-label" for="datumBogotaPartida">Datum Bogotá</label>
-                      </div>
-                    </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sistemaPartida" id="datumBogotaPartida">
+                    <label class="form-check-label" for="datumBogotaPartida">Datum Bogotá</label>
                   </div>
                 </div>
+
+
               </div>
 
               <!-- Columna para Sistema de Referencia de Llegada -->
-              <div class="col-md-6">
-                <div class="card">
-                  <div class="card-header">
-                    Sistema de Referencia de Llegada
+              <div class="col-md-4">
+
+
+                Sistema de Referencia de Llegada
+
+
+                <div class="form-group">
+                  <!-- Opciones de Sistema de Referencia de Llegada -->
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sistemaLlegada" id="magnaSIRGASLlegada" checked>
+                    <label class="form-check-label" for="magnaSIRGASLlegada">MAGNA-SIRGAS</label>
                   </div>
-                  <div class="card-body">
-                    <div class="form-group">
-                      <!-- Opciones de Sistema de Referencia de Llegada -->
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sistemaLlegada" id="magnaSIRGASLlegada"
-                          checked>
-                        <label class="form-check-label" for="magnaSIRGASLlegada">MAGNA-SIRGAS</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sistemaLlegada" id="datumBogotaLlegada">
-                        <label class="form-check-label" for="datumBogotaLlegada">Datum Bogotá</label>
-                      </div>
-                    </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sistemaLlegada" id="datumBogotaLlegada">
+                    <label class="form-check-label" for="datumBogotaLlegada">Datum Bogotá</label>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <p></p>
 
 
-          <p></p>
+
+
           <div class="container-fluid">
             <!-- Fila para Tipo de Coordenada de Partida y Destino -->
             <div class="row mt-3">
               <!-- Columna para Tipo de Coordenada de Partida -->
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <div class="card">
                   <div class="card-header">
                     Tipo de Coordenada de Partida
@@ -114,17 +110,18 @@
                         <div class="form-group mt-3">
                           <label for="latitud-partida">Latitud:</label>
                           <div class="row">
-                            <div class="col-md-3">
+                            <div class="input-group mb-3">
+                              <!-- <div class="col-md-3"> -->
                               <input type="number" class="form-control" placeholder="GG" id="latitud-grados-partida">
-                            </div>
-                            <div class="col-md-3">
+                              <!-- </div>
+                            <div class="col-md-3"> -->
                               <input type="number" class="form-control" placeholder="MM" id="latitud-minutos-partida">
-                            </div>
-                            <div class="col-md-3">
-                              <input type="number" class="form-control" placeholder="SS.DDDDD"
+                              <!-- </div>
+                            <div class="col-md-3"> -->
+                              <input type="number" class="form-control w-25" placeholder="SS.DDDDD"
                                 id="latitud-segundos-partida">
-                            </div>
-                            <div class="col-md-3">
+                              <!-- </div>
+                            <div class="col-md-3"> -->
                               <select class="form-control" id="latitud-hemisferio-partida">
                                 <option value="N">N</option>
                                 <option value="S">S</option>
@@ -138,17 +135,17 @@
                         <div class="form-group mt-3">
                           <label for="longitud-partida">Longitud:</label>
                           <div class="row">
-                            <div class="col-md-3">
+                            <div class="input-group mb-3">
                               <input type="number" class="form-control" placeholder="GG" id="longitud-grados-partida">
-                            </div>
-                            <div class="col-md-3">
+                              <!-- </div>
+                            <div class="col-md-3"> -->
                               <input type="number" class="form-control" placeholder="MM" id="longitud-minutos-partida">
-                            </div>
-                            <div class="col-md-3">
-                              <input type="number" class="form-control" placeholder="SS.DDDDD"
+                              <!-- </div>
+                            <div class="col-md-3"> -->
+                              <input type="number" class="form-control w-25" placeholder="SS.DDDDD"
                                 id="longitud-segundos-partida">
-                            </div>
-                            <div class="col-md-3">
+                              <!-- </div>
+                            <div class="col-md-3"> -->
                               <select class="form-control" id="longitud-hemisferio-partida">
                                 <option value="W">W</option>
                                 <option value="E">E</option>
@@ -243,25 +240,25 @@
                         <hr>
 
                         <div id="div-origen-cartesiano-partida">
-                          <div class="row">
-                            <div class="form-group col-md-6">
-                              <label for="departamento-planas-partida">Departamento: </label>
-                              <select id="departamento-planas-partida" class="input-group-text">
-                                <option value="defecto" disabled>Seleccione Municipio</option>
-                                <!-- se llena con informacion de la base de datos  -->
-                              </select>
-                            </div>
-                            <div class="form-group col-md-6">
-                              <label for="municipio-planas-partida">Municipio: </label>
-                              <select id="municipio-planas-partida" class="input-group-text"
-                                placeholder="Seleccione Municipio">
-                                <option value="defecto">Seleccione Municipio</option>
-                                <!-- se llena con informacion de la base ed datos  -->
-                              </select>
-                            </div>
+
+                          <div class="form-group">
+                            <label for="departamento-planas-partida">Departamento: </label>
+                            <select id="departamento-planas-partida" class="input-group-text">
+                              <option value="defecto" disabled>Seleccione Municipio</option>
+                              <!-- se llena con informacion de la base de datos  -->
+                            </select>
                           </div>
+                          <div class="form-group">
+                            <label for="municipio-planas-partida">Municipio: </label>
+                            <select id="municipio-planas-partida" class="input-group-text"
+                              placeholder="Seleccione Municipio">
+                              <option value="defecto">Seleccione Municipio</option>
+                              <!-- se llena con informacion de la base ed datos  -->
+                            </select>
+                          </div>
+
                           <div class="row">
-                            <div class="form-group col-md-8">
+                            <div class="form-group ">
                               <label for="detalle-planas-partida">Origenes cartesianos disponibles: </label>
                               <select id="detalle-planas-partida" class="input-group-text"
                                 placeholder="Seleccione Municipio">
@@ -269,7 +266,7 @@
                                 <!-- se llena con informacion de la base ed datos  -->
                               </select>
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group ">
                               <br>
                               <!-- Button trigger modal -->
                               <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -377,7 +374,7 @@
               </div>
 
               <!-- Columna para Tipo de Coordenada de Destino -->
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <div class="card">
                   <div class="card-header">
                     Tipo de Coordenada de Destino
@@ -428,17 +425,18 @@
                         <div class="form-group mt-3">
                           <label for="latitud-destino">Latitud:</label>
                           <div class="row">
-                            <div class="col-md-3">
+                            <div class="input-group mb-3">
+                              <!-- <div class="col-md-3"> -->
                               <input type="number" class="form-control" placeholder="GG" id="latitud-grados-destino">
-                            </div>
-                            <div class="col-md-3">
+                              <!-- </div>
+                            <div class="col-md-3"> -->
                               <input type="number" class="form-control" placeholder="MM" id="latitud-minutos-destino">
-                            </div>
-                            <div class="col-md-3">
-                              <input type="number" class="form-control" placeholder="SS.DDDDD"
+                              <!-- </div>
+                            <div class="col-md-3"> -->
+                              <input type="number" class="form-control w-25" placeholder="SS.DDDDD"
                                 id="latitud-segundos-destino">
-                            </div>
-                            <div class="col-md-3">
+                              <!-- </div>
+                            <div class="col-md-3"> -->
                               <select class="form-control" id="latitud-hemisferio-destino">
                                 <option value="N">N</option>
                                 <option value="S">S</option>
@@ -450,17 +448,17 @@
                         <div class="form-group mt-3">
                           <label for="longitud-destino">Longitud:</label>
                           <div class="row">
-                            <div class="col-md-3">
+                            <div class="input-group mb-3">
+                              <!-- <div class="col-md-3"> -->
                               <input type="number" class="form-control" placeholder="GG" id="longitud-grados-destino">
-                            </div>
-                            <div class="col-md-3">
+                              <!-- </div>
+                            <div class="col-md-3"> -->
                               <input type="number" class="form-control" placeholder="MM" id="longitud-minutos-destino">
-                            </div>
-                            <div class="col-md-3">
-                              <input type="number" class="form-control" placeholder="SS.DDDDD"
-                                id="longitud-segundos-destino">
-                            </div>
-                            <div class="col-md-3">
+                              <!-- </div>
+                            <div class="col-md-3"> -->
+                              <input type="number" class="form-control w-25" placeholder="SS.DDDDD" id="longitud-segundos-destino">
+                              <!-- </div>
+                            <div class="col-md-3"> -->
                               <select class="form-control" id="longitud-hemisferio-destino">
                                 <option value="W">W</option>
                                 <option value="E">E</option>
@@ -557,25 +555,25 @@
                         <hr>
 
                         <div id="div-origen-cartesiano-destino">
-                          <div class="row">
-                            <div class="form-group col-md-6">
-                              <label for="departamento-planas-destino">Departamento: </label>
-                              <select id="departamento-planas-destino" class="input-group-text">
-                                <option value="defecto" disabled>Seleccione Municipio</option>
-                                <!-- se llena con informacion de la base de datos  -->
-                              </select>
-                            </div>
-                            <div class="form-group col-md-6">
-                              <label for="municipio-planas-destino">Municipio: </label>
-                              <select id="municipio-planas-destino" class="input-group-text"
-                                placeholder="Seleccione Municipio">
-                                <option value="defecto">Seleccione Municipio</option>
-                                <!-- se llena con informacion de la base ed datos  -->
-                              </select>
-                            </div>
+
+                          <div class="form-group ">
+                            <label for="departamento-planas-destino">Departamento: </label>
+                            <select id="departamento-planas-destino" class="input-group-text">
+                              <option value="defecto" disabled>Seleccione Municipio</option>
+                              <!-- se llena con informacion de la base de datos  -->
+                            </select>
                           </div>
+                          <div class="form-group ">
+                            <label for="municipio-planas-destino">Municipio: </label>
+                            <select id="municipio-planas-destino" class="input-group-text"
+                              placeholder="Seleccione Municipio">
+                              <option value="defecto">Seleccione Municipio</option>
+                              <!-- se llena con informacion de la base ed datos  -->
+                            </select>
+                          </div>
+
                           <div class="row">
-                            <div class="form-group col-md-8">
+                            <div class="form-group">
                               <label for="detalle-planas-destino">Origenes cartesianos disponibles: </label>
                               <select id="detalle-planas-destino" class="input-group-text"
                                 placeholder="Seleccione Municipio">
@@ -583,7 +581,7 @@
                                 <!-- se llena con informacion de la base ed datos  -->
                               </select>
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group ">
                               <br>
                               <!-- Button trigger modal -->
                               <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -592,7 +590,8 @@
                               </button>
 
                               <!-- Modal -->
-                              <div class="modal fade" id="informacion_origen" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="color: #001f3f;">
+                              <div class="modal fade" id="informacion_origen" tabindex="-1"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true" style="color: #001f3f;">
                                 <div class="modal-dialog">
                                   <div class="modal-content">
                                     <div class="modal-header">
@@ -675,6 +674,12 @@
                   </div>
                 </div>
               </div>
+              <!-- fila del mapa -->
+              <div class="col-md-4">
+                <div id="map" type class="container-fluid"
+                  style="width:100%; height: 500px; position: relative;border: 2px solid rgba(255, 255, 255, 0.2);margin-bottom: 10px; border-radius: 15px; /* Esquinas redondeadas */  overflow: hidden; /* Asegura que el contenido dentro del mapa también respete las esquinas redondeadas */">
+                </div>
+              </div>
 
             </div>
 
@@ -689,9 +694,7 @@
             </div>
           </div>
           <br>
-          <div id="map" type class="container-fluid"
-            style="width:45%; height: 350px; position: relative;border: 2px solid rgba(255, 255, 255, 0.2);margin-bottom: 10px; border-radius: 15px; /* Esquinas redondeadas */  overflow: hidden; /* Asegura que el contenido dentro del mapa también respete las esquinas redondeadas */">
-          </div>
+
         </div>
 
       </div>
@@ -726,10 +729,10 @@
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/simple-kriging/0.3.0/simple-kriging.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
-      
-     
-      
-      
+
+
+
+
 
 
 
