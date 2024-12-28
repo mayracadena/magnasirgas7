@@ -1,11 +1,10 @@
-const elipsoide_referencia = require("../class/elipsoide_referencia.js");
-const coord_planas_cartesianas = require("../class/coord_planas_cartesianas.js");
 const coord_planas = require("../class/coord_planas.js");
 const coord_curvilineas = require("../class/coord_curvilineas.js");
 const coord_geocentricas = require("../class/coord_geocentricas.js");
 const conexion = require('../db/conexion.js');
-const { origen_nacional, gauss_kruger, origen_UTM, origen_UTM_planas_a_curvilienas } = require('../controller/origen.js');
-const origen = require('../class/origen.js');
+const { origen_nacional, gauss_kruger, origen_UTM, origen_UTM_planas_a_curvilienas, origen_gauss_kruger } = require('../controller/origen.js');
+const transformacion = require('../class/transformacion');
+const { transformacion3D } = require('../controller/transformacion_coordenadas.js');
 
 
 //importacion de la libreria proj4
@@ -47,63 +46,12 @@ function decimal_a_GMS(coordenada) {
   }
 }
 
-//devuelve el origen segun la longitud
-async function origen_gauss_kruger(longitud, sist_refe) {
-
-  var bogota, este_central, este_este, oeste, oeste_oeste, insular;
-
-  if (sist_refe == 'BOGOTÁ') {
-    bogota = -74.0809166666667;
-    este_central = -71.0809166666667;
-    este_este = -68.0809166666667;
-    oeste = -77.0809166666667;
-    oeste_oeste = -80.0809166666667;
-    insular = -83.0809166666667;
-  } else {
-    bogota = -74.0775079166667;
-    este_central = -71.0775079166667;
-    este_este = -68.0775079166667;
-    oeste = -77.0775079166667;
-    oeste_oeste = -80.0775079166667;
-    insular = -83.0775079166667;
-  }
-
-
-  /*
-  Para cada origen se tiene 3 grados
-  */
-
-  var origen = "";
-
-  if (longitud < insular + 1.5 && longitud >= insular - 1.5) {
-    origen = "Insular"
-  }
-  else if (longitud < oeste_oeste + 1.5 && longitud >= oeste_oeste - 1.5) {
-    origen = "Oeste-oeste"
-  } else if (longitud < oeste + 1.5 && longitud >= oeste - 1.5) {
-    origen = "Oeste"
-  } else if (longitud < bogota + 1.5 && longitud >= bogota - 1.5) {
-    origen = "Central"
-  }
-  else if (longitud < este_central + 1.5 && longitud >= este_central - 1.5) {
-    origen = "Este"
-  }
-  else if (longitud < este_este + 1.5 && longitud >= este_este - 1.5) {
-    origen = "Este-este"
-  } else {
-    return "El origen no se encuentra"
-  }
-
-  return origen;
-
-}
-
 
 
 //cambiar mapa segun datum coordenadas elegido
 document.getElementById('datumBogotaLlegada').addEventListener('change', async function (event) {
- 
-  if(document.getElementById('datumBogotaLlegada').checked){
+
+  if (document.getElementById('datumBogotaLlegada').checked) {
     map.mapaDatumBogota()
   }
 
@@ -111,8 +59,8 @@ document.getElementById('datumBogotaLlegada').addEventListener('change', async f
 
 
 document.getElementById('magnaSIRGASLlegada').addEventListener('change', async function (event) {
-  if(document.getElementById('magnaSIRGASLlegada').checked){
-    
+  if (document.getElementById('magnaSIRGASLlegada').checked) {
+
     map.mapaDepartamentos()
   }
 
@@ -147,11 +95,11 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
     INICIO DE ENVIO DE COORDENADAS ELIPSOIDALES
     ----------------------------------------------
     */
-   
 
-    var sist_refe = sistemaPartidaActivo.id == 'magnaSIRGASPartida' ? 'MAGNA-SIRGAS' : 'BOGOTÁ'
 
-    
+    var sist_refe = sistemaPartidaActivo.id == 'magnaSIRGASPartida' ? 'MAGNA-SIRGAS' : 'BOGOTÁ';
+    var sist_refe_l = sistemaLlegadaActivo.id == 'magnaSIRGASLlegada' ? 'MAGNA-SIRGAS' : 'BOGOTÁ';
+
 
 
     if (activeTabPartidaId == 'elipsoidal-tab-partida') {
@@ -189,6 +137,37 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
       var c_cc = new coord_curvilineas(lat_par, long_par, altura);
 
       map.agregarPuntoSecuencial(c_cc.phi, c_cc.lambda);
+
+      if (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') {
+        //captura de la region
+        var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
+        //pasarf a geocentricas para la transformacion
+        var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
+        //transformacion de datos
+        var cgr = await transformacion3D(cg, transf, false)
+        var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
+        //volver a convertir a elipsoidales
+        var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
+        var coord_curvili_transformadas = new coord_curvilineas(ccurtransf.phi, ccurtransf.lambda, ccurtransf.h);
+        //reasignacion de coordenadas capturadas
+        c_cc = coord_curvili_transformadas;
+        
+
+      }
+      if (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ') {
+        //captura de la region
+        var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
+        //pasarf a geocentricas para la transformacion
+        var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
+        //transformacion de datos
+        var cgr = await transformacion3D(cg, transf, true)
+        var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
+        //volver a convertir a elipsoidales
+        var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
+        var coord_curvili_transformadas = new coord_curvilineas(ccurtransf.phi, ccurtransf.lambda, ccurtransf.h);
+        //reasignacion de coordenadas capturadas
+        c_cc = coord_curvili_transformadas;
+      }
 
 
       //seccion de envio de datos de elipsoidales sexagesimal
@@ -319,11 +298,45 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
       map.agregarPuntoSecuencial(c_cc.phi, c_cc.lambda);
 
-      console.log("REGION DE TRANSFORMACION", await map.regionTransformacion(c_cc.phi, c_cc.lambda))
+      if (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') {
+        //captura de la region
+        var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
+        //pasarf a geocentricas para la transformacion
+        var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
+        //transformacion de datos
+        var cgr = await transformacion3D(cg, transf, false)
+        var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
+        //volver a convertir a elipsoidales
+        var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
+        var coord_curvili_transformadas = new coord_curvilineas(ccurtransf.phi, ccurtransf.lambda, ccurtransf.h);
+        //reasignacion de coordenadas capturadas
+        c_cc = coord_curvili_transformadas;
+        sist_refe = sist_refe_l;
+
+      }
+      if (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ') {
+        //captura de la region
+        var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
+        //pasarf a geocentricas para la transformacion
+        var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
+        //transformacion de datos
+        var cgr = await transformacion3D(cg, transf, true)
+        var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
+        //volver a convertir a elipsoidales
+        var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
+        var coord_curvili_transformadas = new coord_curvilineas(ccurtransf.phi, ccurtransf.lambda, ccurtransf.h);
+        //reasignacion de coordenadas capturadas
+        c_cc = coord_curvili_transformadas;
+        sist_refe = sist_refe_l;
+      }
+
+
+
+
+
 
       if (activeTabLlegadaId == 'elipsoidal-tab-destino') {
 
-       
 
 
         var c_cc_r = new coord_curvilineas(c_cc.phi, c_cc.lambda, c_cc.h);
@@ -735,13 +748,13 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
       if (origen_cartesiano == 'defecto') {
         alert('Debes escoger un origen cartesiano');
-      } 
-      
+      }
+
       else {
 
         var c_p = new coord_planas(norte_pc_partida, este_pc_partida, altura_partida_plana_cartesiana);
 
-        
+
         let c_cc_m = await planas_cartesianas_a_curvilineas(c_p, origen_cartesiano);
         console.log(c_p, origen_cartesiano, c_cc_m)
         var c_cc_r = new coord_curvilineas(c_cc_m.phi, c_cc_m.lambda, c_cc_m.h);

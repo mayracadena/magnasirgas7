@@ -1,35 +1,15 @@
 //el siguiente código es para transformar coordenadas de datum Bogotá a Magna Sirgas
 //la transformación de coordenadas se realizará con coordenadas geocentricas
 
-const conexion = require('../db/conexion');
+
 const coord_geocentricas = require("../class/coord_geocentricas");
-const coord_curvilineas = require("../class/coord_curvilineas");
-const transformacion = require('../class/transformacion');
 const {ArrayMatrix, doMatrixRotation, RotationMatrix} = require('../class/matrices')
+const transformacion = require('../class/transformacion')
+//nota: poner true o false en datum_bool significa:
+//true = de datum bogota a magna sirgas
+//false = de magna sirgas a datum bogota
 
-
-async function elipoide(id) {
-    var con = new conexion();
-    try {
-        await con.open();
-
-        var query_elipsoide = "select e.semieje_mayor, e.achatamiento from elipsoide e inner join sistema_referencia sr where sr.id = ?";
-        var result_elip = await con.getOne(query_elipsoide, [id]);
-        const elipsoide_consultado = new elipsoide_referencia(result_elip.semieje_mayor, result_elip.achatamiento);
-
-        return elipsoide_consultado;
-    } catch (error) {
-        console.error("Ocurrió un error:", error);
-    } finally {
-        await con.close();
-    }
-}
-
-
-
-
-
-function transformacion3D(coord_geo, transf, sense) {
+async function transformacion3D(coord_geo, transf, datum_bool) {
     
     let X0 = transf.x0;
     let Y0 = transf.y0;
@@ -51,7 +31,7 @@ function transformacion3D(coord_geo, transf, sense) {
 
     let matrixArrival = null;
 
-    if (sense) {
+    if (datum_bool) {
         let arrayMatrix = doMatrixRotation(rotacion);
         let a = arrayMatrix.multiplicacion(matrixDelta);
         // console.log('array matrix a', a)
@@ -75,13 +55,16 @@ function transformacion3D(coord_geo, transf, sense) {
 }
 
 
+module.exports = {transformacion3D};
 
+// como funciona este apartado ejemplo
 let region = new transformacion('R8',1738580.767, -6120500.388, 491473.3064,302.529, 317.979, -319.08,1.361566e-05, -2.17446e-06, -1.362418e-05, -2.19998e-06)
 
 let coord = new coord_geocentricas( 1860274.5599, -6084683.9153, 441945.1052);
-let resultado = transformacion3D(coord, region, true);
+let coord2 = new coord_geocentricas( 1968272.7346, -6057720.5920, 331574.8387 );
+let resultado = transformacion3D(coord2, region, true);
 console.log(resultado);
 
-//nota: poner true o false en sense significa:
+//nota: poner true o false en datum_bool significa:
 //true = de datum bogota a magna sirgas
 //false = de magna sirgas a datum bogota

@@ -52,9 +52,7 @@ class transformacion {
         return this._e;
     }
   
-    get Rotacion() {
-        return [this.rx, this.ry, this.rz];
-    }
+    
 }
 
 module.exports = transformacion;

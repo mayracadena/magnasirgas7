@@ -1,4 +1,5 @@
 
+const transformacion = require('../class/transformacion');
 
 const colores_departamentos = {
   "Amazonas": { color: "rgba(23, 165, 137, 0.5)", border: "rgba(23, 165, 137, 1)" },
@@ -130,15 +131,16 @@ if (!map) {
 let puntoCounter = 0;
 let allPoints = []; // arreglo para almacenar todas las coordenadas
 
-function agregarPuntoSecuencial(lat, lng) {
+function agregarPuntoSecuencial(lat, lng, nombre_punto) {
   puntoCounter += 1; // Incrementar el contador
   allPoints.push([lat, lng]); // Guardar el punto
-
+  mensaje = nombre_punto != null ? nombre_punto : puntoCounter
+ 
   // Crear marcador en la posición especificada
   const marker = L.marker([lat, lng]).addTo(map);
 
   // Asignar popup con el nombre "Punto {contador}"
-  marker.bindPopup(`Punto ${puntoCounter} lat: ${lat.toFixed(3)} long: ${lng.toFixed(3)}`,
+  marker.bindPopup(`Punto ${mensaje}`,
     {
       autoClose: false,
       closeOnClick: false
@@ -220,8 +222,21 @@ async function regionTransformacion(lat, lon) {
 
     for (const feature of geojson.features) {
       if (turf.booleanPointInPolygon(punto, feature)) {
-        console.log('El punto cae en la región:', feature.properties.ZONA_TRANS);
-        return feature.properties.ZONA_TRANS; 
+        var zona = feature.properties.ZONA_TRANS;
+        var dx =  feature.properties.DeltaX;
+        var dy =  feature.properties.DeltaY;
+        var dz =  feature.properties.DeltaZ;
+        var rx =  feature.properties.RX;
+        var ry =  feature.properties.RY;
+        var rz =  feature.properties.RZ;
+        var e =  feature.properties.FactorE;
+        var x0 = feature.properties.X0;
+        var y0 = feature.properties.Y0;
+        var z0 = feature.properties.Z0;
+
+        var transf = new transformacion(zona,x0,y0,z0,dx,dy,dz,rx,ry,rz,e);
+        console.log('informacion de transformacion ', transf)
+        return transf; 
       }
     }
 
