@@ -319,6 +319,7 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
       map.agregarPuntoSecuencial(c_cc.phi, c_cc.lambda);
 
+      console.log("REGION DE TRANSFORMACION", await map.regionTransformacion(c_cc.phi, c_cc.lambda))
 
       if (activeTabLlegadaId == 'elipsoidal-tab-destino') {
 

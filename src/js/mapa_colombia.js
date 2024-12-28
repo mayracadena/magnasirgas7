@@ -210,9 +210,33 @@ function mapaDatumBogota() {
   
 }
 
+async function regionTransformacion(lat, lon) {
+  try {
+    
+    const response = await fetch('../data/Magna/Regiones.geojson');
+    const geojson = await response.json(); 
+
+    const punto = turf.point([lon, lat]);
+
+    for (const feature of geojson.features) {
+      if (turf.booleanPointInPolygon(punto, feature)) {
+        console.log('El punto cae en la región:', feature.properties.ZONA_TRANS);
+        return feature.properties.ZONA_TRANS; 
+      }
+    }
+
+   
+    console.warn('El punto no se encuentra dentro de ninguna región');
+    return null;
+  } catch (error) {
+    console.error('Error al cargar o procesar regiones.geojson:', error);
+    return null;
+  }
+}
 
 
 
 
 
-module.exports = { agregarPuntoSecuencial, mapaDatumBogota, mapaDepartamentos }
+
+module.exports = { agregarPuntoSecuencial, mapaDatumBogota, mapaDepartamentos, regionTransformacion }
