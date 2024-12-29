@@ -8,16 +8,18 @@ const { transformacion3D } = require('../controller/transformacion_coordenadas.j
 const { planas_cartesianas_a_curvilineas, geocentricas_a_curvilineas, curvilineas_a_geocentricas, planas_a_curvilineas, curvilineas_a_planas, curvilineas_a_planas_cartesianas } = require('../controller/conversion_coordenadas.js');
 
 const map = require('../js/mapa_colombia.js');
+
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    // document.getElementById('calcular').addEventListener('click', calcularCambioEpocaMasivo);
-    // document.getElementById('limpiar').addEventListener('click', limpiarTabla);
+    document.getElementById('calcular').addEventListener('click', calcular_trans_cover);
+    
     document.getElementById('tipo-coordenada').addEventListener('change', generarCabeceras);
     document.getElementById('archivo-coordenadas').addEventListener('change', cargarArchivo);
 
     function generarCabeceras() {
         const tipo = document.getElementById('tipo-coordenada').value;
-      
+
         const thead = document.querySelector('#tabla-datos thead');
         thead.innerHTML = '';
 
@@ -25,29 +27,29 @@ document.addEventListener('DOMContentLoaded', () => {
         switch (tipo) {
             case 'elipsoidal':
 
-                headers = ['ID', 'Latitud', 'Longitud'];
+                headers = ['ID', 'Latitud', 'Longitud', 'Altura'];
                 break;
             case 'utm':
-                headers = ['ID', 'Este', 'Norte', 'Zona'];
+                headers = ['ID', 'Este', 'Norte', 'Altura', 'Zona'];
                 break;
             case 'geocentrica':
                 headers = ['ID', 'X', 'Y', 'Z'];
                 break;
             case 'plana-cartesiana':
-                headers = ['ID', 'X', 'Y'];
+                headers = ['ID', 'X', 'Y', 'Altura'];
                 break;
             case 'gauss-kruger':
-                headers = ['ID', 'Este', 'Norte'];
+                headers = ['ID', 'Este', 'Norte', 'Altura'];
                 break;
             case 'origen-nacional':
-                headers = ['ID', 'Este', 'Norte'];
+                headers = ['ID', 'Este', 'Norte', 'Altura'];
                 break;
             default:
                 headers = ['ID'];
                 break;
         }
 
-        
+
         const tr = document.createElement('tr');
         headers.forEach(h => {
             const th = document.createElement('th');
@@ -85,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 dataLines.forEach((line, index) => {
                     const columns = line.split(',').map(col => col.trim());
-                    console.log(`Procesando línea ${index + 2}:`, columns);
+                    
 
                     if (columns.length === columnsCount) {
                         const tr = document.createElement('tr');
@@ -108,374 +110,299 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function calcularCambioEpocaMasivo() {
-        console.log("Iniciando cálculo masivo de cambio de época...");
-        const rows = document.querySelectorAll('#tabla-datos tbody tr');
-        console.log("Filas a procesar:", rows.length);
+    async function calcular_trans_cover() {
 
-        if (rows.length === 0) {
-            alert('No hay datos cargados para procesar.');
-            return;
-        }
 
-        const tipoCoordenada = document.getElementById('tipo-coordenada').value;
-        console.log("Tipo de coordenada para el cálculo:", tipoCoordenada);
+        var coord_partida = document.getElementById('tipo-coordenada').value;
+        var coord_destino = document.getElementById('tipo-coordenada-destino').value;
 
-        if (!tipoCoordenada) {
-            alert("Por favor seleccione un tipo de coordenada.");
-            return;
-        }
 
-        const fechaInicio = new Date(document.getElementById('fecha-inicio').value);
-        const fechaDestino = new Date(document.getElementById('fecha-destino').value);
-        console.log("Fecha inicio:", fechaInicio, "Fecha destino:", fechaDestino);
+        if (coord_partida == 'default' || coord_destino == 'default') {
+            alert('Debes escoger el tipo de coordenada origen e inicio')
+        } else {
 
-        if (isNaN(fechaInicio) || isNaN(fechaDestino)) {
-            alert("Verifique que las fechas sean válidas.");
-            return;
-        }
+            console.log("Iniciando cálculo masivo de transformacion de coordenadas");
+            const rows = document.querySelectorAll('#tabla-datos tbody tr');
+            console.log("Filas a procesar:", rows.length);
 
-        const resultados = [];
-        let procesados = 0;
-
-        for (let i = 0; i < rows.length; i++) {
-            const row = rows[i];
-            const cells = row.querySelectorAll('td');
-            const id = cells[0].textContent.trim();
-            console.log(`Procesando fila #${i + 1}, ID: ${id}`);
-
-            const coords = await convertirCoordenadas(tipoCoordenada, cells);
-            const { lat, lon } = coords;
-            console.log(`Coordenadas convertidas para ID ${id}: lat=${lat}, lon=${lon}`);
-
-            if (isNaN(lat) || isNaN(lon)) {
-                console.error(`Coordenadas inválidas en la fila ${i + 1}, ID:${id}`);
-                procesados++;
-                if (procesados === rows.length) {
-                    console.log("Todos los puntos procesados. Generando archivo CSV...");
-                    generarArchivoCSV(resultados, fechaDestino);
-                }
-                continue;
+            if (rows.length === 0) {
+                alert('No hay datos cargados para procesar.');
+                return;
             }
 
-            try {
-                console.log(`Llamando a realizarCambioDeEpocaPorModelos para ID ${id}`);
-                const resultadoFinal = await realizarCambioDeEpocaPorModelos(fechaInicio, fechaDestino, lat, lon);
-                console.log(`Resultado para ID ${id}:`, resultadoFinal);
+            //captura de datum
+            var srp = document.querySelector('input[name="sistemaRefOrigen"]:checked').id == 'refOrigenMagna' ? 'MAGNA-SIRGAS' : 'BOGOTÁ';
+            var srd = document.querySelector('input[name="sistemaRefDestino"]:checked').id == 'refDestinoMagna' ? 'MAGNA-SIRGAS' : 'BOGOTÁ';
 
-                if (resultadoFinal) {
-                    resultados.push({
-                        id,
-                        lat,
-                        lon,
-                        finalX: resultadoFinal.coordX.toFixed(4),
-                        finalY: resultadoFinal.coordY.toFixed(4),
-                        finalZ: resultadoFinal.coordZ.toFixed(4),
-                    });
-                } else {
-                    console.warn(`No se pudo calcular el cambio de época para ID ${id}`);
+            const resultados = [];
+            let procesados = 0;
+
+            console.log('COORDENDAS DESTINO 1', coord_destino)
+                    console.log('COORDENDAS partida 1', coord_partida)
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.querySelectorAll('td');
+                const id = cells[0].textContent.trim();
+                
+                //sistema de referencia partida, sistema referencia destino, tipo de coordenada y celdas del csv
+                var coords = await convertirCoordenadasCurvilineas(srp, coord_partida, cells);
+                var cc = new coord_curvilineas(coords.phi, coords.lambda, coords.h);
+
+                await map.agregarPuntoSecuencial(cc.phi, cc.lambda, id);
+
+
+                if (isNaN(cc.phi) || isNaN(cc.lambda)) {
+                    console.error(`Coordenadas inválidas en la fila ${i + 1}, ID:${id}`);
+                    procesados++;
+                    if (procesados === rows.length) {
+                        console.log("Todos los puntos procesados. Generando archivo CSV...");
+                        generarArchivoCSV(resultados);
+                    }
+                    continue;
                 }
-            } catch (error) {
-                console.error(`Error en ID ${id}:`, error);
-            } finally {
-                procesados++;
-                console.log(`Procesados: ${procesados}/${rows.length}`);
-                if (procesados === rows.length) {
-                    console.log("Todos los puntos procesados. Generando archivo CSV...");
-                    generarArchivoCSV(resultados, fechaDestino);
+
+                try {
+                   
+                    if ((srp == 'MAGNA-SIRGAS' && srd == 'BOGOTÁ') || (srd == 'MAGNA-SIRGAS' && srp == 'BOGOTÁ')) {
+
+                        var boolDatum = (srp == 'MAGNA-SIRGAS' && srd == 'BOGOTÁ') ? false : true;
+                        var transf = await map.regionTransformacion(cc.phi, cc.lambda);
+                        //pasar a geocentricas para la transformacion
+                        var cg = await curvilineas_a_geocentricas(cc, srp);
+                        //transformacion de datos
+                        var cgr = await transformacion3D(cg, transf, boolDatum)
+                        var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
+                        //volver a convertir a elipsoidales
+                        var cctransf = await geocentricas_a_curvilineas(cgeotransf, srd);
+                        var coord_curvili_transformadas = new coord_curvilineas(cctransf.phi, cctransf.lambda, cctransf.h);
+                        //reasignacion de coordenadas capturadas
+                        cc = coord_curvili_transformadas;
+                    }
+
+                    console.log('COORDENDAS DESTINO ', coord_destino)
+                    console.log('COORDENDAS partida ', coord_partida)
+                    if (coord_destino == 'elipsoidal') {
+                        resultados.push({
+                            id: cells[0].textContent.trim(),
+                            latitud: cc.phi,
+                            longitud: cc.lambda,
+                            altura: cc.h
+                        });
+                    } else if (coord_destino == 'utm') {
+                        let utmc = await origen_UTM(cc);
+                        let coord_respuesta = await curvilineas_a_planas(cc, utmc, srd);
+                        var c_utm = new coord_planas(coord_respuesta.norte, coord_respuesta.este, coord_respuesta.h);
+
+                        resultados.push({
+                            id: cells[0].textContent.trim(),
+                            este: c_utm.este,
+                            norte: c_utm.norte,
+                            altura: c_utm.h,
+                            zona: utmc.nombre
+                        });
+                    } else if (coord_destino == 'geocentrica') {
+                        let coord_respuesta = await curvilineas_a_geocentricas(cc, srd);
+                        var c_geo = new coord_geocentricas(coord_respuesta.X, coord_respuesta.Y, coord_respuesta.Z);
+
+                        resultados.push({
+                            id: cells[0].textContent.trim(),
+                            x: c_geo.X,
+                            y: c_geo.Y,
+                            z: c_geo.Z
+                        });
+                    } else if (coord_destino == 'plana-cartesiana') {
+
+
+                        var origen_cartesiano = document.getElementById('origenes-cartesianos-destino').value;
+
+                        if (origen_cartesiano == 'defecto') {
+                            alert('Debes escoger un origen cartesiano');
+                        } else {
+                            let coord_respuesta = await curvilineas_a_planas_cartesianas(cc, srd, origen_cartesiano);
+                            var c_p = new coord_planas(coord_respuesta.norte, coord_respuesta.este, coord_respuesta.h);
+
+                            resultados.push({
+                                id: cells[0].textContent.trim(),
+                                este: c_p.este,
+                                norte: c_p.norte,
+                                altura: c_p.h
+                            });
+
+                        }
+
+                    } else if (coord_destino == 'gauss-kruger') {
+                        var origen_gauss = await origen_gauss_kruger(cc.lambda);
+
+                        var o = await gauss_kruger(origen_gauss, srd);
+
+                        let coord_respuesta = await curvilineas_a_planas(cc, o, srd);
+                        var c_pgk = new coord_planas(coord_respuesta.norte, coord_respuesta.este, coord_respuesta.h);
+
+                        resultados.push({
+                            id: cells[0].textContent.trim(),
+                            este: c_pgk.este,
+                            norte: c_pgk.norte,
+                            altura: c_pgk.h,
+                            origen: origen_gauss
+                        });
+
+                    } else if (coord_destino == 'origen-nacional') {
+                        let on = await origen_nacional();
+
+                        let coord_respuesta = await curvilineas_a_planas(cc, on, srd);
+                        var c_on = new coord_planas(coord_respuesta.norte, coord_respuesta.este, coord_respuesta.h);
+                        resultados.push({
+                            id: cells[0].textContent.trim(),
+                            este: c_on.este,
+                            norte: c_on.norte,
+                            altura: c_on.h
+                        });
+
+                    } else {
+                        console.warn(`No se pudo calcular el cambio de época para ID ${id}`);
+                    }
+                } catch (error) {
+                    console.error(`Error en ID ${id}:`, error);
+                } finally {
+                    procesados++;
+                    console.log(`Procesados: ${procesados}/${rows.length}`);
+                    if (procesados === rows.length) {
+                        console.log("Todos los puntos procesados. Generando archivo CSV...");
+                        generarArchivoCSV(resultados);
+                    }
                 }
             }
         }
     }
 
-    function limpiarTabla() {
-        console.log("Limpiando tabla y reseteando formulario...");
-        document.querySelector('#tabla-datos thead').innerHTML = '';
-        document.querySelector('#tabla-datos tbody').innerHTML = '';
-        document.getElementById('cargar-archivo').value = '';
-        document.getElementById('tipo-coordenada').value = '';
-        document.getElementById('fecha-inicio').value = '';
-        document.getElementById('fecha-destino').value = '';
-    }
 
-    function generarArchivoCSV(resultados, fechaDestino) {
-        console.log("Generando archivo CSV con resultados:", resultados);
-        const encabezado = 'ID,Latitud,Longitud,FinalX,FinalY,FinalZ,FechaDestino';
-        const lineas = resultados.map(r => `${r.id},${r.lat},${r.lon},${r.finalX},${r.finalY},${r.finalZ},${fechaDestino.toLocaleDateString()}`);
+
+    function generarArchivoCSV(resultados) {
+        var coord_partida = document.getElementById('tipo-coordenada').value;
+        var coord_destino = document.getElementById('tipo-coordenada-destino').value;
+        console.log("Generando archivo CSV con resultados:", coord_destino);
+
+
+        var encabezado, lineas;
+        if (coord_destino == 'elipsoidal') {
+            encabezado = 'ID,Latitud,Longitud,Altura';
+            lineas = resultados.map(r => `${r.id},${r.latitud},${r.longitud},${r.altura}`);
+
+        } else if (coord_destino == 'utm') {
+            encabezado = 'ID,Este,Norte,Altura,Zona';
+            lineas = resultados.map(r => `${r.id},${r.este},${r.norte},${r.altura},${r.zona}`);
+        } else if (coord_destino == 'geocentrica') {
+            encabezado = 'ID,X,Y,Z';
+            lineas = resultados.map(r => `${r.id},${r.x},${r.y},${r.z}`);
+        } else if (coord_destino == 'plana-cartesiana') {
+            encabezado = 'ID,Este,Norte,Altura';
+            lineas = resultados.map(r => `${r.id},${r.este},${r.norte},${r.altura}`);
+        } else if (coord_destino == 'gauss-kruger') {
+            encabezado = 'ID,Este,Norte,Altura,Origen';
+            lineas = resultados.map(r => `${r.id},${r.este},${r.norte},${r.altura},${r.origen}`);
+        } else if (coord_destino == 'origen-nacional') {
+            encabezado = 'ID,Este,Norte,Altura';
+            lineas = resultados.map(r => `${r.id},${r.este},${r.norte},${r.altura}`);
+        }
+
         const contenidoCSV = encabezado + '\n' + lineas.join('\n');
 
         const blob = new Blob([contenidoCSV], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'resultados_cambio_epoca.csv';
+        link.download = `conversion_de_${coord_partida}_a_${coord_destino}.csv`;
         link.click();
         console.log("CSV descargado con éxito.");
     }
 
-    // ======================================
-    // LÓGICA DE CAMBIO DE ÉPOCA (ADAPTADA) CON LOGS
-    // ======================================
 
-    const a = 6378137.0;
-    const f = 1 / 298.257223563;
 
-    const modelosVelocidad = [
-        { nombre: "VEMOS 2022", inicio: new Date("2017-02-01"), fin: null, archivo: "grids/Velogrid2022.txt" },
-        { nombre: "VEMOS 2017", inicio: new Date("2014-01-01"), fin: new Date("2017-01-28"), archivo: "grids/Velogrid2017.txt" },
-        { nombre: "VEMOS 2015", inicio: new Date("2010-03-14"), fin: new Date("2015-04-11"), archivo: "grids/Velogrid2015.txt" },
-        { nombre: "VEMOS 2009", inicio: new Date("2000-01-02"), fin: new Date("2009-06-30"), archivo: "grids/Velogrid2010.txt" },
-        { nombre: "VEMOS 2003", inicio: null, fin: new Date("1999-12-31"), archivo: "grids/Velogrid2003.txt" }
-    ];
 
-    function elipsoidalToCartesian(lat, lon, h = 0) {
-        const e2 = 2 * f - f ** 2;
-        const phi = (Math.PI / 180) * lat;
-        const lambda = (Math.PI / 180) * lon;
-        const N = a / Math.sqrt(1 - e2 * Math.sin(phi) ** 2);
-        const X = (N + h) * Math.cos(phi) * Math.cos(lambda);
-        const Y = (N + h) * Math.cos(phi) * Math.sin(lambda);
-        const Z = ((1 - e2) * N + h) * Math.sin(phi);
-        return { X, Y, Z };
-    }
+    //funcion para convertir todo tipo de coordenadas a curvilineas
+    async function convertirCoordenadasCurvilineas(srp, tipo, cells) {
 
-    function idwInterpolate(matrix, index) {
-        let numerator = 0;
-        let denominator = 0;
-        for (const row of matrix) {
-            const distance = row[2];
-            if (distance === 0) return row[index];
-            const weight = 1 / distance;
-            numerator += row[index] * weight;
-            denominator += weight;
-        }
-        return numerator / denominator;
-    }
 
-    async function calculateVelocitiesNSWE(lat, lon, archivo) {
-        console.log(`calculateVelocitiesNSWE() - Cargando archivo: ${archivo}, Lat: ${lat}, Lon: ${lon}`);
-        const response = await fetch(archivo);
-        if (!response.ok) {
-            console.error("No se pudo cargar el archivo de grilla:", archivo);
-            throw new Error("No se pudo cargar el archivo de grilla.");
-        }
-        const textData = await response.text();
-        const lines = textData.trim().split('\n');
-        console.log(`Archivo ${archivo} cargado con ${lines.length} líneas.`);
-
-        const position = elipsoidalToCartesian(lat, lon, 0);
-        const matrix = [];
-        lines.forEach((line, idx) => {
-            const [fileLat, fileLon, velocityNS, velocityWE] = line.split(';').map(parseFloat);
-            if (isNaN(fileLat) || isNaN(fileLon) || isNaN(velocityNS) || isNaN(velocityWE)) {
-                console.warn(`Línea ${idx + 1} del archivo ${archivo}: datos inválidos`, line);
-                return;
-            }
-            const gridCoords = elipsoidalToCartesian(fileLat, fileLon, 0);
-            const distance = Math.sqrt((gridCoords.X - position.X) ** 2 + (gridCoords.Y - position.Y) ** 2);
-            matrix.push([velocityNS, velocityWE, distance]);
-        });
-
-        console.log("Matriz creada para IDW:", matrix.length, "puntos.");
-        const velocityNS = idwInterpolate(matrix, 0);
-        const velocityWE = idwInterpolate(matrix, 1);
-        console.log(`Velocidades IDW obtenidas: NS=${velocityNS.toFixed(4)}, WE=${velocityWE.toFixed(4)}`);
-        return { velocityNS, velocityWE };
-    }
-
-    function convertVelocitiesToXYZ(velNS, velWE, lat, lon) {
-        console.log(`convertVelocitiesToXYZ() - velNS:${velNS}, velWE:${velWE}, lat:${lat}, lon:${lon}`);
-        const phi = (Math.PI / 180) * lat;
-        const lambda = (Math.PI / 180) * lon;
-        const velX = -velNS * Math.sin(phi) * Math.cos(lambda) - velWE * Math.sin(lambda);
-        const velY = -velNS * Math.sin(phi) * Math.sin(lambda) + velWE * Math.cos(lambda);
-        const velZ = velNS * Math.cos(phi);
-        console.log(`Velocidades en XYZ: X:${velX.toFixed(6)}, Y:${velY.toFixed(6)}, Z:${velZ.toFixed(6)}`);
-        return { velX, velY, velZ };
-    }
-
-    function obtenerModelosAplicables(fechaInicio, fechaDestino) {
-        console.log("obtenerModelosAplicables() - Fecha inicio:", fechaInicio, "Fecha destino:", fechaDestino);
-        const goingBackwards = fechaInicio > fechaDestino;
-        const minDate = new Date(-8640000000000000);
-        const maxDate = new Date(8640000000000000);
-
-        const fechaInicioReal = goingBackwards ? fechaInicio : fechaDestino;
-        const fechaDestinoReal = goingBackwards ? fechaDestino : fechaInicio;
-
-        const modelosAplicables = modelosVelocidad.filter(modelo => {
-            const start = modelo.inicio || minDate;
-            const end = modelo.fin || maxDate;
-            return start <= fechaInicioReal && end >= fechaDestinoReal;
-        });
-
-        modelosAplicables.sort((a, b) => {
-            const startA = a.inicio || minDate;
-            const startB = b.inicio || minDate;
-            if (goingBackwards) {
-                return startB - startA;
-            } else {
-                return startA - startB;
-            }
-        });
-
-        console.log("Modelos aplicables encontrados:", modelosAplicables.map(m => m.nombre));
-        return modelosAplicables;
-    }
-
-    function calcularCambioDeEpoca(x, y, z, velX, velY, velZ, deltaTiempo) {
-        console.log(`calcularCambioDeEpoca() - x:${x}, y:${y}, z:${z}, velX:${velX}, velY:${velY}, velZ:${velZ}, deltaTiempo:${deltaTiempo}`);
-        const nuevaX = x + (deltaTiempo * velX);
-        const nuevaY = y + (deltaTiempo * velY);
-        const nuevaZ = z + (deltaTiempo * velZ);
-        console.log(`Nuevas coordenadas: X:${nuevaX.toFixed(4)}, Y:${nuevaY.toFixed(4)}, Z:${nuevaZ.toFixed(4)}`);
-        return { nuevaX, nuevaY, nuevaZ };
-    }
-
-    async function realizarCambioDeEpocaPorModelos(fechaInicio, fechaDestino, lat, lon) {
-        console.log("realizarCambioDeEpocaPorModelos() - Inicio:", fechaInicio, "Destino:", fechaDestino, "lat:", lat, "lon:", lon);
-        const { X: xInicial, Y: yInicial, Z: zInicial } = elipsoidalToCartesian(lat, lon, 0);
-        let coordX = xInicial, coordY = yInicial, coordZ = zInicial;
-        console.log(`Posición inicial: X=${coordX.toFixed(4)}, Y=${coordY.toFixed(4)}, Z=${coordZ.toFixed(4)}`);
-
-        const modelos = obtenerModelosAplicables(fechaInicio, fechaDestino);
-        if (modelos.length === 0) {
-            console.warn("No se encontraron modelos de velocidad aplicables.");
-            return null;
-        }
-
-        const goingBackwards = fechaInicio > fechaDestino;
-        let fechaActual = new Date(fechaInicio.getTime());
-        const minDate = new Date(-8640000000000000);
-        const maxDate = new Date(8640000000000000);
-
-        const startTotal = goingBackwards ? fechaDestino : fechaInicio;
-        const endTotal = goingBackwards ? fechaInicio : fechaDestino;
-
-        for (const modelo of modelos) {
-            console.log(`Procesando modelo: ${modelo.nombre}`);
-            const modeloInicio = modelo.inicio || minDate;
-            const modeloFin = modelo.fin || maxDate;
-
-            const intersectStart = (modeloInicio > startTotal) ? modeloInicio : startTotal;
-            const intersectEnd = (modeloFin < endTotal) ? modeloFin : endTotal;
-            console.log(`Intersección de tiempo con el modelo ${modelo.nombre}: inicio=${intersectStart.toLocaleDateString()}, fin=${intersectEnd.toLocaleDateString()}`);
-
-            if (intersectStart > intersectEnd) {
-                console.log("Sin intersección real con este modelo.");
-                continue;
-            }
-
-            if (goingBackwards) {
-                let fechaCorte = intersectStart;
-                if (fechaCorte < fechaDestino) fechaCorte = fechaDestino;
-                if (fechaCorte < intersectStart) fechaCorte = intersectStart;
-
-                if (fechaCorte < fechaActual) {
-                    const deltaTiempoMs = fechaCorte - fechaActual;
-                    const deltaTiempo = deltaTiempoMs / (1000 * 60 * 60 * 24 * 365.25);
-                    console.log(`Hacia atrás - fechaActual:${fechaActual.toLocaleDateString()}, fechaCorte:${fechaCorte.toLocaleDateString()}, deltaTiempo:${deltaTiempo.toFixed(4)}`);
-
-                    const velocities = await calculateVelocitiesNSWE(lat, lon, modelo.archivo);
-                    const { velX, velY, velZ } = convertVelocitiesToXYZ(velocities.velocityNS, velocities.velocityWE, lat, lon);
-                    const nuevaPosicion = calcularCambioDeEpoca(coordX, coordY, coordZ, velX, velY, velZ, deltaTiempo);
-                    coordX = nuevaPosicion.nuevaX;
-                    coordY = nuevaPosicion.nuevaY;
-                    coordZ = nuevaPosicion.nuevaZ;
-
-                    fechaActual = new Date(fechaCorte.getTime());
-                    if (fechaActual <= fechaDestino) {
-                        console.log("Se alcanzó la fecha destino.");
-                        break;
-                    }
-                } else {
-                    console.log("No hay rango hacia atrás para este modelo.");
-                }
-            } else {
-                let fechaCorte = intersectEnd;
-                if (fechaCorte > fechaDestino) fechaCorte = fechaDestino;
-
-                if (fechaCorte > fechaActual) {
-                    const deltaTiempoMs = fechaCorte - fechaActual;
-                    const deltaTiempo = deltaTiempoMs / (1000 * 60 * 60 * 24 * 365.25);
-                    console.log(`Hacia adelante - fechaActual:${fechaActual.toLocaleDateString()}, fechaCorte:${fechaCorte.toLocaleDateString()}, deltaTiempo:${deltaTiempo.toFixed(4)}`);
-
-                    const velocities = await calculateVelocitiesNSWE(lat, lon, modelo.archivo);
-                    const { velX, velY, velZ } = convertVelocitiesToXYZ(velocities.velocityNS, velocities.velocityWE, lat, lon);
-                    const nuevaPosicion = calcularCambioDeEpoca(coordX, coordY, coordZ, velX, velY, velZ, deltaTiempo);
-                    coordX = nuevaPosicion.nuevaX;
-                    coordY = nuevaPosicion.nuevaY;
-                    coordZ = nuevaPosicion.nuevaZ;
-
-                    fechaActual = new Date(fechaCorte.getTime());
-                    if (fechaActual >= fechaDestino) {
-                        console.log("Se alcanzó la fecha destino.");
-                        break;
-                    }
-                } else {
-                    console.log("No hay rango hacia adelante para este modelo.");
-                }
-            }
-        }
-
-        console.log(`Posición final: X=${coordX.toFixed(4)}, Y=${coordY.toFixed(4)}, Z=${coordZ.toFixed(4)}`);
-        return { coordX, coordY, coordZ };
-    }
-
-    function convertirCoordenadas(tipo, cells) {
         console.log("convertirCoordenadas() - Tipo:", tipo);
-        let lat = null, lon = null;
+        var cc;
         switch (tipo) {
             case 'elipsoidal':
-            case 'elipsoidales-grados':
-                lat = parseFloat(cells[1].textContent.trim());
-                lon = parseFloat(cells[2].textContent.trim());
+                var lat = parseFloat(cells[1].textContent.trim());
+                var lon = parseFloat(cells[2].textContent.trim());
+                var alt = parseFloat(cells[3].textContent.trim());
+                var cc = new coord_curvilineas(lat, lon, alt);
                 break;
             case 'utm':
+                var nutm = parseFloat(cells[2].textContent.trim());
+                var eutm = parseFloat(cells[1].textContent.trim());
+                var alt = parseFloat(cells[3].textContent.trim());
+                var huso_pre = cells[4].textContent.trim();
+                var huso = huso_pre.substring(0, 2);
+                var hemisferio = huso_pre.charAt(huso_pre.length - 1);
 
+                var c_utm = new coord_planas(nutm, eutm, alt)
+                var origen_utm = await origen_UTM_planas_a_curvilienas(huso, hemisferio);
+
+                let cutm = await planas_a_curvilineas(c_utm, origen_utm, srp);
+                cc = new coord_curvilineas(cutm.phi, cutm.lambda, cutm.h);
+
+                break;
             case 'gauss-kruger':
+                var ngk = parseFloat(cells[2].textContent.trim());
+                var egk = parseFloat(cells[1].textContent.trim());
+                var alt = parseFloat(cells[3].textContent.trim());
+                var origen_gauss_partida = document.getElementById('origen-gauss').value;
+                var c_gk = new coord_planas(ngk, egk, alt);
+
+                var o = await gauss_kruger(origen_gauss_partida, srp);
+
+                let cgk = await planas_a_curvilineas(c_gk, o, srp);
+                cc = new coord_curvilineas(cgk.phi, cgk.lambda, cgk.h);
+
+                break;
             case 'origen-nacional':
+                var norte_on = parseFloat(cells[2].textContent.trim());
+                var este_on = parseFloat(cells[1].textContent.trim());
+                var alt = parseFloat(cells[3].textContent.trim());
+                var cp_on = new coord_planas(norte_on, este_on, alt);
+                let on = await origen_nacional();
+                var ccr = await planas_a_curvilineas(cp_on, on, srp);
+                cc = new coord_curvilineas(ccr.phi, ccr.lambda, ccr.h);
+
+                break;
             case 'plana-cartesiana':
-                // Aquí implementar la conversión real a lat/lon
-                // Por ahora, 0,0
-                lat = 0;
-                lon = 0;
-                console.warn(`No implementada la conversión para ${tipo}. Usando (0,0).`);
+                var npc = parseFloat(cells[2].textContent.trim());
+                var epc = parseFloat(cells[1].textContent.trim());
+                var alt = parseFloat(cells[3].textContent.trim());
+                var origen_cartesiano = document.getElementById('origenes-cartesianos').value;
+
+                if (origen_cartesiano == 'defecto') {
+                    alert('Debes escoger un origen cartesiano');
+                }
+
+                else {
+                    var c_p = new coord_planas(npc, epc, alt);
+                    let c_cc_m = await planas_cartesianas_a_curvilineas(c_p, origen_cartesiano);
+
+                    cc = new coord_curvilineas(c_cc_m.phi, c_cc_m.lambda, c_cc_m.h);
+                }
+
+
                 break;
             case 'geocentrica':
                 const x = parseFloat(cells[1].textContent.trim());
                 const y = parseFloat(cells[2].textContent.trim());
                 const z = parseFloat(cells[3].textContent.trim());
-                console.log(`Geocéntricas detectadas: X:${x}, Y:${y}, Z:${z}`);
-                const ellipsoidal = geocentricToEllipsoidal(x, y, z);
-                lat = ellipsoidal.latitude;
-                lon = ellipsoidal.longitude;
+                var cg = new coord_geocentricas(x, y, z);
+                let c_ccg = await geocentricas_a_curvilineas(cg, srp)
+                cc = new coord_curvilineas(c_ccg.phi, c_ccg.lambda, c_ccg.h);
                 break;
         }
-        return { lat, lon };
+        return cc;
     }
 
-    function geocentricToEllipsoidal(x, y, z) {
-        console.log("geocentricToEllipsoidal() - X:", x, "Y:", y, "Z:", z);
-        const e2 = 2 * f - f ** 2;
-        const p = Math.sqrt(x * x + y * y);
-        const theta = Math.atan2(z * a, p * (1 - f));
-        const lon = Math.atan2(y, x);
-        const lat = Math.atan2(z + e2 * (1 - f) * Math.sin(theta) ** 3, p - e2 * a * Math.cos(theta) ** 3);
-        const N = a / Math.sqrt(1 - e2 * Math.sin(lat) ** 2);
-        const h = p / Math.cos(lat) - N;
 
-        const latDeg = lat * (180 / Math.PI);
-        const lonDeg = lon * (180 / Math.PI);
-        console.log(`Convertido a elipsoidales: Lat:${latDeg.toFixed(6)}, Lon:${lonDeg.toFixed(6)}, h:${h.toFixed(3)}`);
-        return {
-            latitude: latDeg,
-            longitude: lonDeg,
-            height: h
-        };
-
-
-    }
 
     // funcion para mostrar el origen de coordenadas cuando este se seleccione
     document.getElementById('tipo-coordenada').addEventListener('change', async function () {
@@ -524,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     try {
 
-                        var sist_refe = document.querySelector('input[name="sistemaRefOrigen"]:checked').id == 'refOrigenMagna' ? 'MAGNA-SIRGAS' : 'BOGOTÁ'
+                        var sist_refe = document.querySelector('input[name="sistemaRefOrigen"]:checked').id == 'refOrigenMagna' ? 'MAGNA-SIRGAS' : 'BOGOTÁ';
                         await con.open();
                         var id_departamento = document.getElementById('departamento').value;
                         var query_municipios = "select DISTINCT  m.id, m.nombre from departamento d inner join municipio m on m.fk_departamento = d.id inner join origen_cartografico oc on oc.fk_municipio = m.id inner join sistema_referencia sr on sr.id = oc.fk_sistema where m.fk_departamento = ? and sr.nombre = ? order by m.nombre asc";
@@ -588,7 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             detalle_select_origen.appendChild(option_detalle);
                         });
-                    
+
 
                     } catch (error) {
                         console.error("Ocurrió un error:", error);
@@ -614,15 +541,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    
+
     // funcion para mostrar el origen de coordenadas del destino cuando este se seleccione
 
     document.getElementById('tipo-coordenada-destino').addEventListener('change', async function () {
         var opcion = document.getElementById('tipo-coordenada-destino').value;
         var div_planas = document.getElementById('origen-cartesiano-destino-tab');
-        var div_origen_gauss = document.getElementById('origen-gauss-destino-tab');
+       
         if (opcion == 'plana-cartesiana') {
-            div_origen_gauss.hidden = true;
+            
             div_planas.hidden = false;
             var con = new conexion();
 
@@ -729,7 +656,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             detalle_select_origen.appendChild(option_detalle);
                         });
-                    
+
 
                     } catch (error) {
                         console.error("Ocurrió un error:", error);
@@ -744,11 +671,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } finally {
                 await con.close();
             }
-        } else if (opcion == 'gauss-kruger') {
-            div_origen_gauss.hidden = false;
-            div_planas.hidden = true;
-        } else {
-            div_origen_gauss.hidden = true;
+        }  else {           
             div_planas.hidden = true;
         }
     });

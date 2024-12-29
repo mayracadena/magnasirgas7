@@ -99,6 +99,12 @@ if (!map) {
     maxZoom: 18,
   }).addTo(map);
 
+  L.Icon.Default.mergeOptions({
+    iconSize: [15, 20],
+    iconAnchor: [0, 0],
+    popupAnchor: [0, 0], 
+    shadowSize: [0,0] 
+  });
   // Cargar el archivo GeoJSON
   fetch('../data/municipios_agosto_2023_simplify.geojson')
     .then(response => response.json())
@@ -131,11 +137,11 @@ if (!map) {
 let puntoCounter = 0;
 let allPoints = []; // arreglo para almacenar todas las coordenadas
 
-function agregarPuntoSecuencial(lat, lng, nombre_punto) {
+async function agregarPuntoSecuencial(lat, lng, nombre_punto) {
   puntoCounter += 1; // Incrementar el contador
   allPoints.push([lat, lng]); // Guardar el punto
   mensaje = nombre_punto != null ? nombre_punto : puntoCounter
- 
+
   // Crear marcador en la posición especificada
   const marker = L.marker([lat, lng]).addTo(map);
 
@@ -143,7 +149,9 @@ function agregarPuntoSecuencial(lat, lng, nombre_punto) {
   marker.bindPopup(`Punto ${mensaje}`,
     {
       autoClose: false,
-      closeOnClick: false
+      closeOnClick: false,
+      className: 'popup_invisible',
+      closeButton: false
     }).openPopup();
 
   // Ajustar el mapa para mostrar todos los puntos
@@ -165,17 +173,17 @@ function mapaDepartamentos() {
 
   // geojson de zonas 
   fetch('../data/municipios_agosto_2023_simplify.geojson')
-  .then(response => response.json())
-  .then(geojsonData => {
-    L.geoJSON(geojsonData, {
-      style: style,
-      onEachFeature: function (feature, layer) {
-        layer.bindPopup(`Municipio: ${feature.properties.MpNombre}`);
-        label_nombreMunicipio(feature, layer);
-      }
-    }).addTo(map);
-  })
-  .catch(error => console.error("Error al cargar el archivo GeoJSON:", error));
+    .then(response => response.json())
+    .then(geojsonData => {
+      L.geoJSON(geojsonData, {
+        style: style,
+        onEachFeature: function (feature, layer) {
+          layer.bindPopup(`Municipio: ${feature.properties.MpNombre}`);
+          label_nombreMunicipio(feature, layer);
+        }
+      }).addTo(map);
+    })
+    .catch(error => console.error("Error al cargar el archivo GeoJSON:", error));
 
 
 
@@ -209,38 +217,38 @@ function mapaDatumBogota() {
     })
     .catch(error => console.error("Error cargando otro GeoJSON:", error));
 
-  
+
 }
 
 async function regionTransformacion(lat, lon) {
   try {
-    
+
     const response = await fetch('../data/Magna/Regiones.geojson');
-    const geojson = await response.json(); 
+    const geojson = await response.json();
 
     const punto = turf.point([lon, lat]);
 
     for (const feature of geojson.features) {
       if (turf.booleanPointInPolygon(punto, feature)) {
         var zona = feature.properties.ZONA_TRANS;
-        var dx =  feature.properties.DeltaX;
-        var dy =  feature.properties.DeltaY;
-        var dz =  feature.properties.DeltaZ;
-        var rx =  feature.properties.RX;
-        var ry =  feature.properties.RY;
-        var rz =  feature.properties.RZ;
-        var e =  feature.properties.FactorE;
+        var dx = feature.properties.DeltaX;
+        var dy = feature.properties.DeltaY;
+        var dz = feature.properties.DeltaZ;
+        var rx = feature.properties.RX;
+        var ry = feature.properties.RY;
+        var rz = feature.properties.RZ;
+        var e = feature.properties.FactorE;
         var x0 = feature.properties.X0;
         var y0 = feature.properties.Y0;
         var z0 = feature.properties.Z0;
 
-        var transf = new transformacion(zona,x0,y0,z0,dx,dy,dz,rx,ry,rz,e);
+        var transf = new transformacion(zona, x0, y0, z0, dx, dy, dz, rx, ry, rz, e);
         console.log('informacion de transformacion ', transf)
-        return transf; 
+        return transf;
       }
     }
 
-   
+
     console.warn('El punto no se encuentra dentro de ninguna región');
     return null;
   } catch (error) {

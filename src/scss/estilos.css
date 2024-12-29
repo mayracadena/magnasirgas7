@@ -102,7 +102,7 @@ body::-webkit-scrollbar-track {
 /* Cambiamos el fondo cuando esté en active o hover */
 body::-webkit-scrollbar-track:hover,
 body::-webkit-scrollbar-track:active {
-  background: #d4d4d4;
+    background: #d4d4d4;
 }
 
 /* Estilos de tarjeta */
@@ -111,7 +111,7 @@ body::-webkit-scrollbar-track:active {
     border: 1px;
     color: var(--primary-color);
     font-weight: bold;
-    
+
 }
 
 .panel {
@@ -120,9 +120,9 @@ body::-webkit-scrollbar-track:active {
     border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     flex: 1;
-  }
+}
 
-  .card-header {
+.card-header {
     position: sticky;
     top: 0;
     width: 100%;
@@ -133,6 +133,7 @@ body::-webkit-scrollbar-track:active {
     padding: 15px;
     border-bottom: 1px solid var(--border-color-regular);
 }
+
 /* Estilos de formulario */
 .form-group label {
     font-weight: bold;
@@ -143,7 +144,7 @@ body::-webkit-scrollbar-track:active {
     background: rgba(253, 251, 251, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: var(--text-color);
-  }
+}
 
 .form-control::placeholder {
     color: var(--text-muted-color);
@@ -160,9 +161,11 @@ body::-webkit-scrollbar-track:active {
     background-color: var(--secondary-color);
     color: var(--primary-color);
 }
+
 .btn-primary:hover {
     background-color: var(--secondary-hover-color);
 }
+
 /* Paneles */
 .panel {
     background: var(--panel-bg-color);
@@ -202,11 +205,12 @@ body::-webkit-scrollbar-track:active {
     top: 0;
     left: 0;
 }
+
 .title {
     text-align: center;
     color: var(--primary-color);
     margin-bottom: 20px;
-  }
+}
 
 
 .municipio-label {
@@ -216,49 +220,88 @@ body::-webkit-scrollbar-track:active {
     padding: 2px;
     border-radius: 3px;
     text-align: center;
-    pointer-events: none; 
-  }
+    pointer-events: none;
+}
 
-  
-    /* Contenedor de puntos base */
-    .puntos-base-container {
-        max-height: 200px;
-        overflow-y: auto;
-        background: rgba(255, 255, 255, 0.05);
-        padding: 10px;
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-      }
-    
-      /* Contenedor de la tabla con scroll horizontal y vertical */
-      .file-preview-container {
-        max-height: 300px; /* Limita la altura */
-        max-width: 100%; /* Limita el ancho */
-        overflow-x: auto; /* Scroll horizontal */
-        overflow-y: auto; /* Scroll vertical */
-        background: rgba(255, 255, 255, 0.05);
-        padding: 10px;
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-      }
-    
-      /* Tabla de vista previa */
-      table.file-preview {
-          width: max-content; /* Permite que las columnas ocupen su tamaño natural */
-          table-layout: auto; /* Deja que las columnas se ajusten al contenido */
-          border-collapse: collapse; /* Combina bordes */
-          font-size: 14px; /* Tamaño del texto */
-      }
-    
-      table.file-preview th,
-      table.file-preview td {
-        text-align: center;
-        padding: 8px; /* Espaciado interno */
-        border: 1px solid rgba(255, 255, 255, 0.2); /* Bordes claros */
-        word-wrap: break-word; /* Ajusta texto largo */
-      }
-  
-      .text-muted {
-          color: #ffffff !important; /* Cambia a blanco */
-          opacity: 0.7; /* Reduce ligeramente la opacidad para mantener el efecto tenue */
-        }
+
+/* Contenedor de puntos base */
+.puntos-base-container {
+    max-height: 200px;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Contenedor de la tabla con scroll horizontal y vertical */
+.file-preview-container {
+    max-height: 300px;
+    /* Limita la altura */
+    max-width: 100%;
+    /* Limita el ancho */
+    overflow-x: auto;
+    /* Scroll horizontal */
+    overflow-y: auto;
+    /* Scroll vertical */
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Tabla de vista previa */
+table.file-preview {
+    width: max-content;
+    /* Permite que las columnas ocupen su tamaño natural */
+    table-layout: auto;
+    /* Deja que las columnas se ajusten al contenido */
+    border-collapse: collapse;
+    /* Combina bordes */
+    font-size: 14px;
+    /* Tamaño del texto */
+}
+
+table.file-preview th,
+table.file-preview td {
+    text-align: center;
+    padding: 8px;
+    /* Espaciado interno */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Bordes claros */
+    word-wrap: break-word;
+    /* Ajusta texto largo */
+}
+
+.text-muted {
+    color: #ffffff !important;
+    /* Cambia a blanco */
+    opacity: 0.7;
+    /* Reduce ligeramente la opacidad para mantener el efecto tenue */
+}
+
+.popup_invisible .leaflet-popup-content-wrapper {
+    background-color: transparent;
+    box-shadow: none;
+    padding: 5px;
+    border-radius: 5px;
+    max-width: 100px;
+    max-height: 15px;
+    margin-bottom: 0;
+}
+
+.popup_invisible .leaflet-popup-content {
+    color: black;
+    /* Texto negro */
+    font-size: 10px;
+    /* Tamaño de la letra */
+    font-family: Arial, sans-serif;
+    /* Fuente */
+    text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+    text-align: center;
+}
+
+.popup_invisible .leaflet-popup-tip {
+    display: none;
+    /* Ocultar la punta del popup (opcional) */
+}

@@ -15,8 +15,8 @@ const { planas_cartesianas_a_curvilineas, geocentricas_a_curvilineas, curvilinea
 
 const map = require('../js/mapa_colombia.js');
 
-
-
+//para limpiar recargamos de nuevo la pagina
+document.getElementById('limpiar').addEventListener("click", location.reload);
 
 function GMS_a_decimal(grados, minutos, segundos) {
   // Convertir minutos y segundos a grados decimales
@@ -140,13 +140,15 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
       //transformacion de coordendas
 
-      if (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') {
-        //captura de la region
+      if ((sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') || (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ')) {
+        
+        var boolDatum = (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') ? false : true;       
+
         var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
-        //pasarf a geocentricas para la transformacion
+        //pasar a geocentricas para la transformacion
         var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
         //transformacion de datos
-        var cgr = await transformacion3D(cg, transf, false)
+        var cgr = await transformacion3D(cg, transf, boolDatum)
         var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
         //volver a convertir a elipsoidales
         var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
@@ -156,21 +158,7 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
         sist_refe = sist_refe_l;
 
       }
-      if (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ') {
-        //captura de la region
-        var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
-        //pasarf a geocentricas para la transformacion
-        var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
-        //transformacion de datos
-        var cgr = await transformacion3D(cg, transf, true)
-        var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
-        //volver a convertir a elipsoidales
-        var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
-        var coord_curvili_transformadas = new coord_curvilineas(ccurtransf.phi, ccurtransf.lambda, ccurtransf.h);
-        //reasignacion de coordenadas capturadas
-        c_cc = coord_curvili_transformadas;
-        sist_refe = sist_refe_l;
-      }
+     
 
 
       //seccion de envio de datos de elipsoidales sexagesimal
@@ -302,13 +290,15 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
       map.agregarPuntoSecuencial(c_cc.phi, c_cc.lambda);
 
       //transformacion de coordenadas
-      if (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') {
+      if ((sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') || (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ')) {
+        
+        var boolDatum = (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') ? false : true;
         //captura de la region
         var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
-        //pasarf a geocentricas para la transformacion
+        //pasar a geocentricas para la transformacion
         var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
         //transformacion de datos
-        var cgr = await transformacion3D(cg, transf, false)
+        var cgr = await transformacion3D(cg, transf, boolDatum)
         var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
         //volver a convertir a elipsoidales
         var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
@@ -317,21 +307,6 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
         c_cc = coord_curvili_transformadas;
         sist_refe = sist_refe_l;
 
-      }
-      if (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ') {
-        //captura de la region
-        var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
-        //pasarf a geocentricas para la transformacion
-        var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
-        //transformacion de datos
-        var cgr = await transformacion3D(cg, transf, true)
-        var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
-        //volver a convertir a elipsoidales
-        var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
-        var coord_curvili_transformadas = new coord_curvilineas(ccurtransf.phi, ccurtransf.lambda, ccurtransf.h);
-        //reasignacion de coordenadas capturadas
-        c_cc = coord_curvili_transformadas;
-        sist_refe = sist_refe_l;
       }
 
 
@@ -460,13 +435,14 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
       map.agregarPuntoSecuencial(c_cc.phi, c_cc.lambda);
 
       //transformacion de coordenadas
-      if (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') {
-        //captura de la region
+      if ((sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') || (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ')) {
+        
+        var boolDatum = (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') ? false : true;
         var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
-        //pasarf a geocentricas para la transformacion
+        //pasar a geocentricas para la transformacion
         var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
         //transformacion de datos
-        var cgr = await transformacion3D(cg, transf, false)
+        var cgr = await transformacion3D(cg, transf, boolDatum)
         var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
         //volver a convertir a elipsoidales
         var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
@@ -483,25 +459,7 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
 
       }
-      if (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ') {
-        //captura de la region
-        var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
-        //pasarf a geocentricas para la transformacion
-        var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
-        //transformacion de datos
-        var cgr = await transformacion3D(cg, transf, true)
-        var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
-        //volver a convertir a elipsoidales
-        var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
-        var coord_curvili_transformadas = new coord_curvilineas(ccurtransf.phi, ccurtransf.lambda, ccurtransf.h);
-        //reasignacion de coordenadas capturadas
-        c_cc = coord_curvili_transformadas;
-        var onr = await curvilineas_a_planas(c_cc, on, sist_refe);
-        var on2 = new coord_planas(onr.norte, onr.este, onr.h);
-        var c_on = on2;
-        sist_refe = sist_refe_l;
-      }
-
+      
 
       if (activeTabLlegadaId == 'elipsoidal-tab-destino') {
 
@@ -632,12 +590,13 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
       map.agregarPuntoSecuencial(c_cc.phi, c_cc.lambda);
 
       //transformacion de coordenadas
-      if (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') {
-        //captura de la region
+      if ((sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') || (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ')) {
+       
+        var boolDatum = (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') ? false : true;
         var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
 
         //transformacion de datos
-        var cgr = await transformacion3D(c_g, transf, false)
+        var cgr = await transformacion3D(c_g, transf, boolDatum)
         var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
         //volver a convertir a elipsoidales
         var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
@@ -648,22 +607,7 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
         var c_g = cgeotransf;
         sist_refe = sist_refe_l;
       }
-      if (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ') {
-        //captura de la region
-        var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
-
-        //transformacion de datos
-        var cgr = await transformacion3D(c_g, transf, true)
-        var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
-        //volver a convertir a elipsoidales
-        var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
-        var coord_curvili_transformadas = new coord_curvilineas(ccurtransf.phi, ccurtransf.lambda, ccurtransf.h);
-        //reasignacion de coordenadas capturadas
-        c_cc = coord_curvili_transformadas;
-        //reasignacion geocentricas
-        var c_g = cgeotransf;
-        sist_refe = sist_refe_l;
-      }
+   
 
       if (activeTabLlegadaId == 'elipsoidal-tab-destino') {
 
@@ -806,13 +750,14 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
         map.agregarPuntoSecuencial(c_cc.phi, c_cc.lambda);
 
         //transformacion de coordenadas
-        if (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') {
-          //captura de la region
+        if ((sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') || (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ')) {
+     
+          var boolDatum = (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') ? false : true
           var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
-          //pasarf a geocentricas para la transformacion
+          //pasar a geocentricas para la transformacion
           var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
           //transformacion de datos
-          var cgr = await transformacion3D(cg, transf, false)
+          var cgr = await transformacion3D(cg, transf, boolDatum)
           var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
           //volver a convertir a elipsoidales
           var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
@@ -829,28 +774,7 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
 
         }
-        if (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ') {
-          //captura de la region
-          var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
-          //pasarf a geocentricas para la transformacion
-          var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
-          //transformacion de datos
-          var cgr = await transformacion3D(cg, transf, true)
-          var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
-          //volver a convertir a elipsoidales
-          var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
-          var coord_curvili_transformadas = new coord_curvilineas(ccurtransf.phi, ccurtransf.lambda, ccurtransf.h);
-          //reasignacion de coordenadas capturadas
-          c_cc = coord_curvili_transformadas;
-
-          //reasignacion en plana cartesiana
-          var cpr = await curvilineas_a_planas_cartesianas(c_cc, sist_refe, origen_cartesiano);
-          var c_p2 = new coord_planas(cpr.norte, cpr.este, cpr.h);
-          var c_p = c_p2;
-          sist_refe = sist_refe_l;
-        }
-
-
+        
 
         if (activeTabLlegadaId == 'elipsoidal-tab-destino') {
 
@@ -977,13 +901,15 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
 
       //transformacion de coordenadas
-      if (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') {
+      if ((sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') || (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ')) {
+        
+        var boolDatum = (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') ? false : true
         //captura de la region
         var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
-        //pasarf a geocentricas para la transformacion
+        //pasar a geocentricas para la transformacion
         var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
         //transformacion de datos
-        var cgr = await transformacion3D(cg, transf, false)
+        var cgr = await transformacion3D(cg, transf, boolDatum)
         var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
         //volver a convertir a elipsoidales
         var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
@@ -1001,26 +927,7 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
 
       }
-      if (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ') {
-        //captura de la region
-        var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
-        //pasarf a geocentricas para la transformacion
-        var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
-        //transformacion de datos
-        var cgr = await transformacion3D(cg, transf, true)
-        var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
-        //volver a convertir a elipsoidales
-        var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
-        var coord_curvili_transformadas = new coord_curvilineas(ccurtransf.phi, ccurtransf.lambda, ccurtransf.h);
-        //reasignacion de coordenadas capturadas
-        c_cc = coord_curvili_transformadas;
-        //reasignacion en utm
-        var utmc = await origen_UTM(c_cc);
-        var cutmr = await curvilineas_a_planas(c_cc, utmc, sist_refe);
-        var c_utm2 = new coord_planas(cutmr.norte, cutmr.este, cutmr.h);
-        c_utm = c_utm2;
-        sist_refe = sist_refe_l;
-      }
+    
 
       if (activeTabLlegadaId == 'elipsoidal-tab-destino') {
 
@@ -1152,13 +1059,15 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
 
       //transformacion de coordenadas
-      if (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') {
+      if ((sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') || (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ')) {
+        
+        var boolDatum = (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') ? false : true
         //captura de la region
         var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
-        //pasarf a geocentricas para la transformacion
+        //pasar a geocentricas para la transformacion
         var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
         //transformacion de datos
-        var cgr = await transformacion3D(cg, transf, false)
+        var cgr = await transformacion3D(cg, transf, boolDatum)
         var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
         //volver a convertir a elipsoidales
         var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
@@ -1175,29 +1084,6 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
         sist_refe = sist_refe_l;
 
       }
-      if (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ') {
-        //captura de la region
-        var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
-        //pasarf a geocentricas para la transformacion
-        var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
-        //transformacion de datos
-        var cgr = await transformacion3D(cg, transf, true)
-        var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
-        //volver a convertir a elipsoidales
-        var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
-        var coord_curvili_transformadas = new coord_curvilineas(ccurtransf.phi, ccurtransf.lambda, ccurtransf.h);
-        //reasignacion de coordenadas capturadas
-        c_cc = coord_curvili_transformadas;
-        //reasignacion gauss kruger
-        var origen_gauss = await origen_gauss_kruger(c_cc.lambda);
-        var o = await gauss_kruger(origen_gauss, sist_refe);
-        var c_gkr = await curvilineas_a_planas(c_cc, o, sist_refe);
-        var c_gk2 = new coord_planas(c_gkr.norte, c_gkr.este, c_gkr.h);
-        c_gk = c_gk2;
-        sist_refe = sist_refe_l;
-      }
-
-
 
       if (activeTabLlegadaId == 'elipsoidal-tab-destino') {
 

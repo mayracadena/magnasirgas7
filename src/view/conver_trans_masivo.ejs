@@ -139,7 +139,7 @@
                   <div class="card-body">
                     <select class="options" id="tipo-coordenada">
                       <option value="default">-- Seleccione un tipo --</option>
-                      <option value="elipsoidal">Elipsoidal (decimal)</option>
+                      <option value="elipsoidal">Elipsoidal decimal (lat, lon, h)</option>
                       <option value="utm">UTM (Este, Norte, Zona)</option>
                       <option value="geocentrica">Geocéntrica (X, Y, Z)</option>
                       <option value="plana-cartesiana">Plana Cartesiana (X, Y)</option>
@@ -255,27 +255,14 @@
                   <div class="card-body">
                     <select class="options" id="tipo-coordenada-destino">
                       <option value="default">-- Seleccione un tipo --</option>
-                      <option value="elipsoidal">Elipsoidal (decimal)</option>
-                      <option value="utm">UTM (Este, Norte, Zona)</option>
+                      <option value="elipsoidal">Elipsoidal decimal (lat, lon, h)</option>
+                      <option value="utm">UTM (Este, Norte, h, Zona)</option>
                       <option value="geocentrica">Geocéntrica (X, Y, Z)</option>
-                      <option value="plana-cartesiana">Plana Cartesiana (X, Y)</option>
-                      <option value="gauss-kruger">Gauss Krüger (Este, Norte)</option>
-                      <option value="origen-nacional">Origen Nacional (Este, Norte)</option>
+                      <option value="plana-cartesiana">Plana Cartesiana (X, Y, h)</option>
+                      <option value="gauss-kruger">Gauss Krüger (Este, Norte, h)</option>
+                      <option value="origen-nacional">Origen Nacional (Este, Norte, h)</option>
                     </select>
 
-
-                    <div class="mb-3" id="origen-gauss-destino-tab" hidden>
-                      <label>Origen Gauss Krüger: </label>
-                      <select class="options" id="origen-gauss-destino">
-                        <option value="Central">Central</option>
-                        <option value="Este">Este Central</option>
-                        <option value="Este-este">Este Este</option>
-                        <option value="Oeste">Oeste</option>
-                        <option value="Oeste-oeste">Oeste Oeste</option>
-                        <option value="Insular">Insular</option>
-                      </select>
-
-                    </div>
 
                     <div class="mb-3" id="origen-cartesiano-destino-tab" hidden>
 
@@ -333,10 +320,10 @@
           <div class="card shadow">
             <!-- Se ha quitado la card-header -->
             <div class="card-body d-flex flex-column align-items-stretch" style="gap: 0.5rem;">
-              <button class="btn btn-primary btn-sm" id="calcular_trans_cover">
+              <button class="btn btn-primary btn-sm" id="calcular">
                 Calcular
               </button>
-              <button class="btn btn-secondary btn-sm" id="limpiarBtn">
+              <button class="btn btn-secondary btn-sm" id="limpiarBtn" onclick="location.reload();">
                 Limpiar
               </button>
             </div>
@@ -374,6 +361,7 @@
     </div>
 
     <!-- ===================== LIBRERÍAS EXTERNAS ===================== -->
+    <script src="../../node_modules/@turf/turf/turf.min.js"></script>
     <script src="../../node_modules/leaflet/dist/leaflet.js"></script>
     <script src="../../node_modules/proj4/dist/proj4.js"></script>
     <script src="../../node_modules/proj4leaflet/src/proj4leaflet.js"></script>
