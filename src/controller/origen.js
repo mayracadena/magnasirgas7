@@ -148,7 +148,7 @@ async function origen_UTM_planas_a_curvilienas(zona, hemisferio) {
     return o;
 }
 
-var c = new coord_curvilineas(3, -72);
-console.log("origen UTM ", origen_UTM(c))
+// var c = new coord_curvilineas(3, -72);
+// console.log("origen UTM ", origen_UTM(c))
 
 module.exports = {origen_nacional, gauss_kruger, origen_UTM , origen_UTM_planas_a_curvilienas, origen_gauss_kruger}

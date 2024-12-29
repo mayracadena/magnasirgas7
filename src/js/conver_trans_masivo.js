@@ -1,20 +1,30 @@
+const coord_planas = require("../class/coord_planas.js");
+const coord_curvilineas = require("../class/coord_curvilineas.js");
+const coord_geocentricas = require("../class/coord_geocentricas.js");
+const conexion = require('../db/conexion.js');
+const { origen_nacional, gauss_kruger, origen_UTM, origen_UTM_planas_a_curvilienas, origen_gauss_kruger } = require('../controller/origen.js');
+const transformacion = require('../class/transformacion');
+const { transformacion3D } = require('../controller/transformacion_coordenadas.js');
+const { planas_cartesianas_a_curvilineas, geocentricas_a_curvilineas, curvilineas_a_geocentricas, planas_a_curvilineas, curvilineas_a_planas, curvilineas_a_planas_cartesianas } = require('../controller/conversion_coordenadas.js');
+
+const map = require('../js/mapa_colombia.js');
 document.addEventListener('DOMContentLoaded', () => {
 
-    document.getElementById('calcular').addEventListener('click', calcularCambioEpocaMasivo);
-    document.getElementById('limpiar').addEventListener('click', limpiarTabla);
+    // document.getElementById('calcular').addEventListener('click', calcularCambioEpocaMasivo);
+    // document.getElementById('limpiar').addEventListener('click', limpiarTabla);
     document.getElementById('tipo-coordenada').addEventListener('change', generarCabeceras);
-    document.getElementById('cargar-archivo').addEventListener('change', cargarArchivo);
+    document.getElementById('archivo-coordenadas').addEventListener('change', cargarArchivo);
 
     function generarCabeceras() {
         const tipo = document.getElementById('tipo-coordenada').value;
-        console.log("generarCabeceras() - Tipo de coordenada seleccionado:", tipo);
+      
         const thead = document.querySelector('#tabla-datos thead');
         thead.innerHTML = '';
 
         let headers = [];
         switch (tipo) {
             case 'elipsoidal':
-            case 'elipsoidales-grados':
+
                 headers = ['ID', 'Latitud', 'Longitud'];
                 break;
             case 'utm':
@@ -27,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers = ['ID', 'X', 'Y'];
                 break;
             case 'gauss-kruger':
-                headers = ['ID', 'Este', 'Norte', 'Zona'];
+                headers = ['ID', 'Este', 'Norte'];
                 break;
             case 'origen-nacional':
                 headers = ['ID', 'Este', 'Norte'];
@@ -37,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
         }
 
-        console.log("Cabeceras generadas:", headers);
+        
         const tr = document.createElement('tr');
         headers.forEach(h => {
             const th = document.createElement('th');
@@ -47,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         thead.appendChild(tr);
     }
 
-    function cargarArchivo(event) {
+    async function cargarArchivo(event) {
         const tipoCoordenada = document.getElementById('tipo-coordenada').value;
         console.log("cargarArchivo() - Tipo de coordenada actual:", tipoCoordenada);
 
@@ -132,14 +142,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const row = rows[i];
             const cells = row.querySelectorAll('td');
             const id = cells[0].textContent.trim();
-            console.log(`Procesando fila #${i+1}, ID: ${id}`);
+            console.log(`Procesando fila #${i + 1}, ID: ${id}`);
 
-            const coords = convertirCoordenadas(tipoCoordenada, cells);
-            const {lat, lon} = coords; 
+            const coords = await convertirCoordenadas(tipoCoordenada, cells);
+            const { lat, lon } = coords;
             console.log(`Coordenadas convertidas para ID ${id}: lat=${lat}, lon=${lon}`);
 
             if (isNaN(lat) || isNaN(lon)) {
-                console.error(`Coordenadas inválidas en la fila ${i+1}, ID:${id}`);
+                console.error(`Coordenadas inválidas en la fila ${i + 1}, ID:${id}`);
                 procesados++;
                 if (procesados === rows.length) {
                     console.log("Todos los puntos procesados. Generando archivo CSV...");
@@ -207,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // LÓGICA DE CAMBIO DE ÉPOCA (ADAPTADA) CON LOGS
     // ======================================
 
-    const a = 6378137.0; 
+    const a = 6378137.0;
     const f = 1 / 298.257223563;
 
     const modelosVelocidad = [
@@ -258,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lines.forEach((line, idx) => {
             const [fileLat, fileLon, velocityNS, velocityWE] = line.split(';').map(parseFloat);
             if (isNaN(fileLat) || isNaN(fileLon) || isNaN(velocityNS) || isNaN(velocityWE)) {
-                console.warn(`Línea ${idx+1} del archivo ${archivo}: datos inválidos`, line);
+                console.warn(`Línea ${idx + 1} del archivo ${archivo}: datos inválidos`, line);
                 return;
             }
             const gridCoords = elipsoidalToCartesian(fileLat, fileLon, 0);
@@ -422,7 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 lon = parseFloat(cells[2].textContent.trim());
                 break;
             case 'utm':
-                
+
             case 'gauss-kruger':
             case 'origen-nacional':
             case 'plana-cartesiana':
@@ -437,32 +447,311 @@ document.addEventListener('DOMContentLoaded', () => {
                 const y = parseFloat(cells[2].textContent.trim());
                 const z = parseFloat(cells[3].textContent.trim());
                 console.log(`Geocéntricas detectadas: X:${x}, Y:${y}, Z:${z}`);
-                const ellipsoidal = geocentricToEllipsoidal(x,y,z);
+                const ellipsoidal = geocentricToEllipsoidal(x, y, z);
                 lat = ellipsoidal.latitude;
                 lon = ellipsoidal.longitude;
                 break;
         }
-        return {lat, lon};
+        return { lat, lon };
     }
 
     function geocentricToEllipsoidal(x, y, z) {
         console.log("geocentricToEllipsoidal() - X:", x, "Y:", y, "Z:", z);
-        const e2 = 2*f - f**2;
-        const p = Math.sqrt(x*x + y*y);
-        const theta = Math.atan2(z*a, p*(1-f));
+        const e2 = 2 * f - f ** 2;
+        const p = Math.sqrt(x * x + y * y);
+        const theta = Math.atan2(z * a, p * (1 - f));
         const lon = Math.atan2(y, x);
-        const lat = Math.atan2(z + e2*(1-f)*Math.sin(theta)**3, p - e2*a*Math.cos(theta)**3);
-        const N = a / Math.sqrt(1 - e2*Math.sin(lat)**2);
-        const h = p/Math.cos(lat)-N;
+        const lat = Math.atan2(z + e2 * (1 - f) * Math.sin(theta) ** 3, p - e2 * a * Math.cos(theta) ** 3);
+        const N = a / Math.sqrt(1 - e2 * Math.sin(lat) ** 2);
+        const h = p / Math.cos(lat) - N;
 
-        const latDeg = lat*(180/Math.PI);
-        const lonDeg = lon*(180/Math.PI);
+        const latDeg = lat * (180 / Math.PI);
+        const lonDeg = lon * (180 / Math.PI);
         console.log(`Convertido a elipsoidales: Lat:${latDeg.toFixed(6)}, Lon:${lonDeg.toFixed(6)}, h:${h.toFixed(3)}`);
         return {
             latitude: latDeg,
             longitude: lonDeg,
             height: h
         };
+
+
     }
+
+    // funcion para mostrar el origen de coordenadas cuando este se seleccione
+    document.getElementById('tipo-coordenada').addEventListener('change', async function () {
+        var opcion = document.getElementById('tipo-coordenada').value;
+        var div_planas = document.getElementById('origen-cartesiano-tab');
+        var div_origen_gauss = document.getElementById('origen-gauss-tab');
+        if (opcion == 'plana-cartesiana') {
+            div_origen_gauss.hidden = true;
+            div_planas.hidden = false;
+            var con = new conexion();
+
+            console.log('dentro de planas cartesianas')
+
+
+            var sist_refe = document.querySelector('input[name="sistemaRefOrigen"]:checked').id == 'refOrigenMagna' ? 'MAGNA-SIRGAS' : 'BOGOTÁ'
+            try {
+                await con.open();
+
+                //seleccionar a todos los departamentos
+                var query_departamentos = "select DISTINCT d.id, d.nombre from departamento d inner join municipio m on m.fk_departamento = d.id inner join origen_cartografico oc on oc.fk_municipio = m.id inner join sistema_referencia sr on sr.id = oc.fk_sistema where sr.nombre = ? order by d.nombre asc";
+                var result_departamento = await con.getAll(query_departamentos, [sist_refe]);
+
+
+
+                var select_departamento_planas_destino = document.getElementById('departamento');
+                select_departamento_planas_destino.innerHTML = '<option value="defecto" >Seleccione Departamento</option>';
+
+                result_departamento.forEach(i => {
+
+                    var option_departamento = document.createElement('option');
+                    option_departamento.value = i.id,
+                        option_departamento.textContent = i.nombre;
+
+
+                    select_departamento_planas_destino.appendChild(option_departamento);
+
+
+                });
+
+
+
+                //funcion para mostrar los municipios segun el departamento que se encuentre activo
+
+                document.getElementById('departamento').addEventListener("change", async function () {
+                    //seleccionar a todos los departamentos
+
+                    try {
+
+                        var sist_refe = document.querySelector('input[name="sistemaRefOrigen"]:checked').id == 'refOrigenMagna' ? 'MAGNA-SIRGAS' : 'BOGOTÁ'
+                        await con.open();
+                        var id_departamento = document.getElementById('departamento').value;
+                        var query_municipios = "select DISTINCT  m.id, m.nombre from departamento d inner join municipio m on m.fk_departamento = d.id inner join origen_cartografico oc on oc.fk_municipio = m.id inner join sistema_referencia sr on sr.id = oc.fk_sistema where m.fk_departamento = ? and sr.nombre = ? order by m.nombre asc";
+                        var parametros_municipio = [id_departamento.toString(), sist_refe]
+                        var result_municipio = await con.getAll(query_municipios, parametros_municipio);
+
+                        var select_municipios = document.getElementById('municipio');
+
+                        select_municipios.innerHTML = '<option value="defecto">Seleccione Municipio</option>';
+
+
+                        result_municipio.forEach(i => {
+
+                            var option_municipio = document.createElement('option');
+                            option_municipio.value = i.id,
+                                option_municipio.textContent = i.nombre;
+
+
+                            select_municipios.appendChild(option_municipio);
+                        });
+
+
+                    } catch (error) {
+                        console.error("Ocurrió un error:", error);
+                        return null;
+                    } finally {
+                        await con.close();
+                    }
+
+
+
+
+
+                });
+
+
+                document.getElementById('municipio').addEventListener("change", async function () {
+
+                    try {
+                        await con.open();
+                        var select_municipio_detalle = document.getElementById('municipio').value;
+
+                        //traer todos los datos del origen cartografico
+                        var query_origen = "select o.id, d.nombre as departamento, m.nombre as municipio, c.nombre as corregimiento, o.detalle as detalle , o.descripcion as descripcion, s.nombre as sistema_referencia  from departamento d inner join municipio m on d.id = m.fk_departamento  inner join origen_cartografico o on m.id = o.fk_municipio LEFT join  corregimiento c on c.id = o.fk_corregimiento  inner join sistema_referencia s on s.id = o.fk_sistema where m.id = ? and s.nombre = ? ";
+                        var sist_refe = document.querySelector('input[name="sistemaRefOrigen"]:checked').id == 'refOrigenMagna' ? 'MAGNA-SIRGAS' : 'BOGOTÁ'
+
+
+
+                        var parametros_detalle = [select_municipio_detalle, sist_refe]
+                        var result_origen_detalle = await con.getAll(query_origen, parametros_detalle);
+                        console.log(result_origen_detalle);
+                        var detalle_select_origen = document.getElementById('origenes-cartesianos');
+                        detalle_select_origen.innerHTML = '<option value="defecto">Seleccione año, municipio y/o corregimiento</option>';
+
+                        result_origen_detalle.forEach(i => {
+
+                            var option_detalle = document.createElement('option');
+                            option_detalle.value = i.id,
+                                option_detalle.textContent = i.detalle;
+
+
+                            detalle_select_origen.appendChild(option_detalle);
+                        });
+                    
+
+                    } catch (error) {
+                        console.error("Ocurrió un error:", error);
+                        return null;
+                    } finally {
+                        await con.close();
+                    }
+                })
+            } catch (error) {
+                console.error("Ocurrió un error:", error);
+                return null;
+            } finally {
+                await con.close();
+            }
+        } else if (opcion == 'gauss-kruger') {
+            div_origen_gauss.hidden = false;
+            div_planas.hidden = true;
+        } else {
+            div_origen_gauss.hidden = true;
+            div_planas.hidden = true;
+        }
+    });
+
+
+
+    
+    // funcion para mostrar el origen de coordenadas del destino cuando este se seleccione
+
+    document.getElementById('tipo-coordenada-destino').addEventListener('change', async function () {
+        var opcion = document.getElementById('tipo-coordenada-destino').value;
+        var div_planas = document.getElementById('origen-cartesiano-destino-tab');
+        var div_origen_gauss = document.getElementById('origen-gauss-destino-tab');
+        if (opcion == 'plana-cartesiana') {
+            div_origen_gauss.hidden = true;
+            div_planas.hidden = false;
+            var con = new conexion();
+
+            console.log('dentro de planas cartesianas')
+
+
+            var sist_refe = document.querySelector('input[name="sistemaRefDestino"]:checked').id == 'refDestinoMagna' ? 'MAGNA-SIRGAS' : 'BOGOTÁ'
+            try {
+                await con.open();
+
+                //seleccionar a todos los departamentos
+                var query_departamentos = "select DISTINCT d.id, d.nombre from departamento d inner join municipio m on m.fk_departamento = d.id inner join origen_cartografico oc on oc.fk_municipio = m.id inner join sistema_referencia sr on sr.id = oc.fk_sistema where sr.nombre = ? order by d.nombre asc";
+                var result_departamento = await con.getAll(query_departamentos, [sist_refe]);
+
+
+
+                var select_departamento_planas_destino = document.getElementById('departamento-destino');
+                select_departamento_planas_destino.innerHTML = '<option value="defecto" >Seleccione Departamento</option>';
+
+                result_departamento.forEach(i => {
+
+                    var option_departamento = document.createElement('option');
+                    option_departamento.value = i.id,
+                        option_departamento.textContent = i.nombre;
+
+
+                    select_departamento_planas_destino.appendChild(option_departamento);
+
+
+                });
+
+
+
+                //funcion para mostrar los municipios segun el departamento que se encuentre activo
+
+                document.getElementById('departamento-destino').addEventListener("change", async function () {
+                    //seleccionar a todos los departamentos
+
+                    try {
+
+                        var sist_refe = document.querySelector('input[name="sistemaRefDestino"]:checked').id == 'refDestinoMagna' ? 'MAGNA-SIRGAS' : 'BOGOTÁ'
+                        await con.open();
+                        var id_departamento = document.getElementById('departamento-destino').value;
+                        var query_municipios = "select DISTINCT  m.id, m.nombre from departamento d inner join municipio m on m.fk_departamento = d.id inner join origen_cartografico oc on oc.fk_municipio = m.id inner join sistema_referencia sr on sr.id = oc.fk_sistema where m.fk_departamento = ? and sr.nombre = ? order by m.nombre asc";
+                        var parametros_municipio = [id_departamento.toString(), sist_refe]
+                        var result_municipio = await con.getAll(query_municipios, parametros_municipio);
+
+                        var select_municipios = document.getElementById('municipio-destino');
+
+                        select_municipios.innerHTML = '<option value="defecto">Seleccione Municipio</option>';
+
+
+                        result_municipio.forEach(i => {
+
+                            var option_municipio = document.createElement('option');
+                            option_municipio.value = i.id,
+                                option_municipio.textContent = i.nombre;
+
+
+                            select_municipios.appendChild(option_municipio);
+                        });
+
+
+                    } catch (error) {
+                        console.error("Ocurrió un error:", error);
+                        return null;
+                    } finally {
+                        await con.close();
+                    }
+
+
+
+
+
+                });
+
+
+                document.getElementById('municipio-destino').addEventListener("change", async function () {
+
+                    try {
+                        await con.open();
+                        var select_municipio_detalle = document.getElementById('municipio-destino').value;
+
+                        //traer todos los datos del origen cartografico
+                        var query_origen = "select o.id, d.nombre as departamento, m.nombre as municipio, c.nombre as corregimiento, o.detalle as detalle , o.descripcion as descripcion, s.nombre as sistema_referencia  from departamento d inner join municipio m on d.id = m.fk_departamento  inner join origen_cartografico o on m.id = o.fk_municipio LEFT join  corregimiento c on c.id = o.fk_corregimiento  inner join sistema_referencia s on s.id = o.fk_sistema where m.id = ? and s.nombre = ? ";
+                        var sist_refe = document.querySelector('input[name="sistemaRefDestino"]:checked').id == 'refDestinoMagna' ? 'MAGNA-SIRGAS' : 'BOGOTÁ'
+
+
+
+                        var parametros_detalle = [select_municipio_detalle, sist_refe]
+                        var result_origen_detalle = await con.getAll(query_origen, parametros_detalle);
+
+                        console.log(result_origen_detalle);
+
+                        var detalle_select_origen = document.getElementById('origenes-cartesianos-destino');
+                        detalle_select_origen.innerHTML = '<option value="defecto">Seleccione año, municipio y/o corregimiento</option>';
+
+                        result_origen_detalle.forEach(i => {
+
+                            var option_detalle = document.createElement('option');
+                            option_detalle.value = i.id,
+                                option_detalle.textContent = i.detalle;
+
+
+                            detalle_select_origen.appendChild(option_detalle);
+                        });
+                    
+
+                    } catch (error) {
+                        console.error("Ocurrió un error:", error);
+                        return null;
+                    } finally {
+                        await con.close();
+                    }
+                })
+            } catch (error) {
+                console.error("Ocurrió un error:", error);
+                return null;
+            } finally {
+                await con.close();
+            }
+        } else if (opcion == 'gauss-kruger') {
+            div_origen_gauss.hidden = false;
+            div_planas.hidden = true;
+        } else {
+            div_origen_gauss.hidden = true;
+            div_planas.hidden = true;
+        }
+    });
+
 
 });

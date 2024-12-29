@@ -58,12 +58,12 @@ async function transformacion3D(coord_geo, transf, datum_bool) {
 module.exports = {transformacion3D};
 
 // como funciona este apartado ejemplo
-let region = new transformacion('R8',1738580.767, -6120500.388, 491473.3064,302.529, 317.979, -319.08,1.361566e-05, -2.17446e-06, -1.362418e-05, -2.19998e-06)
+// let region = new transformacion('R8',1738580.767, -6120500.388, 491473.3064,302.529, 317.979, -319.08,1.361566e-05, -2.17446e-06, -1.362418e-05, -2.19998e-06)
 
-let coord = new coord_geocentricas( 1860274.5599, -6084683.9153, 441945.1052);
-let coord2 = new coord_geocentricas( 1968272.7346, -6057720.5920, 331574.8387 );
-let resultado = transformacion3D(coord2, region, true);
-console.log(resultado);
+// let coord = new coord_geocentricas( 1860274.5599, -6084683.9153, 441945.1052);
+// let coord2 = new coord_geocentricas( 1968272.7346, -6057720.5920, 331574.8387 );
+// let resultado = transformacion3D(coord2, region, true);
+// console.log(resultado);
 
 //nota: poner true o false en datum_bool significa:
 //true = de datum bogota a magna sirgas
