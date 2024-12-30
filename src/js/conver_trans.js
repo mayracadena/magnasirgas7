@@ -1,11 +1,10 @@
-const elipsoide_referencia = require("../class/elipsoide_referencia.js");
-const coord_planas_cartesianas = require("../class/coord_planas_cartesianas.js");
 const coord_planas = require("../class/coord_planas.js");
 const coord_curvilineas = require("../class/coord_curvilineas.js");
 const coord_geocentricas = require("../class/coord_geocentricas.js");
 const conexion = require('../db/conexion.js');
-const { origen_nacional, gauss_kruger, origen_UTM, origen_UTM_planas_a_curvilienas } = require('../controller/origen.js');
-const origen = require('../class/origen.js');
+const { origen_nacional, gauss_kruger, origen_UTM, origen_UTM_planas_a_curvilienas, origen_gauss_kruger } = require('../controller/origen.js');
+const transformacion = require('../class/transformacion');
+const { transformacion3D } = require('../controller/transformacion_coordenadas.js');
 
 
 //importacion de la libreria proj4
@@ -16,8 +15,8 @@ const { planas_cartesianas_a_curvilineas, geocentricas_a_curvilineas, curvilinea
 
 const map = require('../js/mapa_colombia.js');
 
-
-
+//para limpiar recargamos de nuevo la pagina
+document.getElementById('limpiar').addEventListener("click", location.reload);
 
 function GMS_a_decimal(grados, minutos, segundos) {
   // Convertir minutos y segundos a grados decimales
@@ -47,65 +46,27 @@ function decimal_a_GMS(coordenada) {
   }
 }
 
-//devuelve el origen segun la longitud
-async function origen_gauss_kruger(longitud, sist_refe) {
 
-  var bogota, este_central, este_este, oeste, oeste_oeste, insular;
 
-  if (sist_refe == 'BOGOTÁ') {
-    bogota = -74.0809166666667;
-    este_central = -71.0809166666667;
-    este_este = -68.0809166666667;
-    oeste = -77.0809166666667;
-    oeste_oeste = -80.0809166666667;
-    insular = -83.0809166666667;
-  } else {
-    bogota = -74.0775079166667;
-    este_central = -71.0775079166667;
-    este_este = -68.0775079166667;
-    oeste = -77.0775079166667;
-    oeste_oeste = -80.0775079166667;
-    insular = -83.0775079166667;
+//cambiar mapa segun datum coordenadas elegido
+document.getElementById('datumBogotaLlegada').addEventListener('change', async function (event) {
+
+  if (document.getElementById('datumBogotaLlegada').checked) {
+    map.mapaDatumBogota()
   }
 
+});
 
-  /*
-  Para cada origen se tiene 3 grados
-  */
 
-  var origen = "";
+document.getElementById('magnaSIRGASLlegada').addEventListener('change', async function (event) {
+  if (document.getElementById('magnaSIRGASLlegada').checked) {
 
-  if (longitud < insular + 1.5 && longitud >= insular - 1.5) {
-    origen = "Insular"
-  }
-  else if (longitud < oeste_oeste + 1.5 && longitud >= oeste_oeste - 1.5) {
-    origen = "Oeste-oeste"
-  } else if (longitud < oeste + 1.5 && longitud >= oeste - 1.5) {
-    origen = "Oeste"
-  } else if (longitud < bogota + 1.5 && longitud >= bogota - 1.5) {
-    origen = "Central"
-  }
-  else if (longitud < este_central + 1.5 && longitud >= este_central - 1.5) {
-    origen = "Este"
-  }
-  else if (longitud < este_este + 1.5 && longitud >= este_este - 1.5) {
-    origen = "Este-este"
-  } else {
-    return "El origen no se encuentra"
+    map.mapaDepartamentos()
   }
 
-  return origen;
+});
 
-}
-
-
-
-
-
-
-
-
-
+//funcion donde se calculan todas las transformaciones y connversiones de coordenadas
 
 document.getElementById("calcular_trans_cover").addEventListener("click", async function () {
   const sistemaPartidaActivo = document.querySelector('input[name="sistemaPartida"]:checked');
@@ -120,6 +81,9 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
   const activeTabPartidaId = activeTabPartida ? activeTabPartida.id : null;
   const activeTabLlegadaId = activeTabLlegada ? activeTabLlegada.id : null;
 
+
+
+
   if (activeTabPartidaId) {
 
     console.log("Botón sistema partida:", sistemaPartidaActivo.id);
@@ -132,7 +96,11 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
     ----------------------------------------------
     */
 
-    var sist_refe = sistemaPartidaActivo.id == 'magnaSIRGASPartida' ? 'MAGNA-SIRGAS' : 'BOGOTÁ'
+
+    var sist_refe = sistemaPartidaActivo.id == 'magnaSIRGASPartida' ? 'MAGNA-SIRGAS' : 'BOGOTÁ';
+    var sist_refe_l = sistemaLlegadaActivo.id == 'magnaSIRGASLlegada' ? 'MAGNA-SIRGAS' : 'BOGOTÁ';
+
+
 
     if (activeTabPartidaId == 'elipsoidal-tab-partida') {
       //captura de latitud
@@ -169,6 +137,28 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
       var c_cc = new coord_curvilineas(lat_par, long_par, altura);
 
       map.agregarPuntoSecuencial(c_cc.phi, c_cc.lambda);
+
+      //transformacion de coordendas
+
+      if ((sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') || (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ')) {
+        
+        var boolDatum = (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') ? false : true;       
+
+        var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
+        //pasar a geocentricas para la transformacion
+        var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
+        //transformacion de datos
+        var cgr = await transformacion3D(cg, transf, boolDatum)
+        var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
+        //volver a convertir a elipsoidales
+        var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
+        var coord_curvili_transformadas = new coord_curvilineas(ccurtransf.phi, ccurtransf.lambda, ccurtransf.h);
+        //reasignacion de coordenadas capturadas
+        c_cc = coord_curvili_transformadas;
+        sist_refe = sist_refe_l;
+
+      }
+     
 
 
       //seccion de envio de datos de elipsoidales sexagesimal
@@ -299,31 +289,46 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
       map.agregarPuntoSecuencial(c_cc.phi, c_cc.lambda);
 
+      //transformacion de coordenadas
+      if ((sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') || (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ')) {
+        
+        var boolDatum = (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') ? false : true;
+        //captura de la region
+        var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
+        //pasar a geocentricas para la transformacion
+        var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
+        //transformacion de datos
+        var cgr = await transformacion3D(cg, transf, boolDatum)
+        var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
+        //volver a convertir a elipsoidales
+        var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
+        var coord_curvili_transformadas = new coord_curvilineas(ccurtransf.phi, ccurtransf.lambda, ccurtransf.h);
+        //reasignacion de coordenadas capturadas
+        c_cc = coord_curvili_transformadas;
+        sist_refe = sist_refe_l;
+
+      }
+
 
       if (activeTabLlegadaId == 'elipsoidal-tab-destino') {
 
-        let coord_respuesta = await curvilienas_a_curvilienas(c_cc, sistemaPartidaActivo.id, sistemaLlegadaActivo.id);
-
-
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda);
-
-        if (c_cc_r.phi < 0) {
+        if (c_cc.phi < 0) {
           document.getElementById('latitud-hemisferio-destino').value = 'S'
         } else {
           document.getElementById('latitud-hemisferio-destino').value = 'N'
         }
-        if (c_cc_r.lambda < 0) {
+        if (c_cc.lambda < 0) {
           document.getElementById('longitud-hemisferio-destino').value = 'W'
         } else {
           document.getElementById('longitud-hemisferio-destino').value = 'E'
         }
 
-        document.getElementById('latitud-grados-destino').value = decimal_a_GMS(c_cc_r.phi).grados
-        document.getElementById('latitud-minutos-destino').value = decimal_a_GMS(c_cc_r.phi).minutos
-        document.getElementById('latitud-segundos-destino').value = decimal_a_GMS(c_cc_r.phi).segundos
-        document.getElementById('longitud-grados-destino').value = decimal_a_GMS(c_cc_r.lambda).grados
-        document.getElementById('longitud-minutos-destino').value = decimal_a_GMS(c_cc_r.lambda).minutos
-        document.getElementById('longitud-segundos-destino').value = decimal_a_GMS(c_cc_r.lambda).segundos
+        document.getElementById('latitud-grados-destino').value = decimal_a_GMS(c_cc.phi).grados
+        document.getElementById('latitud-minutos-destino').value = decimal_a_GMS(c_cc.phi).minutos
+        document.getElementById('latitud-segundos-destino').value = decimal_a_GMS(c_cc.phi).segundos
+        document.getElementById('longitud-grados-destino').value = decimal_a_GMS(c_cc.lambda).grados
+        document.getElementById('longitud-minutos-destino').value = decimal_a_GMS(c_cc.lambda).minutos
+        document.getElementById('longitud-segundos-destino').value = decimal_a_GMS(c_cc.lambda).segundos
 
 
       } else if (activeTabLlegadaId == 'elipsoidal-decimal-tab-destino') {
@@ -379,7 +384,7 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
       } else if (activeTabLlegadaId == 'plana-cartesiana-tab-destino') {
         var origen_cartesiano = document.getElementById('detalle-planas-destino').value;
-        console.log('dentro de coordenadas elipsoidales decimales ', origen_cartesiano)
+
         if (origen_cartesiano == 'defecto') {
           alert('Debes escoger un origen cartesiano');
         } else {
@@ -425,54 +430,73 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
       let on = await origen_nacional();
 
       let coord_respuesta_m = await planas_a_curvilineas(c_on, on, sist_refe);
-      var c_cc_m = new coord_curvilineas(coord_respuesta_m.phi, coord_respuesta_m.lambda, coord_respuesta_m.h);
+      var c_cc = new coord_curvilineas(coord_respuesta_m.phi, coord_respuesta_m.lambda, coord_respuesta_m.h);
 
-      map.agregarPuntoSecuencial(c_cc_m.phi, c_cc_m.lambda);
+      map.agregarPuntoSecuencial(c_cc.phi, c_cc.lambda);
+
+      //transformacion de coordenadas
+      if ((sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') || (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ')) {
+        
+        var boolDatum = (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') ? false : true;
+        var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
+        //pasar a geocentricas para la transformacion
+        var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
+        //transformacion de datos
+        var cgr = await transformacion3D(cg, transf, boolDatum)
+        var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
+        //volver a convertir a elipsoidales
+        var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
+        var coord_curvili_transformadas = new coord_curvilineas(ccurtransf.phi, ccurtransf.lambda, ccurtransf.h);
+        //reasignacion de coordenadas capturadas
+        c_cc = coord_curvili_transformadas;
+
+        //reasignacion en origen nacional
+        var onr = await curvilineas_a_planas(c_cc, on, sist_refe);
+        var on2 = new coord_planas(onr.norte, onr.este, onr.h);
+        var c_on = on2;
+        sist_refe = sist_refe_l;
+
+
+
+      }
+      
 
       if (activeTabLlegadaId == 'elipsoidal-tab-destino') {
 
-
-
-        let coord_respuesta = await planas_a_curvilineas(c_on, on, sist_refe);
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda, coord_respuesta.h);
-
-        if (c_cc_r.phi < 0) {
+        if (c_cc.phi < 0) {
           document.getElementById('latitud-hemisferio-destino').value = 'S'
         } else {
           document.getElementById('latitud-hemisferio-destino').value = 'N'
         }
-        if (c_cc_r.lambda < 0) {
+        if (c_cc.lambda < 0) {
           document.getElementById('longitud-hemisferio-destino').value = 'W'
         } else {
           document.getElementById('longitud-hemisferio-destino').value = 'E'
         }
 
-        document.getElementById('latitud-grados-destino').value = decimal_a_GMS(c_cc_r.phi).grados
-        document.getElementById('latitud-minutos-destino').value = decimal_a_GMS(c_cc_r.phi).minutos
-        document.getElementById('latitud-segundos-destino').value = decimal_a_GMS(c_cc_r.phi).segundos
-        document.getElementById('longitud-grados-destino').value = decimal_a_GMS(c_cc_r.lambda).grados
-        document.getElementById('longitud-minutos-destino').value = decimal_a_GMS(c_cc_r.lambda).minutos
-        document.getElementById('longitud-segundos-destino').value = decimal_a_GMS(c_cc_r.lambda).segundos
+        document.getElementById('latitud-grados-destino').value = decimal_a_GMS(c_cc.phi).grados
+        document.getElementById('latitud-minutos-destino').value = decimal_a_GMS(c_cc.phi).minutos
+        document.getElementById('latitud-segundos-destino').value = decimal_a_GMS(c_cc.phi).segundos
+        document.getElementById('longitud-grados-destino').value = decimal_a_GMS(c_cc.lambda).grados
+        document.getElementById('longitud-minutos-destino').value = decimal_a_GMS(c_cc.lambda).minutos
+        document.getElementById('longitud-segundos-destino').value = decimal_a_GMS(c_cc.lambda).segundos
 
 
       } else if (activeTabLlegadaId == 'elipsoidal-decimal-tab-destino') {
 
-        let coord_respuesta = await planas_a_curvilineas(c_on, on, sist_refe);
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda, coord_respuesta.h);
-
-        if (c_cc_r.phi < 0) {
+        if (c_cc.phi < 0) {
           document.getElementById('latitud-hemisferio-destino').value = 'S'
         } else {
           document.getElementById('latitud-hemisferio-destino').value = 'N'
         }
-        if (c_cc_r.lambda < 0) {
+        if (c_cc.lambda < 0) {
           document.getElementById('longitud-hemisferio-destino').value = 'W'
         } else {
           document.getElementById('longitud-hemisferio-destino').value = 'E'
         }
 
-        document.getElementById('latitud-decimal-destino').value = c_cc_r.phi;
-        document.getElementById('longitud-decimal-destino').value = c_cc_r.lambda;
+        document.getElementById('latitud-decimal-destino').value = c_cc.phi;
+        document.getElementById('longitud-decimal-destino').value = c_cc.lambda;
 
 
       } else if (activeTabLlegadaId == 'origen-nacional-tab-destino') {
@@ -482,18 +506,13 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
       } else if (activeTabLlegadaId == 'utm-tab-destino') {
 
-        //origen nacional a curvilineas
-
-        let on_a_cc = await planas_a_curvilineas(c_on, on, sist_refe);
-
-        var c_cc_r = new coord_curvilineas(on_a_cc.phi, on_a_cc.lambda, on_a_cc.h);
 
         //coordenadas origen utm
-        let utmc = await origen_UTM(c_cc_r);
+        let utmc = await origen_UTM(c_cc);
 
 
 
-        let coord_respuesta = await curvilineas_a_planas(c_cc_r, utmc, sist_refe);
+        let coord_respuesta = await curvilineas_a_planas(c_cc, utmc, sist_refe);
 
 
         var c_utm = new coord_planas(coord_respuesta.norte, coord_respuesta.este, coord_respuesta.h);
@@ -505,13 +524,10 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
 
       } else if (activeTabLlegadaId == 'geocentrica-tab-destino') {
-        //origen nacional a curvilineas
-        let on_a_cc = await planas_a_curvilineas(c_on, on, sist_refe);
 
-        var c_cc_r = new coord_curvilineas(on_a_cc.phi, on_a_cc.lambda, on_a_cc.h);
 
         //de curvilineas a geocentricas
-        let coord_respuesta = await curvilineas_a_geocentricas(c_cc_r, sist_refe);
+        let coord_respuesta = await curvilineas_a_geocentricas(c_cc, sist_refe);
         var c_geo = new coord_geocentricas(coord_respuesta.X, coord_respuesta.Y, coord_respuesta.Z)
         document.getElementById('x-destino').value = c_geo.X;
         document.getElementById('y-destino').value = c_geo.Y;
@@ -537,16 +553,12 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
       } else if (activeTabLlegadaId == 'gauss-kruger-tab-destino') {
 
-        let on_a_cc = await planas_a_curvilineas(c_on, on, sist_refe);
-
-        var c_cc_r = new coord_curvilineas(on_a_cc.phi, on_a_cc.lambda, on_a_cc.h);
-
         //coordenadas origen gauss, se llama el nombre del origen
-        var origen_gauss = await origen_gauss_kruger(c_cc_r.lambda);
+        var origen_gauss = await origen_gauss_kruger(c_cc.lambda);
         //se llaman los parametros de origen segun el nombre del origen
         var o = await gauss_kruger(origen_gauss, sist_refe);
 
-        let coord_respuesta = await curvilineas_a_planas(c_cc_r, o, sist_refe);
+        let coord_respuesta = await curvilineas_a_planas(c_cc, o, sist_refe);
         var c_pgk = new coord_planas(coord_respuesta.norte, coord_respuesta.este, coord_respuesta.h);
 
         document.getElementById('norte-gk-destino').value = c_pgk.norte;
@@ -574,64 +586,78 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
       var c_c_g = await geocentricas_a_curvilineas(c_g, sist_refe);
 
-      var cc_g_r = new coord_curvilineas(c_c_g.phi, c_c_g.lambda, c_c_g.h);
-      map.agregarPuntoSecuencial(cc_g_r.phi, cc_g_r.lambda);
+      var c_cc = new coord_curvilineas(c_c_g.phi, c_c_g.lambda, c_c_g.h);
+      map.agregarPuntoSecuencial(c_cc.phi, c_cc.lambda);
+
+      //transformacion de coordenadas
+      if ((sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') || (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ')) {
+       
+        var boolDatum = (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') ? false : true;
+        var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
+
+        //transformacion de datos
+        var cgr = await transformacion3D(c_g, transf, boolDatum)
+        var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
+        //volver a convertir a elipsoidales
+        var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
+        var coord_curvili_transformadas = new coord_curvilineas(ccurtransf.phi, ccurtransf.lambda, ccurtransf.h);
+        //reasignacion de coordenadas capturadas
+        c_cc = coord_curvili_transformadas;
+        //reasignacion geocentricas
+        var c_g = cgeotransf;
+        sist_refe = sist_refe_l;
+      }
+   
 
       if (activeTabLlegadaId == 'elipsoidal-tab-destino') {
 
 
-        let coord_respuesta = await geocentricas_a_curvilineas(c_g, sist_refe);
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda, coord_respuesta.h);
-
-        if (c_cc_r.phi < 0) {
+        if (c_cc.phi < 0) {
           document.getElementById('latitud-hemisferio-destino').value = 'S'
         } else {
           document.getElementById('latitud-hemisferio-destino').value = 'N'
         }
-        if (c_cc_r.lambda < 0) {
+        if (c_cc.lambda < 0) {
           document.getElementById('longitud-hemisferio-destino').value = 'W'
         } else {
           document.getElementById('longitud-hemisferio-destino').value = 'E'
         }
 
-        document.getElementById('latitud-grados-destino').value = decimal_a_GMS(c_cc_r.phi).grados
-        document.getElementById('latitud-minutos-destino').value = decimal_a_GMS(c_cc_r.phi).minutos
-        document.getElementById('latitud-segundos-destino').value = decimal_a_GMS(c_cc_r.phi).segundos
-        document.getElementById('longitud-grados-destino').value = decimal_a_GMS(c_cc_r.lambda).grados
-        document.getElementById('longitud-minutos-destino').value = decimal_a_GMS(c_cc_r.lambda).minutos
-        document.getElementById('longitud-segundos-destino').value = decimal_a_GMS(c_cc_r.lambda).segundos
+        document.getElementById('latitud-grados-destino').value = decimal_a_GMS(c_cc.phi).grados
+        document.getElementById('latitud-minutos-destino').value = decimal_a_GMS(c_cc.phi).minutos
+        document.getElementById('latitud-segundos-destino').value = decimal_a_GMS(c_cc.phi).segundos
+        document.getElementById('longitud-grados-destino').value = decimal_a_GMS(c_cc.lambda).grados
+        document.getElementById('longitud-minutos-destino').value = decimal_a_GMS(c_cc.lambda).minutos
+        document.getElementById('longitud-segundos-destino').value = decimal_a_GMS(c_cc.lambda).segundos
 
-        document.getElementById('altura-destino-elipsoidal').value = c_cc_r.h;
+        document.getElementById('altura-destino-elipsoidal').value = c_cc.h;
 
       } else if (activeTabLlegadaId == 'elipsoidal-decimal-tab-destino') {
 
-        let coord_respuesta = await geocentricas_a_curvilineas(c_g, sist_refe);
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda, coord_respuesta.h);
 
-        if (c_cc_r.phi < 0) {
+
+        if (c_cc.phi < 0) {
           document.getElementById('latitud-hemisferio-destino').value = 'S'
         } else {
           document.getElementById('latitud-hemisferio-destino').value = 'N'
         }
-        if (c_cc_r.lambda < 0) {
+        if (c_cc.lambda < 0) {
           document.getElementById('longitud-hemisferio-destino').value = 'W'
         } else {
           document.getElementById('longitud-hemisferio-destino').value = 'E'
         }
 
-        document.getElementById('latitud-decimal-destino').value = c_cc_r.phi;
-        document.getElementById('longitud-decimal-destino').value = c_cc_r.lambda;
-        document.getElementById('altura-destino-elipsoidal-decimal').value = c_cc_r.h;
+        document.getElementById('latitud-decimal-destino').value = c_cc.phi;
+        document.getElementById('longitud-decimal-destino').value = c_cc.lambda;
+        document.getElementById('altura-destino-elipsoidal-decimal').value = c_cc.h;
 
 
       } else if (activeTabLlegadaId == 'origen-nacional-tab-destino') {
         let on = await origen_nacional();
         //mandamos valores para la conversion
 
-        let coord_r = await geocentricas_a_curvilineas(c_g, sist_refe);
-        var c_cc_r = new coord_curvilineas(coord_r.phi, coord_r.lambda, coord_r.h);
 
-        let coord_respuesta = await curvilineas_a_planas(c_cc_r, on, sist_refe);
+        let coord_respuesta = await curvilineas_a_planas(c_cc, on, sist_refe);
         var c_on = new coord_planas(coord_respuesta.norte, coord_respuesta.este, coord_respuesta.h);
 
         document.getElementById('norte-destino').value = c_on.norte;
@@ -642,10 +668,8 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
         //mandamos valores para conversion
 
-        let coord_r = await geocentricas_a_curvilineas(c_g, sist_refe);
-        var c_cc_r = new coord_curvilineas(coord_r.phi, coord_r.lambda, coord_r.h);
-        let utmc = await origen_UTM(c_cc_r);
-        let coord_respuesta = await curvilineas_a_planas(c_cc_r, utmc, sist_refe);
+        let utmc = await origen_UTM(c_cc);
+        let coord_respuesta = await curvilineas_a_planas(c_cc, utmc, sist_refe);
 
         var c_utm = new coord_planas(coord_respuesta.norte, coord_respuesta.este, coord_respuesta.h);
         document.getElementById('norte-utm-destino').value = c_utm.norte;
@@ -669,7 +693,7 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
         if (origen_cartesiano == 'defecto') {
           alert('Debes escoger un origen cartesiano');
         } else {
-          let coord_respuesta = await curvilineas_a_planas_cartesianas(cc_g_r, sist_refe, origen_cartesiano);
+          let coord_respuesta = await curvilineas_a_planas_cartesianas(c_cc, sist_refe, origen_cartesiano);
           var c_p = new coord_planas(coord_respuesta.norte, coord_respuesta.este, coord_respuesta.h);
           document.getElementById('norte-pc-destino').value = c_p.norte;
           document.getElementById('este-pc-destino').value = c_p.este;
@@ -681,15 +705,12 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
       } else if (activeTabLlegadaId == 'gauss-kruger-tab-destino') {
 
 
-        let coord_r = await geocentricas_a_curvilineas(c_g, sist_refe);
-        var c_cc_r = new coord_curvilineas(coord_r.phi, coord_r.lambda, coord_r.h);
-
         //coordenadas origen gauss, se llama el nombre del origen
-        var origen_gauss = await origen_gauss_kruger(c_cc_r.lambda);
+        var origen_gauss = await origen_gauss_kruger(c_cc.lambda);
         //se llaman los parametros de origen segun el nombre del origen
         var o = await gauss_kruger(origen_gauss, sist_refe);
 
-        let coord_respuesta = await curvilineas_a_planas(c_cc_r, o, sist_refe);
+        let coord_respuesta = await curvilineas_a_planas(c_cc, o, sist_refe);
         var c_pgk = new coord_planas(coord_respuesta.norte, coord_respuesta.este, coord_respuesta.h);
 
         document.getElementById('norte-gk-destino').value = c_pgk.norte;
@@ -714,64 +735,89 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
       if (origen_cartesiano == 'defecto') {
         alert('Debes escoger un origen cartesiano');
-      } 
-      
+      }
+
       else {
 
         var c_p = new coord_planas(norte_pc_partida, este_pc_partida, altura_partida_plana_cartesiana);
 
-        
+
         let c_cc_m = await planas_cartesianas_a_curvilineas(c_p, origen_cartesiano);
-        console.log(c_p, origen_cartesiano, c_cc_m)
-        var c_cc_r = new coord_curvilineas(c_cc_m.phi, c_cc_m.lambda, c_cc_m.h);
 
-        console.log(c_cc_m, c_cc_r)
+        var c_cc = new coord_curvilineas(c_cc_m.phi, c_cc_m.lambda, c_cc_m.h);
 
-        map.agregarPuntoSecuencial(c_cc_r.phi, c_cc_r.lambda);
 
+        map.agregarPuntoSecuencial(c_cc.phi, c_cc.lambda);
+
+        //transformacion de coordenadas
+        if ((sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') || (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ')) {
+     
+          var boolDatum = (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') ? false : true
+          var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
+          //pasar a geocentricas para la transformacion
+          var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
+          //transformacion de datos
+          var cgr = await transformacion3D(cg, transf, boolDatum)
+          var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
+          //volver a convertir a elipsoidales
+          var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
+          var coord_curvili_transformadas = new coord_curvilineas(ccurtransf.phi, ccurtransf.lambda, ccurtransf.h);
+          //reasignacion de coordenadas capturadas
+          c_cc = coord_curvili_transformadas;
+
+          //reasignacion en plana cartesiana
+          var cpr = await curvilineas_a_planas_cartesianas(c_cc, sist_refe, origen_cartesiano);
+          var c_p2 = new coord_planas(cpr.norte, cpr.este, cpr.h);
+          var c_p = c_p2;
+          sist_refe = sist_refe_l;
+
+
+
+        }
+        
 
         if (activeTabLlegadaId == 'elipsoidal-tab-destino') {
 
-          if (c_cc_r.phi < 0) {
+          if (c_cc.phi < 0) {
             document.getElementById('latitud-hemisferio-destino').value = 'S'
           } else {
             document.getElementById('latitud-hemisferio-destino').value = 'N'
           }
-          if (c_cc_r.lambda < 0) {
+          if (c_cc.lambda < 0) {
             document.getElementById('longitud-hemisferio-destino').value = 'W'
           } else {
             document.getElementById('longitud-hemisferio-destino').value = 'E'
           }
 
-          document.getElementById('latitud-grados-destino').value = decimal_a_GMS(c_cc_r.phi).grados
-          document.getElementById('latitud-minutos-destino').value = decimal_a_GMS(c_cc_r.phi).minutos
-          document.getElementById('latitud-segundos-destino').value = decimal_a_GMS(c_cc_r.phi).segundos
-          document.getElementById('longitud-grados-destino').value = decimal_a_GMS(c_cc_r.lambda).grados
-          document.getElementById('longitud-minutos-destino').value = decimal_a_GMS(c_cc_r.lambda).minutos
-          document.getElementById('longitud-segundos-destino').value = decimal_a_GMS(c_cc_r.lambda).segundos
+          document.getElementById('latitud-grados-destino').value = decimal_a_GMS(c_cc.phi).grados
+          document.getElementById('latitud-minutos-destino').value = decimal_a_GMS(c_cc.phi).minutos
+          document.getElementById('latitud-segundos-destino').value = decimal_a_GMS(c_cc.phi).segundos
+          document.getElementById('longitud-grados-destino').value = decimal_a_GMS(c_cc.lambda).grados
+          document.getElementById('longitud-minutos-destino').value = decimal_a_GMS(c_cc.lambda).minutos
+          document.getElementById('longitud-segundos-destino').value = decimal_a_GMS(c_cc.lambda).segundos
 
         } else if (activeTabLlegadaId == 'elipsoidal-decimal-tab-destino') {
 
-          if (c_cc_r.phi < 0) {
+          if (c_cc.phi < 0) {
             document.getElementById('latitud-hemisferio-destino').value = 'S'
           } else {
             document.getElementById('latitud-hemisferio-destino').value = 'N'
           }
-          if (c_cc_r.lambda < 0) {
+          if (c_cc.lambda < 0) {
             document.getElementById('longitud-hemisferio-destino').value = 'W'
           } else {
             document.getElementById('longitud-hemisferio-destino').value = 'E'
           }
 
-          document.getElementById('latitud-decimal-destino').value = c_cc_r.phi;
-          document.getElementById('longitud-decimal-destino').value = c_cc_r.lambda;
+          document.getElementById('latitud-decimal-destino').value = c_cc.phi;
+          document.getElementById('longitud-decimal-destino').value = c_cc.lambda;
 
 
         } else if (activeTabLlegadaId == 'origen-nacional-tab-destino') {
           //llamamos los valores del origen nacional
           let on = await origen_nacional();
           //mandamos valores para la conversion
-          let coord_respuesta = await curvilineas_a_planas(c_cc_r, on, sist_refe);
+          let coord_respuesta = await curvilineas_a_planas(c_cc, on, sist_refe);
           var c_on = new coord_planas(coord_respuesta.norte, coord_respuesta.este, coord_respuesta.h);
 
           document.getElementById('norte-destino').value = c_on.norte;
@@ -779,9 +825,9 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
         } else if (activeTabLlegadaId == 'utm-tab-destino') {
           //coordenadas de origen UTM
-          let utmc = await origen_UTM(c_cc_r);
+          let utmc = await origen_UTM(c_cc);
           //mandamos valores para conversion
-          let coord_respuesta = await curvilineas_a_planas(c_cc_r, utmc, sist_refe);
+          let coord_respuesta = await curvilineas_a_planas(c_cc, utmc, sist_refe);
 
           var c_utm = new coord_planas(coord_respuesta.norte, coord_respuesta.este, coord_respuesta.h);
           document.getElementById('norte-utm-destino').value = c_utm.norte;
@@ -791,7 +837,7 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
         } else if (activeTabLlegadaId == 'geocentrica-tab-destino') {
 
-          let coord_respuesta = await curvilineas_a_geocentricas(c_cc_r, sist_refe);
+          let coord_respuesta = await curvilineas_a_geocentricas(c_cc, sist_refe);
           var c_geo = new coord_geocentricas(coord_respuesta.X, coord_respuesta.Y, coord_respuesta.Z)
           document.getElementById('x-destino').value = c_geo.X;
           document.getElementById('y-destino').value = c_geo.Y;
@@ -815,11 +861,11 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
         } else if (activeTabLlegadaId == 'gauss-kruger-tab-destino') {
           //coordenadas origen gauss, se llama el nombre del origen
-          var origen_gauss = await origen_gauss_kruger(c_cc_r.lambda);
+          var origen_gauss = await origen_gauss_kruger(c_cc.lambda);
           //se llaman los parametros de origen segun el nombre del origen
           var o = await gauss_kruger(origen_gauss, sist_refe);
 
-          let coord_respuesta = await curvilineas_a_planas(c_cc_r, o, sist_refe);
+          let coord_respuesta = await curvilineas_a_planas(c_cc, o, sist_refe);
           var c_pgk = new coord_planas(coord_respuesta.norte, coord_respuesta.este, coord_respuesta.h);
 
           document.getElementById('norte-gk-destino').value = c_pgk.norte;
@@ -849,64 +895,87 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
       var origen_utm = await origen_UTM_planas_a_curvilienas(huso_partida, hemisferio_partida);
 
       let coord_respuesta_m = await planas_a_curvilineas(c_utm, origen_utm, sist_refe);
-      var c_cc_m = new coord_curvilineas(coord_respuesta_m.phi, coord_respuesta_m.lambda, coord_respuesta_m.h);
+      var c_cc = new coord_curvilineas(coord_respuesta_m.phi, coord_respuesta_m.lambda, coord_respuesta_m.h);
 
-      map.agregarPuntoSecuencial(c_cc_m.phi, c_cc_m.lambda);
+      map.agregarPuntoSecuencial(c_cc.phi, c_cc.lambda);
 
+
+      //transformacion de coordenadas
+      if ((sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') || (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ')) {
+        
+        var boolDatum = (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') ? false : true
+        //captura de la region
+        var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
+        //pasar a geocentricas para la transformacion
+        var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
+        //transformacion de datos
+        var cgr = await transformacion3D(cg, transf, boolDatum)
+        var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
+        //volver a convertir a elipsoidales
+        var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
+        var coord_curvili_transformadas = new coord_curvilineas(ccurtransf.phi, ccurtransf.lambda, ccurtransf.h);
+        //reasignacion de coordenadas capturadas
+        c_cc = coord_curvili_transformadas;
+
+        //reasignacion en utm
+        var utmc = await origen_UTM(c_cc);
+        var cutmr = await curvilineas_a_planas(c_cc, utmc, sist_refe);
+        var c_utm2 = new coord_planas(cutmr.norte, cutmr.este, cutmr.h);
+        c_utm = c_utm2;
+        sist_refe = sist_refe_l;
+
+
+
+      }
+    
 
       if (activeTabLlegadaId == 'elipsoidal-tab-destino') {
 
-        let coord_respuesta = await planas_a_curvilineas(c_utm, origen_utm, sist_refe);
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda, coord_respuesta.h);
 
-        if (c_cc_r.phi < 0) {
+        if (c_cc.phi < 0) {
           document.getElementById('latitud-hemisferio-destino').value = 'S'
         } else {
           document.getElementById('latitud-hemisferio-destino').value = 'N'
         }
-        if (c_cc_r.lambda < 0) {
+        if (c_cc.lambda < 0) {
           document.getElementById('longitud-hemisferio-destino').value = 'W'
         } else {
           document.getElementById('longitud-hemisferio-destino').value = 'E'
         }
 
-        document.getElementById('latitud-grados-destino').value = decimal_a_GMS(c_cc_r.phi).grados
-        document.getElementById('latitud-minutos-destino').value = decimal_a_GMS(c_cc_r.phi).minutos
-        document.getElementById('latitud-segundos-destino').value = decimal_a_GMS(c_cc_r.phi).segundos
-        document.getElementById('longitud-grados-destino').value = decimal_a_GMS(c_cc_r.lambda).grados
-        document.getElementById('longitud-minutos-destino').value = decimal_a_GMS(c_cc_r.lambda).minutos
-        document.getElementById('longitud-segundos-destino').value = decimal_a_GMS(c_cc_r.lambda).segundos
+        document.getElementById('latitud-grados-destino').value = decimal_a_GMS(c_cc.phi).grados
+        document.getElementById('latitud-minutos-destino').value = decimal_a_GMS(c_cc.phi).minutos
+        document.getElementById('latitud-segundos-destino').value = decimal_a_GMS(c_cc.phi).segundos
+        document.getElementById('longitud-grados-destino').value = decimal_a_GMS(c_cc.lambda).grados
+        document.getElementById('longitud-minutos-destino').value = decimal_a_GMS(c_cc.lambda).minutos
+        document.getElementById('longitud-segundos-destino').value = decimal_a_GMS(c_cc.lambda).segundos
 
 
 
       } else if (activeTabLlegadaId == 'elipsoidal-decimal-tab-destino') {
 
-        let coord_respuesta = await planas_a_curvilineas(c_utm, origen_utm, sist_refe);
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda, coord_respuesta.h);
 
-        if (c_cc_r.phi < 0) {
+        if (c_cc.phi < 0) {
           document.getElementById('latitud-hemisferio-destino').value = 'S'
         } else {
           document.getElementById('latitud-hemisferio-destino').value = 'N'
         }
-        if (c_cc_r.lambda < 0) {
+        if (c_cc.lambda < 0) {
           document.getElementById('longitud-hemisferio-destino').value = 'W'
         } else {
           document.getElementById('longitud-hemisferio-destino').value = 'E'
         }
 
-        document.getElementById('latitud-decimal-destino').value = c_cc_r.phi;
-        document.getElementById('longitud-decimal-destino').value = c_cc_r.lambda;
+        document.getElementById('latitud-decimal-destino').value = c_cc.phi;
+        document.getElementById('longitud-decimal-destino').value = c_cc.lambda;
 
 
       } else if (activeTabLlegadaId == 'origen-nacional-tab-destino') {
 
-        let coord_respuesta = await planas_a_curvilineas(c_utm, origen_utm, sist_refe);
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda, coord_respuesta.h);
 
         let on = await origen_nacional();
         //mandamos valores para la conversion
-        let coord_respuesta2 = await curvilineas_a_planas(c_cc_r, on, sist_refe);
+        let coord_respuesta2 = await curvilineas_a_planas(c_cc, on, sist_refe);
         var c_on = new coord_planas(coord_respuesta2.norte, coord_respuesta2.este, coord_respuesta2.h);
 
         document.getElementById('norte-destino').value = c_on.norte;
@@ -922,10 +991,8 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
 
       } else if (activeTabLlegadaId == 'geocentrica-tab-destino') {
-        let coord_respuesta = await planas_a_curvilineas(c_utm, origen_utm, sist_refe);
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda, coord_respuesta.h);
 
-        let coord_respuesta2 = await curvilineas_a_geocentricas(c_cc_r, sist_refe);
+        let coord_respuesta2 = await curvilineas_a_geocentricas(c_cc, sist_refe);
         var c_geo = new coord_geocentricas(coord_respuesta2.X, coord_respuesta2.Y, coord_respuesta2.Z)
         document.getElementById('x-destino').value = c_geo.X;
         document.getElementById('y-destino').value = c_geo.Y;
@@ -949,13 +1016,13 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
       } else if (activeTabLlegadaId == 'gauss-kruger-tab-destino') {
         let coord_respuesta = await planas_a_curvilineas(c_utm, origen_utm, sist_refe);
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda, coord_respuesta.h);
+        var c_cc = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda, coord_respuesta.h);
 
-        var origen_gauss = await origen_gauss_kruger(c_cc_r.lambda);
+        var origen_gauss = await origen_gauss_kruger(c_cc.lambda);
         //se llaman los parametros de origen segun el nombre del origen
         var o = await gauss_kruger(origen_gauss, sist_refe);
 
-        let coord_respuesta2 = await curvilineas_a_planas(c_cc_r, o, sist_refe);
+        let coord_respuesta2 = await curvilineas_a_planas(c_cc, o, sist_refe);
         var c_pgk = new coord_planas(coord_respuesta2.norte, coord_respuesta2.este, coord_respuesta2.h);
 
         document.getElementById('norte-gk-destino').value = c_pgk.norte;
@@ -986,61 +1053,79 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
       var o = await gauss_kruger(origen_gauss_partida, sist_refe);
 
       let coord_respuesta_m = await planas_a_curvilineas(c_gk, o, sist_refe);
-      var c_cc_m = new coord_curvilineas(coord_respuesta_m.phi, coord_respuesta_m.lambda, coord_respuesta_m.h);
+      var c_cc = new coord_curvilineas(coord_respuesta_m.phi, coord_respuesta_m.lambda, coord_respuesta_m.h);
 
-      map.agregarPuntoSecuencial(c_cc_m.phi, c_cc_m.lambda);
+      map.agregarPuntoSecuencial(c_cc.phi, c_cc.lambda);
+
+
+      //transformacion de coordenadas
+      if ((sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') || (sist_refe_l == 'MAGNA-SIRGAS' && sist_refe == 'BOGOTÁ')) {
+        
+        var boolDatum = (sist_refe == 'MAGNA-SIRGAS' && sist_refe_l == 'BOGOTÁ') ? false : true
+        //captura de la region
+        var transf = await map.regionTransformacion(c_cc.phi, c_cc.lambda);
+        //pasar a geocentricas para la transformacion
+        var cg = await curvilineas_a_geocentricas(c_cc, sist_refe);
+        //transformacion de datos
+        var cgr = await transformacion3D(cg, transf, boolDatum)
+        var cgeotransf = new coord_geocentricas(cgr.X, cgr.Y, cgr.Z);
+        //volver a convertir a elipsoidales
+        var ccurtransf = await geocentricas_a_curvilineas(cgeotransf, sist_refe_l);
+        var coord_curvili_transformadas = new coord_curvilineas(ccurtransf.phi, ccurtransf.lambda, ccurtransf.h);
+        //reasignacion de coordenadas capturadas
+        c_cc = coord_curvili_transformadas;
+
+        //reasignacion gauss kruger
+        var origen_gauss = await origen_gauss_kruger(c_cc.lambda);
+        var o = await gauss_kruger(origen_gauss, sist_refe);
+        var c_gkr = await curvilineas_a_planas(c_cc, o, sist_refe);
+        var c_gk2 = new coord_planas(c_gkr.norte, c_gkr.este, c_gkr.h);
+        c_gk = c_gk2;
+        sist_refe = sist_refe_l;
+
+      }
 
       if (activeTabLlegadaId == 'elipsoidal-tab-destino') {
 
-
-
-        let coord_respuesta = await planas_a_curvilineas(c_gk, o, sist_refe);
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda, coord_respuesta.h);
-
-        if (c_cc_r.phi < 0) {
+        if (c_cc.phi < 0) {
           document.getElementById('latitud-hemisferio-destino').value = 'S'
         } else {
           document.getElementById('latitud-hemisferio-destino').value = 'N'
         }
-        if (c_cc_r.lambda < 0) {
+        if (c_cc.lambda < 0) {
           document.getElementById('longitud-hemisferio-destino').value = 'W'
         } else {
           document.getElementById('longitud-hemisferio-destino').value = 'E'
         }
 
-        document.getElementById('latitud-grados-destino').value = decimal_a_GMS(c_cc_r.phi).grados
-        document.getElementById('latitud-minutos-destino').value = decimal_a_GMS(c_cc_r.phi).minutos
-        document.getElementById('latitud-segundos-destino').value = decimal_a_GMS(c_cc_r.phi).segundos
-        document.getElementById('longitud-grados-destino').value = decimal_a_GMS(c_cc_r.lambda).grados
-        document.getElementById('longitud-minutos-destino').value = decimal_a_GMS(c_cc_r.lambda).minutos
-        document.getElementById('longitud-segundos-destino').value = decimal_a_GMS(c_cc_r.lambda).segundos
+        document.getElementById('latitud-grados-destino').value = decimal_a_GMS(c_cc.phi).grados
+        document.getElementById('latitud-minutos-destino').value = decimal_a_GMS(c_cc.phi).minutos
+        document.getElementById('latitud-segundos-destino').value = decimal_a_GMS(c_cc.phi).segundos
+        document.getElementById('longitud-grados-destino').value = decimal_a_GMS(c_cc.lambda).grados
+        document.getElementById('longitud-minutos-destino').value = decimal_a_GMS(c_cc.lambda).minutos
+        document.getElementById('longitud-segundos-destino').value = decimal_a_GMS(c_cc.lambda).segundos
 
       } else if (activeTabLlegadaId == 'elipsoidal-decimal-tab-destino') {
 
-        let coord_respuesta = await planas_a_curvilineas(c_gk, o, sist_refe);
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda, coord_respuesta.h);
-
-        if (c_cc_r.phi < 0) {
+        if (c_cc.phi < 0) {
           document.getElementById('latitud-hemisferio-destino').value = 'S'
         } else {
           document.getElementById('latitud-hemisferio-destino').value = 'N'
         }
-        if (c_cc_r.lambda < 0) {
+        if (c_cc.lambda < 0) {
           document.getElementById('longitud-hemisferio-destino').value = 'W'
         } else {
           document.getElementById('longitud-hemisferio-destino').value = 'E'
         }
 
-        document.getElementById('latitud-decimal-destino').value = c_cc_r.phi;
-        document.getElementById('longitud-decimal-destino').value = c_cc_r.lambda;
+        document.getElementById('latitud-decimal-destino').value = c_cc.phi;
+        document.getElementById('longitud-decimal-destino').value = c_cc.lambda;
 
 
       } else if (activeTabLlegadaId == 'origen-nacional-tab-destino') {
-        let coord_respuesta = await planas_a_curvilineas(c_gk, o, sist_refe);
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda, coord_respuesta.h);
 
         let on = await origen_nacional();
-        let coord_respuesta2 = await curvilineas_a_planas(c_cc_r, on, sist_refe);
+        let coord_respuesta2 = await curvilineas_a_planas(c_cc, on, sist_refe);
         var c_on = new coord_planas(coord_respuesta2.norte, coord_respuesta2.este, coord_respuesta2.h);
 
         document.getElementById('norte-destino').value = c_on.norte;
@@ -1050,10 +1135,10 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
 
       } else if (activeTabLlegadaId == 'utm-tab-destino') {
         let coord_respuesta = await planas_a_curvilineas(c_gk, o, sist_refe);
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda, coord_respuesta.h);
+        var c_cc = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda, coord_respuesta.h);
 
-        let utmc = await origen_UTM(c_cc_r);
-        let coord_respuesta2 = await curvilineas_a_planas(c_cc_r, utmc, sist_refe);
+        let utmc = await origen_UTM(c_cc);
+        let coord_respuesta2 = await curvilineas_a_planas(c_cc, utmc, sist_refe);
 
         var c_utm = new coord_planas(coord_respuesta2.norte, coord_respuesta2.este, coord_respuesta2.h);
         document.getElementById('norte-utm-destino').value = c_utm.norte;
@@ -1066,9 +1151,9 @@ document.getElementById("calcular_trans_cover").addEventListener("click", async 
       } else if (activeTabLlegadaId == 'geocentrica-tab-destino') {
 
         let coord_respuesta = await planas_a_curvilineas(c_gk, o, sist_refe);
-        var c_cc_r = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda, coord_respuesta.h);
+        var c_cc = new coord_curvilineas(coord_respuesta.phi, coord_respuesta.lambda, coord_respuesta.h);
 
-        let coord_respuesta2 = await curvilineas_a_geocentricas(c_cc_r, sist_refe);
+        let coord_respuesta2 = await curvilineas_a_geocentricas(c_cc, sist_refe);
         var c_geo = new coord_geocentricas(coord_respuesta2.X, coord_respuesta2.Y, coord_respuesta2.Z)
         document.getElementById('x-destino').value = c_geo.X;
         document.getElementById('y-destino').value = c_geo.Y;
@@ -1362,15 +1447,15 @@ document.getElementById('myTabPartida').addEventListener("click", async function
               var headModal = document.getElementById('informacion_origen_Label_partida')
               headModal.innerHTML = roc.detalle;
 
-              mensaje_detalle = `<label>Departamento: </label>${roc.departamento} <br>
-                     <label>Municipio: </label>${roc.municipio} <br>
+              mensaje_detalle = `Departamento: ${roc.departamento} <br>
+                     Municipio: ${roc.municipio} <br>
                      <h4>Elipsoidales</h4>
-                     <label>Latitud de origen: </label>${roc.latitud} grados<br>
-                     <label>Longitud de origen: </label>${roc.longitud} grados<br>
+                     Latitud de origen: ${roc.latitud} grados<br>
+                     Longitud de origen: ${roc.longitud} grados<br>
                      <h4>Planas</h4>
-                     <label>Falso norte: </label>${roc.norte} m<br>
-                     <label>Falso este: </label>${roc.este} m<br>
-                     <label>Plano de proyección: </label>${roc.plano_proyeccion} m<br>
+                     Falso norte: ${roc.norte} m<br>
+                     Falso este: ${roc.este} m<br>
+                     Plano de proyección: ${roc.plano_proyeccion} m<br>
                      <h4>Descripción</h4>
                      ${roc.descripcion}
 
@@ -1671,15 +1756,15 @@ departamento, el municipio y el origen cartesiano
               var headModal = document.getElementById('informacion_origen_Label')
               headModal.innerHTML = roc.detalle;
 
-              mensaje_detalle = `<label>Departamento: </label>${roc.departamento} <br>
-                     <label>Municipio: </label>${roc.municipio} <br>
+              mensaje_detalle = `Departamento: ${roc.departamento} <br>
+                     Municipio: ${roc.municipio} <br>
                      <h4>Elipsoidales</h4>
-                     <label>Latitud de origen: </label>${roc.latitud} grados<br>
-                     <label>Longitud de origen: </label>${roc.longitud} grados<br>
+                     Latitud de origen: ${roc.latitud} grados<br>
+                     Longitud de origen: ${roc.longitud} grados<br>
                      <h4>Planas</h4>
-                     <label>Falso norte: </label>${roc.norte} m<br>
-                     <label>Falso este: </label>${roc.este} m<br>
-                     <label>Plano de proyección: </label>${roc.plano_proyeccion} m<br>
+                     Falso norte: ${roc.norte} m<br>
+                     Falso este: ${roc.este} m<br>
+                     Plano de proyección: ${roc.plano_proyeccion} m<br>
                      <h4>Descripción</h4>
                      ${roc.descripcion}
 

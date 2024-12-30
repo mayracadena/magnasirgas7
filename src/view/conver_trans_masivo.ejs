@@ -1,0 +1,386 @@
+<%- include('./partials/cabecero.ejs', {"titulo": "Transformación y Conversión de Coordenadas masivo" }); %>
+  <%- include('./partials/menu.ejs'); %>
+
+    <style>
+      /* Ajustes para la interfaz compacta y esquinas redondeadas en el mapa */
+      h2.main-title {
+        text-align: center;
+        margin: 1rem 0;
+        font-weight: 600;
+        color: #fff;
+        /* Ajusta si usas fondo oscuro */
+      }
+
+      .card {
+        margin-bottom: 0.5rem;
+        /* Espacio mínimo entre tarjetas */
+      }
+
+      .card-header,
+      .card-body {
+        padding: 0.5rem;
+        /* Menor padding interno */
+      }
+
+      .form-check {
+        margin-bottom: 0.35rem;
+        /* Separación menor entre radios */
+      }
+
+      .btn {
+        font-size: 0.85rem;
+        /* Botones ligeramente más pequeños */
+      }
+
+      /* Esquinas redondeadas para el mapa */
+      #map {
+        border-radius: 10px;
+        /* Ajusta el radio según tu preferencia */
+      }
+
+      .options {
+        color: #001f3f;
+        background-color: #fff;
+        display: block;
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        border-radius: 5px;
+      }
+
+      .panel {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        flex: 1;
+      }
+
+      .right-panel {
+        flex: 2;
+      }
+
+      table.file-preview {
+        width: 100%;
+        table-layout: auto;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      table.file-preview th,
+      table.file-preview td {
+        text-align: center;
+        padding: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        word-wrap: break-word;
+      }
+
+      table.file-preview th {
+        background-color: #f8f9fa;
+        color: #000000;
+      }
+
+      table.file-preview td {
+        color: #ffffff;
+      }
+
+      table.file-preview tbody tr:nth-of-type(odd) {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      table.file-preview tbody tr:nth-of-type(even) {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    </style>
+
+    <!-- Título principal -->
+    <h4 class="main-title">Conversión y Transformación de Coordenadas</h4>
+
+    <div class="container-fluid" style="max-width: 100vw; overflow-x: hidden;">
+      <div class="row">
+
+        <!-- COLUMNA IZQUIERDA: CARGA CSV -->
+        <div class="col-md-6">
+
+          <div class="">
+            <div class="row">
+              <!-- REF. ORIGEN + TIPO COORD. ORIGEN -->
+              <div class="col-md-6">
+                <!-- Ref. Origen -->
+                <div class="card shadow">
+                  <div class="card-header">
+                    <strong>Ref. Origen (CSV)</strong>
+                  </div>
+                  <div class="card-body">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="sistemaRefOrigen" id="refOrigenMagna"
+                        value="MAGNA-SIRGAS" checked>
+                      <label class="form-check-label" for="refOrigenMagna">
+                        MAGNA-SIRGAS
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="sistemaRefOrigen" id="refOrigenBogota"
+                        value="DatumBogota">
+                      <label class="form-check-label" for="refOrigenBogota">
+                        Datum Bogotá
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tipo Coord. Origen -->
+                <div class="card shadow">
+                  <div class="card-header">
+                    <strong>Tipo Coord. Origen</strong>
+                  </div>
+                  <div class="card-body">
+                    <select class="options" id="tipo-coordenada">
+                      <option value="default">-- Seleccione un tipo --</option>
+                      <option value="elipsoidal">Elipsoidal decimal (lat, lon, h)</option>
+                      <option value="utm">UTM (Este, Norte, Zona)</option>
+                      <option value="geocentrica">Geocéntrica (X, Y, Z)</option>
+                      <option value="plana-cartesiana">Plana Cartesiana (X, Y)</option>
+                      <option value="gauss-kruger">Gauss Krüger (Este, Norte)</option>
+                      <option value="origen-nacional">Origen Nacional (Este, Norte)</option>
+                    </select>
+
+                    <div class="mb-3" id="origen-gauss-tab" hidden>
+                      <label>Origen Gauss Krüger: </label>
+                      <select class="options" id="origen-gauss">
+                        <option value="Central">Central</option>
+                        <option value="Este">Este Central</option>
+                        <option value="Este-este">Este Este</option>
+                        <option value="Oeste">Oeste</option>
+                        <option value="Oeste-oeste">Oeste Oeste</option>
+                        <option value="Insular">Insular</option>
+                      </select>
+
+                    </div>
+
+                    <div class="mb-3" id="origen-cartesiano-tab" hidden>
+
+
+                      <div class="form-group ">
+                        <label for="departamento">Departamento: </label>
+                        <select id="departamento" class="options">
+                          <option value="defecto" disabled>Seleccione Municipio</option>
+                          <!-- se llena con informacion de la base de datos  -->
+                        </select>
+                      </div>
+                      <div class="form-group ">
+                        <label for="municipio">Municipio: </label>
+                        <select id="municipio" class="options" placeholder="Seleccione Municipio">
+                          <option value="defecto">Seleccione Municipio</option>
+                          <!-- se llena con informacion de la base ed datos  -->
+                        </select>
+                      </div>
+
+
+                      <div class="form-group ">
+                        <label for="origenes-cartesianos">Origenes cartesianos disponibles: </label>
+                        <select id="origenes-cartesianos" class="options" placeholder="Seleccione Municipio">
+                          <option value="defecto">Seleccione año, municipio y/o corregimiento</option>
+                          <!-- se llena con informacion de la base ed datos  -->
+                        </select>
+                      </div>
+                      <div class="form-group ">
+                        <br>
+                        <!-- Button trigger modal -->
+                        <!-- <button type="button" class="btn btn-primary " data-bs-toggle="modal"
+                          data-bs-target="#informacion_origen">
+                          Mas información
+                        </button> -->
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="informacion_origen" tabindex="-1"
+                          aria-labelledby="exampleModalLabel" aria-hidden="true" style="color: #001f3f;">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="informacion_origen_Label"></h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                  aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body" id="modal-body-content">
+
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                  </div>
+                </div>
+              </div><!-- /.col-md-6 -->
+
+              <!-- REF. DESTINO + TIPO COORD. DESTINO -->
+              <div class="col-md-6">
+                <!-- Ref. Destino -->
+                <div class="card shadow">
+                  <div class="card-header">
+                    <strong>Ref. Destino</strong>
+                  </div>
+                  <div class="card-body">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="sistemaRefDestino" id="refDestinoMagna"
+                        value="MAGNA-SIRGAS" checked>
+                      <label class="form-check-label" for="refDestinoMagna">
+                        MAGNA-SIRGAS
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="sistemaRefDestino" id="refDestinoBogota"
+                        value="DatumBogota">
+                      <label class="form-check-label" for="refDestinoBogota">
+                        Datum Bogotá
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tipo Coord. Destino -->
+                <div class="card shadow">
+                  <div class="card-header">
+                    <strong>Tipo Coord. Destino</strong>
+                  </div>
+                  <div class="card-body">
+                    <select class="options" id="tipo-coordenada-destino">
+                      <option value="default">-- Seleccione un tipo --</option>
+                      <option value="elipsoidal">Elipsoidal decimal (lat, lon, h)</option>
+                      <option value="utm">UTM (Este, Norte, h, Zona)</option>
+                      <option value="geocentrica">Geocéntrica (X, Y, Z)</option>
+                      <option value="plana-cartesiana">Plana Cartesiana (X, Y, h)</option>
+                      <option value="gauss-kruger">Gauss Krüger (Este, Norte, h)</option>
+                      <option value="origen-nacional">Origen Nacional (Este, Norte, h)</option>
+                    </select>
+
+
+                    <div class="mb-3" id="origen-cartesiano-destino-tab" hidden>
+
+
+                      <div class="form-group ">
+                        <label for="departamento-destino">Departamento: </label>
+                        <select id="departamento-destino" class="options">
+                          <option value="defecto" disabled>Seleccione Departamento</option>
+                          <!-- se llena con informacion de la base de datos  -->
+                        </select>
+                      </div>
+                      <div class="form-group ">
+                        <label for="municipio-destino">Municipio: </label>
+                        <select id="municipio-destino" class="options" placeholder="Seleccione Municipio">
+                          <option value="defecto">Seleccione Municipio</option>
+                          <!-- se llena con informacion de la base ed datos  -->
+                        </select>
+                      </div>
+
+
+                      <div class="form-group ">
+                        <label for="origenes-cartesianos-destino">Origenes cartesianos disponibles: </label>
+                        <select id="origenes-cartesianos-destino" class="options" placeholder="Seleccione Municipio">
+                          <option value="defecto">Seleccione año, municipio y/o corregimiento</option>
+                          <!-- se llena con informacion de la base ed datos  -->
+                        </select>
+                      </div>
+                      
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- (1) CARGA DE CSV -->
+          <div class="card shadow">
+            <div class="card-header">
+              <h5>Carga de CSV</h5>
+            </div>
+            <div class="card-body">
+              <label for="archivo-coordenadas"><small>Seleccionar archivo CSV:</small></label>
+              <input type="file" class="form-control form-control-sm mb-2" id="archivo-coordenadas" accept=".csv">
+              <!-- Eliminado el botón "Procesar" -->
+              <div id="archivo-detalles" style="display: none; ">
+                <p id="nombre-archivo" style="margin: 0;"></p>
+                <p id="tamaño-archivo" style="margin: 0;"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- (2) BOTONES (sin título "Acciones") -->
+          <div class="card shadow">
+            <!-- Se ha quitado la card-header -->
+            <div class="card-body d-flex flex-column align-items-stretch" style="gap: 0.5rem;">
+              <button class="btn btn-primary btn-sm" id="calcular">
+                Calcular
+              </button>
+              <button class="btn btn-secondary btn-sm" id="limpiarBtn" onclick="location.reload();">
+                Limpiar
+              </button>
+            </div>
+          </div>
+
+
+        </div>
+        <div class="col-md-6">
+          <div class="card shadow">
+            <div class="card-header">
+              <h5>Mapa</h5>
+            </div>
+            <div class="card-body p-0">
+              <div id="map"
+                style="width: 100%; height: 250px; margin-right: 25px; margin-bottom: 20px; margin-top: 30px;"></div>
+              <div class="panel right-panel">
+                <h5>Datos Cargados</h5>
+                <div class="table-responsive" style="max-height: 250px; width: 100% ;overflow:auto;">
+                  <table class="file-preview" id="tabla-datos">
+                    <thead>
+                      <!-- Cabeceras dinámicas se generan con JS -->
+                    </thead>
+                    <tbody>
+                      <!-- Datos cargados dinámicamente con JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ===================== LIBRERÍAS EXTERNAS ===================== -->
+    <script src="../../node_modules/@turf/turf/turf.min.js"></script>
+    <script src="../../node_modules/leaflet/dist/leaflet.js"></script>
+    <script src="../../node_modules/proj4/dist/proj4.js"></script>
+    <script src="../../node_modules/proj4leaflet/src/proj4leaflet.js"></script>
+    <script src="../lib/leaflet.shapefile/leaflet.shpfile.js"></script>
+    <script src="../../node_modules/shpjs/dist/shp.js"></script>
+    <script src="../../node_modules/topojson-client/dist/topojson-client.js"></script>
+    <script src="../../node_modules/proj4leaflet/src/proj4leaflet.js"></script>
+    <script src="../../node_modules/leaflet-providers/leaflet-providers.js"></script>
+    <script src="../../node_modules/ol/dist/ol.js"></script>
+    <script type="module" src="../../node_modules/ol/proj.js"></script>
+    <script type="module" src="../../node_modules/ol/proj/proj4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simple-kriging/0.3.0/simple-kriging.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+    <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+
+    <!-- ===================== SCRIPTS DE LA APLICACIÓN ===================== -->
+    <script type="module" src="../controller/conversion_coordenadas.js"></script>
+    <script type="module" src="../js/conver_trans_masivo.js"></script>
+
+
+
+    <%- include('./partials/pie.ejs'); %>

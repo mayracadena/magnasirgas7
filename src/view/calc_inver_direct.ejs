@@ -1,6 +1,6 @@
 <%- include('./partials/cabecero.ejs', {"titulo": "Cálculos elipsoidales" }); %>
     <%- include('./partials/menu.ejs'); %>
-
+    
         <div class="card shadow">
             <div class="card-header">
                 <h2>Cálculo Problema geodésico</h2>
@@ -132,7 +132,7 @@
                                     <input id="res_lat_ss" type="number" class="form-control" placeholder="SS.SSSS">
                                 </div>
                                 <div class="col-md-3">
-                                    <select class="form-control" id="res_hemisferio">
+                                    <select class="input-group-text " id="res_hemisferio">
                                         <option selected value="N">N</option>
                                         <option value="S">S</option>
                                     </select>
@@ -152,7 +152,7 @@
                                     <input id="res_long_ss" type="number" class="form-control" placeholder="SS.SSSS">
                                 </div>
                                 <div class="col-md-3">
-                                    <select class="form-control">
+                                    <select class="input-group-text ">
                                         <option selected value="W">W</option>
                                     </select>
                                 </div>
@@ -207,7 +207,7 @@
                                         step="0.000001" required>
                                 </div>
                                 <div class="col-md-3">
-                                    <select class="form-control" id="hemisferio1_i">
+                                    <select class="input-group-text "id="hemisferio1_i">
                                         <option selected value="N">N</option>
                                         <option value="S">S</option>
                                     </select>
@@ -231,7 +231,7 @@
                                         step="0.000001" required>
                                 </div>
                                 <div class="col-md-3">
-                                    <select class="form-control">
+                                    <select class="input-group-text ">
                                         <option selected value="W">W</option>
                                     </select>
                                 </div>
@@ -255,7 +255,7 @@
                                         step="0.000001" required>
                                 </div>
                                 <div class="col-md-3">
-                                    <select class="form-control" id="hemisferio2_i">
+                                    <select class="input-group-text " id="hemisferio2_i">
                                         <option selected value="N">N</option>
                                         <option value="S">S</option>
                                     </select>
@@ -279,7 +279,7 @@
                                         step="0.000001" required>
                                 </div>
                                 <div class="col-md-3">
-                                    <select class="form-control">
+                                    <select class="input-group-text">
                                         <option selected value="W">W</option>
                                     </select>
                                 </div>
@@ -338,7 +338,9 @@
                 </div>
             </div>
         </div>
-
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.5.0/math.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
 
         <script src="../js/calculo_geodesico.js"></script>
 

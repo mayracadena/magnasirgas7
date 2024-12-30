@@ -14,23 +14,11 @@
 /* Variables de raíz */
 :root {
     --main-bg-color: linear-gradient(135deg, #000000, #001f3f);
-    --primary-color: #00d4ff;
+    --primary-color: #ffffff;
     --secondary-color: #001f3f;
-    --secondary-hover-color: #0056b3;
     --text-color: #ffffff;
-    --text-muted-color: rgba(255, 255, 255, 0.5);
-    --bg-translucent: rgba(255, 255, 255, 0.05);
-    --border-color-light: rgba(255, 255, 255, 0.1);
-    --border-color-regular: rgba(255, 255, 255, 0.2);
-    --focus-bg-color: rgba(255, 255, 255, 0.2);
-    --form-control-bg-color: rgba(255, 255, 255, 0.1);
-    --card-header-bg-color: rgba(0, 31, 63, 0.8);
-    --btn-secondary-bg-color: #555555;
-    --btn-secondary-hover-bg-color: #777777;
-    --panel-bg-color: rgba(255, 255, 255, 0.05);
-    --panel-border-color: rgba(255, 255, 255, 0.1);
-    --btn-secondary-text-color: #faffff;
 }
+
 
 /* Estilos globales */
 body {
@@ -114,13 +102,24 @@ body::-webkit-scrollbar-track {
 /* Cambiamos el fondo cuando esté en active o hover */
 body::-webkit-scrollbar-track:hover,
 body::-webkit-scrollbar-track:active {
-  background: #d4d4d4;
+    background: #d4d4d4;
 }
 
 /* Estilos de tarjeta */
 .card {
     background: transparent;
-    border: none;
+    border: 1px;
+    color: var(--primary-color);
+    font-weight: bold;
+
+}
+
+.panel {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    flex: 1;
 }
 
 .card-header {
@@ -135,10 +134,6 @@ body::-webkit-scrollbar-track:active {
     border-bottom: 1px solid var(--border-color-regular);
 }
 
-.card-body {
-    padding: 30px;
-}
-
 /* Estilos de formulario */
 .form-group label {
     font-weight: bold;
@@ -146,8 +141,8 @@ body::-webkit-scrollbar-track:active {
 }
 
 .form-control {
-    background: var(--form-control-bg-color);
-    border: 1px solid var(--border-color-regular);
+    background: rgba(253, 251, 251, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     color: var(--text-color);
 }
 
@@ -161,14 +156,6 @@ body::-webkit-scrollbar-track:active {
 }
 
 /* Botones */
-.btn {
-    border: none;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-}
 
 .btn-primary {
     background-color: var(--secondary-color);
@@ -177,15 +164,6 @@ body::-webkit-scrollbar-track:active {
 
 .btn-primary:hover {
     background-color: var(--secondary-hover-color);
-}
-
-.btn-secondary {
-    background-color: var(--btn-secondary-bg-color);
-    color: var(--btn-secondary-text-color);
-}
-
-.btn-secondary:hover {
-    background-color: var(--btn-secondary-hover-bg-color);
 }
 
 /* Paneles */
@@ -197,7 +175,9 @@ body::-webkit-scrollbar-track:active {
     border: 1px solid var(--panel-border-color);
 }
 
-h5{
+.panel h2,
+.panel h3 {
+    margin-bottom: 20px;
     color: var(--primary-color);
 }
 
@@ -226,6 +206,11 @@ h5{
     left: 0;
 }
 
+.title {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
 
 
 .municipio-label {
@@ -235,5 +220,88 @@ h5{
     padding: 2px;
     border-radius: 3px;
     text-align: center;
-    pointer-events: none; 
-  }
+    pointer-events: none;
+}
+
+
+/* Contenedor de puntos base */
+.puntos-base-container {
+    max-height: 200px;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Contenedor de la tabla con scroll horizontal y vertical */
+.file-preview-container {
+    max-height: 300px;
+    /* Limita la altura */
+    max-width: 100%;
+    /* Limita el ancho */
+    overflow-x: auto;
+    /* Scroll horizontal */
+    overflow-y: auto;
+    /* Scroll vertical */
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Tabla de vista previa */
+table.file-preview {
+    width: max-content;
+    /* Permite que las columnas ocupen su tamaño natural */
+    table-layout: auto;
+    /* Deja que las columnas se ajusten al contenido */
+    border-collapse: collapse;
+    /* Combina bordes */
+    font-size: 14px;
+    /* Tamaño del texto */
+}
+
+table.file-preview th,
+table.file-preview td {
+    text-align: center;
+    padding: 8px;
+    /* Espaciado interno */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Bordes claros */
+    word-wrap: break-word;
+    /* Ajusta texto largo */
+}
+
+.text-muted {
+    color: #ffffff !important;
+    /* Cambia a blanco */
+    opacity: 0.7;
+    /* Reduce ligeramente la opacidad para mantener el efecto tenue */
+}
+
+.popup_invisible .leaflet-popup-content-wrapper {
+    background-color: transparent;
+    box-shadow: none;
+    padding: 5px;
+    border-radius: 5px;
+    max-width: 100px;
+    max-height: 15px;
+    margin-bottom: 0;
+}
+
+.popup_invisible .leaflet-popup-content {
+    color: black;
+    /* Texto negro */
+    font-size: 10px;
+    /* Tamaño de la letra */
+    font-family: Arial, sans-serif;
+    /* Fuente */
+    text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+    text-align: center;
+}
+
+.popup_invisible .leaflet-popup-tip {
+    display: none;
+    /* Ocultar la punta del popup (opcional) */
+}

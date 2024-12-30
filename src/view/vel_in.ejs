@@ -1,558 +1,216 @@
-<%- include('./partials/cabecero.ejs', {"titulo": "Cambio de epoca" }); %>
+<%- include('./partials/cabecero.ejs', {"titulo": "Cambio de época"}); %>
 <%- include('./partials/menu.ejs'); %>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interfaz de cambio de epoca</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  
   <style>
+    :root {
+      --main-bg-color: linear-gradient(135deg, #000000, #001f3f);
+      --primary-color: #00d4ff;
+      --secondary-color: #001f3f;
+      --text-color: #ffffff;
+    }
+  
     body {
-      background-color: #f8f9fa;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--main-bg-color);
+      color: var(--text-color);
+      overflow: hidden;
+    }
+  
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+  
+    .main-content {
+      margin-left: 300px;
       padding: 20px;
     }
-    .nav-tabs .nav-link {
-      background-color: #e9ecef;
-      color: #495057;
+  
+    .title {
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 20px;
     }
-    .nav-tabs .nav-link.active {
-      background-color: #fff;
-      color: #000;
+  
+    /* Contenedor principal con Flexbox */
+    .content-container {
+      display: flex;
+      gap: 20px;
     }
+  
+    /* Panel de coordenadas (izquierda) */
+    .panel {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      flex: 1;
+    }
+  
     .form-control {
+      background: rgba(253, 251, 251, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-color);
+    }
+  
+    .form-control:focus {
+      background: rgba(251, 248, 248, 0.15);
+      color: var(--text-color);
+    }
+    .form-control::placeholder {
+      color: #ffffff;
+      opacity: 1;
+    }
+  
+    .form-control:focus::placeholder {
+      color: #ffffff;
+    }
+  
+    .btn {
+      border: none;
+      transition: all 0.3s ease;
+    }
+  
+    .btn-primary:hover {
+      background-color: var(--secondary-color);
+    }
+
+    /* Estilos para el contenedor de logs */
+    .logs-container {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      margin-top: 20px;
+      padding: 15px;
+      max-height: 300px; /* Puedes ajustar esta altura */
+      overflow-y: auto;
+    }
+
+    .logs-container h5 {
       margin-bottom: 10px;
+      color: #00d4ff; /* Color primario para destacar el título */
     }
-    .tab-pane {
-      margin-top: 15px;
+
+    #logsContent p {
+      margin: 0 0 5px 0; /* Espacio entre mensajes */
+      padding: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      font-size: 14px;
+      word-wrap: break-word;
     }
+  
   </style>
+  
 </head>
 <body>
-    <div class="card shadow">
-        <div class="card-header">
-            <h2>Cambio de Época</h2>
-        </div>
-        <div class="card-body">
+  <div id="particles-js"></div>
 
-            <nav>
-                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <button class="nav-link active" id="panel_directo_tab" data-bs-toggle="tab"
-                        data-bs-target="#panel_directo" type="button" role="tab" aria-controls="panel_directo"
-                        aria-selected="true">Individual</button>
-                    <button class="nav-link" id="panel_inverso_tab" data-bs-toggle="tab"
-                        data-bs-target="#panel_inverso" type="button" role="tab" aria-controls="panel_inverso"
-                        aria-selected="false">Archivo</button>
-                </div>
-            </nav>
-
-        </div>
-    </div>
-
-<div class="tab-content" id="nav-tabContent">
-  <!-- Panel Individual -->
-  <div class="tab-pane fade show active" id="panel_directo" role="tabpanel" aria-labelledby="panel_directo_tab">
-    <!-- Contenido original del procesamiento individual -->
-    <div class="container-fluid">
-      <!-- Fila para Época de Rastreo y Época de Referencia -->
-      <div class="row mt-3">
-        <!-- Columna para Época de Rastreo -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Época de Rastreo
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <input type="date" class="form-control" id="fechaRastreoPartida">
-              </div>
-            </div>
-          </div>
-        </div>
-    
-        <!-- Columna para Época de Referencia -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Época de Referencia
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <input type="date" class="form-control" id="fechaReferenciaPartida">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <p></p>
-    <div class="container-fluid">
-      <!-- Fila para Modelo de Velocidades y Módulo de Información -->
-      <div class="row mt-3">
-        <!-- Columna para Modelo de Velocidades -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Modelo de Velocidades
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <select class="form-control" id="modeloVelocidadesPartida" onchange="mostrarInformacionVemos()">
-                  <option value="vemos2022">VEMOS 2022</option>
-                  <option value="vemos2017">VEMOS 2017</option>
-                  <option value="vemos2015">VEMOS 2015</option>
-                  <option value="vemos2009">VEMOS 2009</option>
-                  <option value="vemos2003">VEMOS 2003</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-    
-        <!-- Columna para el Módulo de Información -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Información del Modelo de Velocidades
-            </div>
-            <div class="card-body">
-              <div id="informacionVemos" class="form-group">
-                <!-- La información del modelo seleccionado aparecerá aquí -->
-                Cada modelo de velocidades es válido para un lapso de tiempo determinado
-                <p></p>VEMOS 2022: Entre el 1 de febrero de 2017 y el 30 de abril de 2022.
-                <p></p>VEMOS 2017: Entre el 1 de febrero de 2017 y el 30 de abril de 2022.
-                <p></p>VEMOS 2015: Entre el 1 de febrero de 2017 y el 30 de abril de 2022.
-                <p></p>VEMOS 2009: Entre el 1 de febrero de 2017 y el 30 de abril de 2022.
-                <p></p>VEMOS 2003: Entre el 1 de febrero de 2017 y el 30 de abril de 2022.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Resto del contenido del panel individual -->
-    <!-- Aquí mantienes el contenido original del panel individual tal cual -->
-    <!-- Fila para Tipo de Coordenada de Partida y Destino -->
-    <p></p>    
-    <div class="container-fluid">
-      <!-- Fila para Tipo de Coordenada de Partida y Destino -->
-      <div class="row mt-3">
-        <!-- Columna para Tipo de Coordenada de Partida -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Tipo de Coordenada de Partida
-            </div>
-            <div class="card-body">
-              <!-- Navegación de pestañas -->
-              <ul class="nav nav-tabs" id="myTabPartida" role="tablist">
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link active" id="elipsoidal-tab-partida" data-bs-toggle="tab" data-bs-target="#elipsoidal-partida" type="button" role="tab" aria-controls="elipsoidal-partida" aria-selected="true">Elipsoidal Sexagesimal</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="elipsoidal-decimal-tab-partida" data-bs-toggle="tab" data-bs-target="#elipsoidal-decimal-partida" type="button" role="tab" aria-controls="elipsoidal-decimal-partida" aria-selected="false">Elipsoidal Decimal</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="origen-nacional-tab-partida" data-bs-toggle="tab" data-bs-target="#origen-nacional-partida" type="button" role="tab" aria-controls="origen-nacional-partida" aria-selected="false">Origen Nacional</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="geocentrica-tab-partida" data-bs-toggle="tab" data-bs-target="#geocentrica-partida" type="button" role="tab" aria-controls="geocentrica-partida" aria-selected="false">Geocéntrica</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="plana-cartesiana-tab-partida" data-bs-toggle="tab" data-bs-target="#plana-cartesiana-partida" type="button" role="tab" aria-controls="plana-cartesiana-partida" aria-selected="false">Plana Cartesiana</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="utm-tab-partida" data-bs-toggle="tab" data-bs-target="#utm-partida" type="button" role="tab" aria-controls="utm-partida" aria-selected="false">UTM</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="gauss-kruger-tab-partida" data-bs-toggle="tab" data-bs-target="#gauss-kruger-partida" type="button" role="tab" aria-controls="gauss-kruger-partida" aria-selected="false">Gauss Krüger</button>
-                </li>
-              </ul>
-              <!-- Contenido de las pestañas -->
-              <div class="tab-content" id="myTabContentPartida">
-                <!-- Elipsoidal Sexagesimal -->
-                <div class="tab-pane fade show active" id="elipsoidal-partida" role="tabpanel" aria-labelledby="elipsoidal-tab-partida">
-                  <div class="form-group mt-3">
-                    <label for="latitud-partida">Latitud:</label>
-                    <div class="row">
-                      <div class="col-md-3">
-                        <input type="text" class="form-control" placeholder="GG" id="latitud-grados-partida">
-                      </div>
-                      <div class="col-md-3">
-                        <input type="text" class="form-control" placeholder="MM" id="latitud-minutos-partida">
-                      </div>
-                      <div class="col-md-3">
-                        <input type="text" class="form-control" placeholder="SS.DDDDD" id="latitud-segundos-partida">
-                      </div>
-                      <div class="col-md-3">
-                        <select class="form-control" id="latitud-hemisferio-partida">
-                          <option value="N">N</option>
-                          <option value="S">S</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group mt-3">
-                    <label for="longitud-partida">Longitud:</label>
-                    <div class="row">
-                      <div class="col-md-3">
-                        <input type="text" class="form-control" placeholder="GG" id="longitud-grados-partida">
-                      </div>
-                      <div class="col-md-3">
-                        <input type="text" class="form-control" placeholder="MM" id="longitud-minutos-partida">
-                      </div>
-                      <div class="col-md-3">
-                        <input type="text" class="form-control" placeholder="SS.DDDDD" id="longitud-segundos-partida">
-                      </div>
-                      <div class="col-md-3">
-                        <select class="form-control" id="longitud-hemisferio-partida">
-                          <option value="E">E</option>
-                          <option value="W">W</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- Resto de las pestañas tal cual -->
-                <!-- ... (No se muestra para abreviar) ... -->
-              </div>
-            </div>
-          </div>
-        </div>
-    
-        <!-- Columna para Tipo de Coordenada de Destino -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Tipo de Coordenada de Destino
-            </div>
-            <div class="card-body">
-              <!-- Navegación de pestañas -->
-              <ul class="nav nav-tabs" id="myTabDestino" role="tablist">
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link active" id="elipsoidal-tab-destino" data-bs-toggle="tab" data-bs-target="#elipsoidal-destino" type="button" role="tab" aria-controls="elipsoidal-destino" aria-selected="true">Elipsoidal Sexagesimal</button>
-                </li>
-                <!-- Resto de las pestañas tal cual -->
-                <!-- ... (No se muestra para abreviar) ... -->
-              </ul>
-              <!-- Contenido de las pestañas -->
-              <div class="tab-content" id="myTabContentDestino">
-                <!-- Elipsoidal Sexagesimal -->
-                <div class="tab-pane fade show active" id="elipsoidal-destino" role="tabpanel" aria-labelledby="elipsoidal-tab-destino">
-                  <div class="form-group mt-3">
-                    <label for="latitud-destino">Latitud:</label>
-                    <div class="row">
-                      <div class="col-md-3">
-                        <input type="text" class="form-control" placeholder="GG" id="latitud-grados-destino">
-                      </div>
-                      <div class="col-md-3">
-                        <input type="text" class="form-control" placeholder="MM" id="latitud-minutos-destino">
-                      </div>
-                      <div class="col-md-3">
-                        <input type="text" class="form-control" placeholder="SS.DDDDD" id="latitud-segundos-destino">
-                      </div>
-                      <div class="col-md-3">
-                        <select class="form-control" id="latitud-hemisferio-destino">
-                          <option value="N">N</option>
-                          <option value="S">S</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Resto del contenido tal cual -->
-                  <!-- ... (No se muestra para abreviar) ... -->
-                </div>
-                <!-- Resto de las pestañas tal cual -->
-                <!-- ... (No se muestra para abreviar) ... -->
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Botones de Acción -->
-    <div class="row mt-3">
-      <div class="col-md-12 text-center">
-        <button class="btn btn-primary">Calcular</button>
-        <button class="btn btn-secondary">Limpiar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Panel Archivo -->
-  <div class="tab-pane fade" id="panel_inverso" role="tabpanel" aria-labelledby="panel_inverso_tab">
-    <div class="container-fluid">
-      <!-- Fila para Época de Rastreo y Época de Referencia -->
-      <div class="row mt-3">
-        <!-- Columna para Época de Rastreo -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Época de Rastreo
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <input type="date" class="form-control" id="fechaRastreoArchivo">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Columna para Época de Referencia -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Época de Referencia
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <input type="date" class="form-control" id="fechaReferenciaArchivo">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Fila para Modelo de Velocidades y Módulo de Información -->
-      <div class="row mt-3">
-        <!-- Columna para Modelo de Velocidades -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Modelo de Velocidades
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <select class="form-control" id="modeloVelocidadesArchivo" onchange="mostrarInformacionVemosArchivo()">
-                  <option value="vemos2022">VEMOS 2022</option>
-                  <option value="vemos2017">VEMOS 2017</option>
-                  <option value="vemos2015">VEMOS 2015</option>
-                  <option value="vemos2009">VEMOS 2009</option>
-                  <option value="vemos2003">VEMOS 2003</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Columna para el Módulo de Información -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              Información del Modelo de Velocidades
-            </div>
-            <div class="card-body">
-              <div id="informacionVemosArchivo" class="form-group">
-                <!-- La información del modelo seleccionado aparecerá aquí -->
-                Cada modelo de velocidades es válido para un lapso de tiempo determinado
-                <p></p>VEMOS 2022: Entre el 1 de febrero de 2017 y el 30 de abril de 2022.
-                <p></p>VEMOS 2017: Entre el 1 de Enero de 2014 y el 28 de Enero de 2017
-                <p></p>VEMOS 2015: Entre el 14 de marzo de 2010 y el 11 de abril de 2015.
-                <p></p>VEMOS 2009: Entre el 2 de Enero de 2017 y el 30 de Junio de 2009.
-                <p></p>VEMOS 2003: Anterior al 2000.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row mt-3"></div>
-      <div class="col-md-6">
-        <div class="card">
+      <div class="panel">
           <div class="card-header">
-            Tipo de Coordenadas de Destino
+              <h2>Cambio de Época</h2>
           </div>
-          <div class="card-body">
-            <div class="form-group">
-              <select class="form-control" id="tipoCoordenadasArchivo" onchange="actualizarOpcionesAdicionales()">
-                <option value="geocentrica">Geocéntricas</option>
-                <option value="elipsoidal-sexagesimal">Elipsoidales Sexagesimales</option>
-                <option value="elipsoidal-decimal">Elipsoidales Decimales</option>
-                <option value="origen-nacional">Origen Nacional</option>
-                <option value="plana-cartesiana">Planas Cartesianas</option>
-                <option value="utm">UTM</option>
-                <option value="gauss-kruger">Gauss Krüger</option>
-              </select>
-            </div>
-            <div class="form-group mt-2" id="opcionesAdicionales">
-              <!-- Opciones adicionales según el tipo de coordenadas seleccionado aparecerán aquí -->
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-        </div>
-            <!-- Fila para Carga de Archivo CSV y Selección de Tipo de Coordenadas -->
-            <div class="row mt-3">
-                <!-- Columna para Carga de Archivo CSV -->
-                <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                    Cargar Archivo CSV
-                    </div>
-                    <div class="card-body">
-                    <div class="form-group">
-                        <input type="file" class="form-control" id="archivoCSV" accept=".csv">
-                    </div>
-                    <div class="form-group mt-2">
-                        <label for="delimitador">Delimitador:</label>
-                        <select class="form-control" id="delimitador">
-                        <option value=",">Coma (,)</option>
-                        <option value=";">Punto y coma (;)</option>
-                        <option value="tab">Tabulación</option>
-                        </select>
-                    </div>
-                    </div>
-                </div>
-                </div>
-
-        <!-- Columna para Selección de Tipo de Coordenadas -->
         
-        <div class="col-md-6">
-         <div class="tab-pane fade show active" id="panel_directo" role="tabpanel" aria-labelledby="panel_directo_tab">
-          <div class="card">
-            <div class="card-header">
-              Tipo de Coordenadas en el Archivo
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <select class="form-control" id="tipoCoordenadasArchivo" onchange="actualizarOpcionesAdicionales()">
-                  <option value="geocentrica">Geocéntricas</option>
-                  <option value="elipsoidal-sexagesimal">Elipsoidales Sexagesimales</option>
-                  <option value="elipsoidal-decimal">Elipsoidales Decimales</option>
-                  <option value="origen-nacional">Origen Nacional</option>
-                  <option value="plana-cartesiana">Planas Cartesianas</option>
-                  <option value="utm">UTM</option>
-                  <option value="gauss-kruger">Gauss Krüger</option>
-                </select>
+      <div class="tab-content" id="nav-tabContent">
+          <div class="tab-pane fade show active" id="panel_directo" role="tabpanel" aria-labelledby="panel_directo_tab">
+              <div class="container-fluid">
+                  <div class="row mt-3">
+                      <div class="col-md-6">
+                          <div class="panel">
+                              <div class="card-header">Época de Rastreo</div>
+                              <div class="card-body">
+                                  <input type="date" class="form-control" id="fechaRastreoPartida">
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-md-6">
+                          <div class="panel">
+                              <div class="card-header">Época de Referencia</div>
+                              <div class="card-body">
+                                  <input type="date" class="form-control" id="fechaReferenciaPartida">
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="container-fluid mt-3">
+                      <div class="row">
+                          <div class="col-md-6">
+                              <div class="panel">
+                                  <h6>Tipo de Coordenada</h6>
+                                  <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                      <li class="nav-item" role="presentation">
+                                          <button class="nav-link active" id="elipsoidaldecimal-tab" data-bs-toggle="tab" data-bs-target="#coordenadas-decimales" type="button" role="tab" aria-controls="elipsoidaldecimal" aria-selected="true">Elipsoidal Decimal</button>
+                                      </li>
+                                  </ul>
+
+                                  <div class="tab-content mt-3">
+                                      <div class="tab-pane fade show active" id="coordenadas-decimales" role="tabpanel">
+                                          <input type="text" class="form-control" placeholder="Latitud (decimal)" id="latitud-decimal">
+                                          <input type="text" class="form-control" placeholder="Longitud (decimal)" id="longitud-decimal">
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
+                      <div class="row mt-3">
+                          <div class="col-md-12 text-center">
+                              <button class="btn btn-primary" id="calcular">Calcular</button>
+                              <button class="btn btn-secondary" id="limpiar">Limpiar</button>
+                          </div>
+                      </div>
+                  </div>
               </div>
-              <div class="form-group mt-2" id="opcionesAdicionales">
-                <!-- Opciones adicionales según el tipo de coordenadas seleccionado aparecerán aquí -->
-              </div>
-            </div>
           </div>
-        </div>
       </div>
-      <p></p>
-      <!-- Columna para Selección de Tipo de Coordenadas -->
-        
-            <!-- Botones de Acción -->
-            <div class="row mt-3">
-                <div class="col-md-12 text-center">
-                <button class="btn btn-primary" onclick="procesarArchivo()">Procesar Archivo</button>
-                <button class="btn btn-secondary" onclick="limpiarFormulario()">Limpiar</button>
-                </div>
-            </div>
-            </div>
-        </div>
-        </div>
+   
+      <!-- Contenedor de Logs Mejorado -->
+      <div class="logs-container" id="logs">
+        <h5>Proceso de Cambio de Época - Logs</h5>
+        <div id="logsContent"></div>
+      </div>
+      
+ 
+  <script src="controller/Cambio_epoca.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+  <script>
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 150 },
+        color: { value: '#00d4ff' },
+        shape: { type: 'circle' },
+        opacity: { value: 0.5 },
+        size: { value: 3 },
+        line_linked: {
+          enable: true,
+          distance: 200,
+          color: '#00d4ff',
+          opacity: 0.4,
+          width: 1
+        },
+        move: {
+          enable: true,
+          speed: 2
+        }
+      },
+      interactivity: {
+        events: {
+          onhover: { enable: true, mode: 'grab' },
+          onclick: { enable: true, mode: 'push' }
+        },
+        modes: {
+          grab: { distance: 200, line_linked: { opacity: 1 } }
+        }
+      },
+      retina_detect: true
+    });
+  </script>
 
-<!-- JavaScript para actualizar el módulo de información y opciones adicionales -->
-<script>
-  // Función para mostrar la información del modelo VEMOS seleccionado en el panel individual
-  function mostrarInformacionVemos() {
-    var seleccion = document.getElementById("modeloVelocidadesPartida").value;
-    var informacionVemos = document.getElementById("informacionVemos");
 
-    // Limpia el contenido actual
-    informacionVemos.innerHTML = "";
+  <%- include('./partials/pie.ejs'); %>
 
-    // Información según el modelo seleccionado
-    if (seleccion === "vemos2022") {
-      informacionVemos.innerHTML =
-        '<p><strong>VEMOS 2022:</strong> Cubre el periodo comprendido entre el 1 de febrero de 2017 y el 30 de abril de 2022.</p>';
-    } else if (seleccion === "vemos2017") {
-      informacionVemos.innerHTML =
-        '<p><strong>VEMOS 2017:</strong> Cubre la región comprendida entre 120°W, 55°S y 35°W, 32°N con una resolución espacial de 1° x 1°. La incertidumbre promedio es ±1.0 mm/a en la dirección norte-sur y ±1.7 mm/a en la dirección este-oeste.</p>';
-    } else if (seleccion === "vemos2015") {
-      informacionVemos.innerHTML =
-        '<p><strong>VEMOS 2015:</strong> Válido del 14 de marzo de 2010 al 11 de abril del 2015. La incertidumbre media es ±0.6 mm/a en la dirección norte-sur y ±1.2 mm/a en la dirección este-oeste.</p>';
-    } else if (seleccion === "vemos2009") {
-      informacionVemos.innerHTML =
-        '<p><strong>VEMOS 2009:</strong> Válido para el periodo entre enero 2 de 2000 y junio 30 de 2009. La incertidumbre media es aproximadamente 1.5 mm/a.</p>';
-    } else if (seleccion === "vemos2003") {
-      informacionVemos.innerHTML =
-        '<p><strong>VEMOS 2003:</strong> Información específica del modelo VEMOS 2003.</p>';
-    }
-  }
-
-  // Función para mostrar opciones adicionales según el tipo de coordenadas
-  function actualizarOpcionesAdicionales() {
-    var tipo = document.getElementById("tipoCoordenadasArchivo").value;
-    var opcionesDiv = document.getElementById("opcionesAdicionales");
-    opcionesDiv.innerHTML = "";
-
-    if (tipo === "utm") {
-      opcionesDiv.innerHTML = `
-        <div class="form-group">
-          <label for="huso">Huso:</label>
-          <input type="text" class="form-control" id="huso">
-        </div>
-        <div class="form-group mt-2">
-          <label for="hemisferio">Hemisferio:</label>
-          <select class="form-control" id="hemisferio">
-            <option value="N">Norte</option>
-            <option value="S">Sur</option>
-          </select>
-        </div>
-      `;
-    } else if (tipo === "gauss-kruger") {
-      opcionesDiv.innerHTML = `
-        <div class="form-group mt-2">
-          <label for="origen-gauss">Origen Gauss:</label>
-          <select class="form-control" id="origen-gauss">
-            <option value="Central">Central</option>
-            <option value="Este">Este</option>
-            <option value="Insular">Insular</option>
-            <option value="Oeste">Oeste</option>
-          </select>
-        </div>
-      `;
-    } else {
-      opcionesDiv.innerHTML = "";
-    }
-  }
-
-  // Función para procesar el archivo CSV
-  function procesarArchivo() {
-    var archivoInput = document.getElementById("archivoCSV");
-    var archivo = archivoInput.files[0];
-    var delimitador = document.getElementById("delimitador").value;
-    var tipoCoordenadas = document.getElementById("tipoCoordenadasArchivo").value;
-
-    if (!archivo) {
-      alert("Por favor, selecciona un archivo CSV.");
-      return;
-    }
-
-    // Lógica para procesar el archivo CSV según el tipo de coordenadas seleccionado
-    // Aquí puedes agregar el código necesario para leer el archivo y realizar los cálculos
-  }
-
-  // Función para limpiar el formulario
-  function limpiarFormulario() {
-    document.getElementById("fechaRastreoArchivo").value = "";
-    document.getElementById("fechaReferenciaArchivo").value = "";
-    document.getElementById("modeloVelocidadesArchivo").selectedIndex = 0;
-    document.getElementById("archivoCSV").value = "";
-    document.getElementById("tipoCoordenadasArchivo").selectedIndex = 0;
-    document.getElementById("opcionesAdicionales").innerHTML = "";
-    mostrarInformacionVemosArchivo();
-  }
-
-  // Eventos iniciales
-  document.addEventListener("DOMContentLoaded", function() {
-    mostrarInformacionVemos();
-    mostrarInformacionVemosArchivo();
-    actualizarOpcionesAdicionales();
-  });
-
-  document.getElementById("tipoCoordenadasArchivo").addEventListener("change", actualizarOpcionesAdicionales);
-  document.getElementById("modeloVelocidadesArchivo").addEventListener("change", mostrarInformacionVemosArchivo);
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
-
-<%- include('./partials/pie.ejs'); %>

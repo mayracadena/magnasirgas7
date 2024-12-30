@@ -172,6 +172,7 @@ function getTransformationFunction(itrfStart, itrfEnd) {
         'ITRF2005:ITRF2014': itrf2005_to_itrf2014,
         'ITRF2008:ITRF2014': itrf2008_to_itrf2014,
         'ITRF2014:ITRF2020': itrf2014_to_itrf2020,
+        'ITRF2020:ITRF2014': itrf2020_to_itrf2014,
     };
 
     const key = `${itrfStart}:${itrfEnd}`;
@@ -420,6 +421,26 @@ function itrf2014_to_itrf2020(x, y, z) {
     const p1 = 0.0014;
     const p2 = 0.0014;
     const p3 = -0.0024;
+    const z1 = p1 + t1;
+    const z2 = p2 + t2;
+    const z3 = p3 + t3;
+    return [x + z1, y + z2, z + z3];
+}
+
+function itrf2020_to_itrf2014(x, y, z) {
+    const a = [4.2e-10, 0, 0];
+    const b = [0, 4.2e-10, 0];
+    const c = [0, 0, 4.2e-10];
+    const d = [x, y, z];
+    const e = a[0] * d[0] + a[1] * d[1] + a[2] * d[2];
+    const f = b[0] * d[0] + b[1] * d[1] + b[2] * d[2];
+    const g = c[0] * d[0] + c[1] * d[1] + c[2] * d[2];
+    const t1 = e;
+    const t2 = f;
+    const t3 = g;
+    const p1 = -0.0014;
+    const p2 = -0.0014;
+    const p3 = 0.0024;
     const z1 = p1 + t1;
     const z2 = p2 + t2;
     const z3 = p3 + t3;

@@ -1,16 +1,75 @@
-<%- include('./partials/cabecero.ejs', {"titulo": "Bienvenido" }); %>
-  <%- include('./partials/menu.ejs'); %>
+<%- include('./partials/cabecero.ejs', {"titulo": "MAGNA-SIRGAS PRO 7" }); %>
+<%- include('./partials/menu.ejs'); %>
 
-    <!-- Contenedor principal de contenido -->
-    <div id="mainContent" class="main-content">
-      <div class="card shadow">
+<!-- Contenedor principal de contenido -->
+<div id="mainContent" class="main-content">
+    <div class="panel">
         <div class="card-header">
-          <h4>MAGNA SIRGAS PRO VII</h4>
+            <h4>MAGNA SIRGAS PRO 7</h4>
         </div>
         <!-- Aquí puedes añadir el contenido adicional que necesites -->
+    </div>
+</div>
+
+<!-- Botón "Créditos" en la esquina inferior derecha -->
+<button 
+  type="button" 
+  class="btn btn-info credits-button" 
+  data-bs-toggle="modal" 
+  data-bs-target="#creditsModal"
+>
+  Ver Información
+</button>
+
+<!-- Modal con la información -->
+<div class="modal fade" id="creditsModal" tabindex="-1" aria-labelledby="creditsModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <!-- Se puede ajustar el background y color en línea o en CSS -->
+    <div class="modal-content" style="background: rgba(255,255,255,0.9); color: #000;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="creditsModalLabel">Aplicativo Magna SIRGAS Pro 7</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Aplicativo Magna Sigras Pro 7</strong> se refiere a la colección de archivos distribuidos por el Instituto Geográfico Agustín Codazzi (IGAC), agrupados bajo el nombre Magna Sigras Pro 7</p>
+        <p>Este aplicativo fue desarrollado Desde el equipo del centro de control geodesico por Michael Steveen Ramirez Bohorquez y Mayra Yesenia Cadena Blanco. Actualizando la version 5.1 desarrollada por Jorge Armando Arevalo Mora y  actualizada por Juan David Hurtado Jaimes, con la asesoría de los ingenieros  Siervo William León Callejas, Maria camila Bautista, Darwin Gonzalo Baquero Hernandez,Orlando Alfonso Lopez Perez, Cristian Camilo Martinez , Jose Ricardo Guevara Lima, Maira Andrea Loaiza Bonilla, Alejandro Rodriguez Urrea, Andrés Felipe Beltrán Zamudio y distintos profesionales pertenecientes a la Subdirección de Cartografía y Geodesia bajo la direccion del ingeniero Anderson Puentes Carbajal y bajo la Subdireccion del ingeniero Carlos Andres Franco .</p>
+        <p><strong>Magna Sigras Pro 7 puede ser utilizado libremente y su distribución no tiene valor comercial.</strong></p>
+        <p>Las observaciones o recomendaciones que el usuario desee formular acerca de Magna Sigras Pro 7 pueden ser enviadas al correo electrónico: Redgeodesica@igac.gov.co o al teléfono 3694000 Ext. 91501, dirección Carrera 30 No.48-51 Bogotá D.C.</p>
+        <p><strong>ADVERTENCIA</strong><br>
+        EL APLICATIVO MAGNA SIGRAS PRO 7 SE ENTREGA COMO ESTÁ Y SIN GARANTÍA EXPRESA O IMPLÍCITA Y PODRÁ SER MODIFICADO DE ACUERDO CON LOS PARÁMETROS TÉCNICOS QUE EL IGAC CONSIDERE PERTINENTES. LOS LÍMITES DE LAS ENTIDADES TERRITORIALES INCLUIDOS EN EL APLICATIVO MAGNA SIGRAS PRO 7 SON DE CARÁCTER DESCRIPTIVO Y NO REPRESENTAN UNA DELIMITACIÓN PRECISA DE LOS MUNICIPIOS, DEPARTAMENTOS O DEL TERRITORIO NACIONAL (DANE 2018). POR LO TANTO, LA UBICACIÓN DE LOS RESULTADOS DENTRO DE UNA ENTIDAD TERRITORIAL SOLAMENTE ES DE CARÁCTER INFORMATIVO, APROXIMADO Y SIN VALIDEZ LEGAL.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
+  </div>
+</div>
 
-   
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.5.0/math.js"></script>
 
-    <%- include('./partials/pie.ejs'); %>
+<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+
+<%- include('./partials/pie.ejs'); %>
+
+<style>
+  /* Ubicar el botón en la esquina inferior derecha */
+  .credits-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    /* Cambia el color si lo deseas */
+    background-color: #ffffff !important; 
+    color: #000000 !important;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    z-index: 9999; /* Asegura que quede por encima de otros elementos */
+    padding: 10px 80px;
+  }
+
+  /* Cambia el efecto hover del botón */
+  .credits-button:hover {
+    background-color: #c4c4c4 !important;
+  }
+</style>

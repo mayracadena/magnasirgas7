@@ -1,4 +1,3 @@
-
 <div id="wrapper">
 
   <!-- Sidebar -->
@@ -10,83 +9,66 @@
             Inicio
           </a>
         </li>
-        <li class="nav-item ">
-          <a class="nav-link text-white fs-6" href="conver_trans.ejs" role="button" title="Conversión y Transformación">
-            <i class=" bi bi-geo-alt-fill"></i>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle  text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-globe"></i>
             Conversión y Transformación
           </a>
-  <!-- 
-          <ul class="dropdown-menu ">
-            <li><a class="dropdown-item " href="conver_trans.ejs">Punto individual</a></li>
-            <li><a class="dropdown-item" href="#">Archivo</a></li>
-            <li><a class="dropdown-item" href="#">Crear origen cartesiano</a></li>
-            <li><a class="dropdown-item" href="#">Editar o Eliminar Origen Cartesiano</a></li>
-          </ul>
-  -->
-        </li>
-        <li class="nav-item ">
-          <a class="nav-link text-white" href="#" title="Ondulación Geoidal">
-            <i class="bi bi-water"></i>
-            Ondulación Geoidal
-          </a>
-  <!--
-  
-  
-          <ul class="dropdown-menu dropdown-menu-primary">
-            <li><a class="dropdown-item" href="#">Punto individual</a></li>
-            <li><a class="dropdown-item" href="#">Archivo</a></li>
-          </ul>
-  -->
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-map"></i>
-            Nivelación GPS
-          </a>
-  
           <ul class="dropdown-menu dropdown-menu-dark">
-            <li><a class="dropdown-item" href="#">Punto individual</a></li>
-            <li><a class="dropdown-item" href="#">Perfil</a></li>
+            <li><a class="dropdown-item" href="conver_trans.ejs">Punto Individual</a></li>
+            <li><a class="dropdown-item" href="conver_trans_masivo.ejs">Archivo</a></li>
           </ul>
-  
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link text-white" href="calc_inver_direct.ejs" role="button"
-            aria-expanded="false">
-          <i class="bi bi-calculator"></i>
-            Cálculos Elipsoidales
-          </a>
-          
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle  text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-globe"></i>
+            Ondulación Geoidal
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark">
+            <li><a class="dropdown-item" href="ondulacion.ejs">Punto Individual</a></li>
+            <li><a class="dropdown-item" href="ondulacion_archivo.ejs">Archivo</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle  text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-globe"></i>
+            Nivelación GNSS
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark">
+            <li><a class="dropdown-item" href="nivelacion_gps.ejs">Punto Individual</a></li>
+            <li><a class="dropdown-item" href="nivelacion_perfil.ejs">Perfil</a></li>
+  
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link text-white" href="calc_inver_direct.ejs" role="button" aria-expanded="false">
+          <i class="bi bi-calculator"></i>
+            Cálculos Elipsoidales
+          </a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-white" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-globe"></i>
             Cálculo Velocidades
           </a>
           <ul class="dropdown-menu dropdown-menu-dark">
-            <li><a class="dropdown-item" href="vel_in.ejs">Punto Individual</a></li>
-            <li><a class="dropdown-item" href="velocidades.ejs">Archivo</a></li>
-  
+            <li><a class="dropdown-item" href="velocidades.ejs">Punto Individual</a></li>
+            <li><a class="dropdown-item" href="velocidades_masivo.ejs">Archivo</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle  text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-geo-fill"></i>
+          <a class="nav-link dropdown-toggle text-white" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class=" bi bi-geo-fill"></i>
             Cambio de Época
           </a>
           <ul class="dropdown-menu dropdown-menu-dark">
-
-            <li><a class="dropdown-item" href="">Punto Individual</a></li>
-
-            <li><a class="dropdown-item" href="../Cambio_epoca.ejs">Punto Individual</a></li>
-
-            <li><a class="dropdown-item" href="#">Archivo</a></li>
-  
+            <li><a class="dropdown-item" href="vel_in.ejs">Punto Individual</a></li>
+            <li><a class="dropdown-item" href="cambio_epoca_masivo.ejs">Archivo</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle  text-white" href="#" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
+          <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-globe-americas"></i>
             Transformación Del ITRF
           </a>
@@ -95,18 +77,26 @@
             <li><a class="dropdown-item" href="IND_ITRF.ejs">Punto Individual</a></li>
           </ul>
         </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a class="nav-link text-white">
             <i class="bi bi-gear-fill"></i>
             Configuración
           </a>
-  
-        </li>
+        </li> -->
+     
+      
         
-      </ul>
-    </div>   
-    
-    
-      <!-- <button class="btn" id="menu" ><span class="bi bi-list"></span></button> 
+        <!-- Imagen del logo -->
+<li class="nav-item mt-4">
+  <div style=" display: flex; justify-content: space-between; align-items: center; gap: 10px; position: fixed; bottom: 0; left:0; width:210px">
+    <img src="../img/logo2.png" alt="Centro de Control Geodésico Nacional" style="max-width: 25%; height: auto;">
+    <img src="../img/mm.png" alt="Segundo Logo" style="max-width: 100%; height: auto;">
+  </div>
+  <br>
+</li>
 
-   -->
+
+  
+  <!-- <button class="btn btn-default" id="menu"><span class="bi bi-list"></span></button> -->
+      </ul>
+</div>

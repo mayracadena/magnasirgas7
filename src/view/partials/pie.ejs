@@ -1,12 +1,39 @@
-</div>
-</div>
-</div>
-<script src="../../node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
-<!-- <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script> -->
 
-<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
-<script src="../js/menu.js"></script>
 
+<script src="../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+    // Partículas de fondo
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 150 },
+        color: { value: '#00d4ff' },
+        shape: { type: 'circle' },
+        opacity: { value: 0.5 },
+        size: { value: 3 },
+        line_linked: {
+          enable: true,
+          distance: 200,
+          color: '#00d4ff',
+          opacity: 0.4,
+          width: 1
+        },
+        move: {
+          enable: true,
+          speed: 2
+        }
+      },
+      interactivity: {
+        events: {
+          onhover: { enable: true, mode: 'grab' },
+          onclick: { enable: true, mode: 'push' }
+        },
+        modes: {
+          grab: { distance: 200, line_linked: { opacity: 1 } }
+        }
+      },
+      retina_detect: true
+    });
+  </script>
 </body>
-
 </html>

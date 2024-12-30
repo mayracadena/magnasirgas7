@@ -1,0 +1,268 @@
+<%- include('./partials/cabecero.ejs', {"titulo": "ITRF"}); %>
+<%- include('./partials/menu.ejs'); %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculo Nivelación GNSS Perfil</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    /* Variables CSS */
+    :root {
+      --main-bg-color: linear-gradient(135deg, #000000, #001f3f);
+      --primary-color: #ffffff;
+      --secondary-color: #001f3f;
+      --text-color: #ffffff;
+    }
+  
+    /* Estilo global */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--main-bg-color);
+      color: var(--text-color);
+      overflow: hidden;
+    }
+  
+    /* Fondo de partículas */
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+  
+    /* Contenedor principal */
+    .main-content {
+      margin-left: 300px; /* Se mantiene la línea original */
+      padding: 80px;
+    }
+  
+    /* Título principal */
+    .title {
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+    }
+  
+    /* Contenedor principal con Flexbox */
+    .content-container {
+      display: flex;
+      gap: 20px;
+    }
+  
+    /* Panel genérico */
+    .panel {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      flex: 1;
+    }
+  
+    /* Estilo de los inputs */
+    .form-control {
+      background: rgba(253, 251, 251, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-color);
+    }
+  
+    .form-control:focus {
+      background: rgba(251, 248, 248, 0.15);
+      color: var(--text-color);
+    }
+  
+    /* Placeholder en inputs */
+    .form-control::placeholder {
+      color: #ffffff;
+      opacity: 1;
+    }
+  
+    .form-control:focus::placeholder {
+      color: #ffffff;
+    }
+  
+    /* Compatibilidad con navegadores antiguos */
+    :-ms-input-placeholder {
+      color: #ffffff;
+    }
+  
+    ::-ms-input-placeholder {
+      color: #ffffff;
+    }
+  
+    /* Estilo de botones */
+    .btn {
+      border: none;
+      transition: all 0.3s ease;
+    }
+  
+    .btn-primary:hover {
+      background-color: var(--secondary-color);
+    }
+  
+    /* Estilo del mapa */
+    #map {
+      height: 400px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 10px;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+  
+    /* Contenedor de puntos base */
+    .puntos-base-container {
+      max-height: 200px;
+      overflow-y: auto;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  
+    /* Contenedor de la tabla con scroll horizontal y vertical */
+    .file-preview-container {
+      max-height: 100px; /* Limita la altura */
+      max-width: 100%; /* Limita el ancho */
+      overflow-x: auto; /* Scroll horizontal */
+      overflow-y: auto; /* Scroll vertical */
+      background: rgba(255, 255, 255, 0.05);
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  
+    /* Tabla de vista previa */
+    table.file-preview {
+        width: max-content; /* Permite que las columnas ocupen su tamaño natural */
+        table-layout: auto; /* Deja que las columnas se ajusten al contenido */
+        border-collapse: collapse; /* Combina bordes */
+        font-size: 14px; /* Tamaño del texto */
+    }
+  
+    table.file-preview th,
+    table.file-preview td {
+      text-align: center;
+      padding: 8px; /* Espaciado interno */
+      border: 1px solid rgba(255, 255, 255, 0.2); /* Bordes claros */
+      word-wrap: break-word; /* Ajusta texto largo */
+    }
+
+    .text-muted {
+      color: #ffffff !important; /* Cambia a blanco */
+      opacity: 0.7; /* Reduce ligeramente la opacidad para mantener el efecto tenue */
+    }
+
+    /* =========== Override para centrar o reducir margen si se desea =========== */
+    @media (min-width: 0px) {
+      .main-content {
+        margin-left: 0 !important;  /* Anula la línea original */
+        margin: 0 auto !important;  /* Centra horizontalmente */
+        max-width: 3000px;          /* Ajusta ancho máximo si quieres */
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Fondo de partículas -->
+  <div id="particles-js"></div>
+  <div class="main-content">
+    <div class="panel">
+      <div class="panel">
+          <h4>Cálculo Ondulación Punto Individual</h4>
+      </div>
+      <br>
+      <div class="row g-4">
+        <!-- Panel de Carga de Archivo -->
+        <div class="col-lg-4">
+          <div class="panel">
+            <h5>Cargar Archivo CSV</h5>
+            <p class="text-muted">Sube un archivo en formato CSV con las columnas <strong>ID, Altura Elipsoidal y Altura Geoidal</strong>.</p>
+            <input type="file" class="form-control mb-3" id="file-upload" accept=".csv">
+            <button type="button" class="btn btn-primary w-100" id="process-csv">Procesar Archivo</button>
+            <br>
+            <br>
+            <button type="button" class="btn btn-success w-100" id="calculate-leveling">Calcular Nivelación</button>
+            <button type="button" class="btn btn-secondary w-100 mt-2" id="clear-btn">Limpiar</button>
+          </div>
+        </div>
+
+        <!-- Vista previa de datos -->
+        <div class="col-lg-4">
+          <div class="panel">
+            <h5>Vista Previa del Archivo</h5>
+            <div class="file-preview-container">
+              <table class="table table-dark table-striped file-preview" id="file-preview-table" style="display: none;">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Latitud</th>
+                    <th>Longitud</th>
+                    <th>Altura Elipsoidal</th>
+                    <th>Altura Geoidal</th>
+                  </tr>
+                </thead>
+                <tbody id="file-preview-body"></tbody>
+              </table>
+              <p class="text-muted" id="empty-preview" style="display: block;">No se ha cargado ningún archivo aún.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel del Mapa -->
+        <div class="col-lg-4">
+          <div class="panel">
+            <h5>Mapa de Puntos Base</h5>
+            <div id="map"></div>
+            <p class="text-muted mt-3">
+              Interactúa con el mapa para ubicar puntos base. Los puntos base se utilizan para calcular alturas niveladas.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.5.0/math.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+  <script src="controller/NIV_GNSS_PER.js"></script>
+  <script>
+    // Fondo interactivo de partículas
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 150 },
+        color: { value: '#00d4ff' },
+        shape: { type: 'circle' },
+        opacity: { value: 0.5 },
+        size: { value: 3 },
+        line_linked: {
+          enable: true,
+          distance: 200,
+          color: '#00d4ff',
+          opacity: 0.4,
+          width: 1
+        },
+        move: {
+          enable: true,
+          speed: 2
+        }
+      },
+      interactivity: {
+        events: {
+          onhover: { enable: true, mode: 'grab' },
+          onclick: { enable: true, mode: 'push' }
+        },
+        modes: {
+          grab: { distance: 200, line_linked: { opacity: 1 } }
+        }
+      },
+      retina_detect: true
+    });
+  </script>
+</body>
+</html>
